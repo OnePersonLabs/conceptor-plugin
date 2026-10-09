@@ -1,24 +1,26 @@
 ---
 id: purpose-reassessment
-goal: Implement cost-adjusted purpose reassessment and evaluate it through a connected Steady Helm trial.
+goal: Implement cost-adjusted purpose reassessment and evaluate it through connected product work.
 status: active
 concepts: []
 lenses: []
 ownership:
   - owner: root
-    paths: [docs/approved-plan.md, docs/interfaces.md, plugins/opl-projector/AGENTS.md, plugins/opl-projector/references, plugins/opl-projector/skills]
-  - owner: projector_cadence_runtime
-    paths: [plugins/opl-projector/runtime/reassessment.mjs, plugins/opl-projector/runtime/cli.mjs, plugins/opl-projector/runtime/projector.mjs, plugins/opl-projector/hooks/projector-context.mjs, test/activation.test.mjs, test/reassessment.test.mjs]
+    paths: [plugins/opl-projector, docs/purpose-reassessment-trial-20261009.md, .projector/work/purpose-reassessment.md]
 questions: []
 uncertainMutations: []
 ---
 
-Governing authority: the user's approved plan and implementation request, captured in docs/approved-plan.md amendment 9. Actionable status: https://github.com/OnePersonLabs/projector/issues/2.
+Authority: docs/approved-plan.md amendment 9 and the user's agreed course-correction checkpoint. Actionable status: https://github.com/OnePersonLabs/projector/issues/2. The full report is docs/purpose-reassessment-trial-20261009.md.
 
-Candidate: one artifact-grounded comparison procedure and the existing root compaction hook, with a small cache-backed lifecycle. Old source supplies applicable concerns; it does not fix the candidate architecture. A new scheduler, transcript parser or test of instruction wording would add cost without establishing reasoning quality.
+Delivered: local source commits 3d4f379 and d61af5c. Independent source review accepted the procedure, cadence lifecycle and clarified assessment/implementation boundary. The initial full suite passed 52 checks; 13 affected checks pass on the correction. Windows installation and both hook trust entries are verified; post-refresh OPL configuration and global instructions are current. WSL refresh is blocked by an unrelated stale marketplace registration; its repair needs separate authority. No source push occurred.
 
-Source boundary complete: instructions/reference, hook, lifecycle and deterministic checks. The runtime writer stopped. Independent source review accepted the integrated change after repairing read-only continuation and passive resume cache creation. All 52 tests pass; 13 affected checks also pass on the final reviewed state. Root owns integration, commits, refresh and trial. Tracked baseline 40b36a9; unrelated .temp remains untouched.
+Observed: native requested and automatic compaction delivered the hook. The roughly 61-minute application trial produced causal numerical work but no real Runtime learning/advice consumer or completed output. Source edits preceded the written candidate, and assessment stayed open during implementation. The clarified wording was installed afterward; its behavioral effect is unmeasured. No comparative saving is established.
 
-Next: commit the reviewed source, refresh the selected plugin and start one fresh supervised execution on the attached isolated Steady Helm baseline. Trial target is production sensor input through the shared scientific owner and Runtime to a real consumer. Preserve full algorithmic capabilities and resource/causal prerequisites. Review at the first integrated milestone or 60 minutes. Actual agent behavior and savings remain unmeasured.
+Review: the complete trial owner is not accepted. Its generic temporal-state recovery rejects a valid state produced by its own retained projection. Construction-based roundoff/singular-support admission and full resource lifetimes remain unresolved. The tested bank's separate source-replay cases remain valid evidence. The final trial candidate passed 13 scoped checks; earlier receipts cover earlier source states.
 
-Refresh preview: Windows is eligible. WSL is blocked by an unrelated legacy marketplace registered at a missing Docker bind-mount directory. This state and its authorization boundary are recorded on issue 2; preserve that registration. Evidence logs are in C:/Users/zethj/.codex/temp/projector-purpose-20261009/.
+Decision: product work is stopped at the user's review point. Preserve the attached isolated candidate and evidence; keep the original checkout's unrelated work untouched. Root did not extract another preparatory component commit or integrate the unfinished owner. All writers and review assignments are finished, and trial processes are stopped. The broader Steady Helm execution pause and automation remain unchanged.
+
+Next decision: reassess the whole representation/recovery/resource and consumer boundary against governing outcomes before another product implementation stretch. Preserve accepted capabilities and qualification requirements while comparing replaceable mechanisms by total remaining cost. The corresponding unchecked task is in Steady Helm plan.md. Issue 2 remains open for behavioral acceptance and the WSL installation limit.
+
+Evidence: C:/Users/zethj/.codex/temp/projector-purpose-20261009/. Attached trial: C:/Users/zethj/.codex/worktrees/purpose-reassessment-trial/steady-helm-v3. Baseline c608ea4 plus the declared pre-existing sail-force/rig correction. Keep ignored raw artifacts with the attached worktree. Unrelated Projector .temp remains untouched.
