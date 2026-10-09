@@ -12,7 +12,9 @@ async function fixture(t) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'projector-reassessment-'));
   t.after(() => fs.rm(root, { recursive: true, force: true }));
   await activate(root);
-  return { root, run: request => assessment(root, { sessionId: 'root-session', ...request }) };
+  await fs.mkdir(path.join(root, '.projector', 'work'));
+  await fs.writeFile(path.join(root, '.projector/work/comparison.json'), JSON.stringify(Object.fromEntries(['governing', 'cleanCandidate', 'comparison', 'decision', 'boundary', 'validation', 'review'].map(field => [field, `Narrative for ${field}.`]))));
+  return { root, run: request => assessment(root, { sessionId: 'root-session', comparison: '.projector/work/comparison.json', ...request }) };
 }
 
 test('cadence uses completed assessment costs and changes to due exactly at its interval', async t => {
@@ -99,12 +101,12 @@ test('CLI assessment JSON transport uses environment session and honors read-onl
   });
   assert.equal(compact.status, 0, compact.stderr);
   assert.match(JSON.parse(compact.stdout).hookSpecificOutput.additionalContext, /Resume assessment "cli-assessment"/);
-  await fs.writeFile(requestFile, JSON.stringify({ action: 'complete', id: 'cli-assessment', readOnly: true }));
+  await fs.writeFile(requestFile, JSON.stringify({ action: 'complete', comparison: '.projector/work/comparison.json', id: 'cli-assessment', readOnly: true }));
   const complete = invoke();
   assert.equal(complete.status, 0, complete.stderr);
   assert.equal(JSON.parse(complete.stdout).saved, false);
   assert.equal((await assessment(root, { sessionId: 'cli-session' })).status, 'assessing');
-  await fs.writeFile(requestFile, JSON.stringify({ action: 'complete', id: 'cli-assessment' }));
+  await fs.writeFile(requestFile, JSON.stringify({ action: 'complete', comparison: '.projector/work/comparison.json', id: 'cli-assessment' }));
   const saved = invoke();
   assert.equal(saved.status, 0, saved.stderr);
   assert.equal(JSON.parse(saved.stdout).state.interval, 9);
@@ -156,4 +158,60 @@ test('handoff rejects wrong root, wrong session, and stale persisted baseline wi
   const bytes = await fs.readFile(path.join(root, changed.cache), 'utf8');
   await assert.rejects(run({ handoff: pending.handoff }), /handoff is stale/);
   assert.equal(await fs.readFile(path.join(root, changed.cache), 'utf8'), bytes);
+});
+
+
+test('completion requires a saved valid comparison and binds exact bytes without duplicate rebinding', async t => {
+  const { root, run } = await fixture(t);
+  await run({ action: 'begin', id: 'bound', checkpoint: 'retained-checkpoint' });
+  await assert.rejects(run({ action: 'complete', id: 'bound', comparison: undefined }), /project-relative path/);
+  await assert.rejects(run({ action: 'complete', id: 'bound', comparison: 'missing.json' }), /ENOENT/);
+  assert.equal((await run({})).status, 'assessing');
+  const file = path.join(root, '.projector/work/comparison.json');
+  const original = await fs.readFile(file, 'utf8');
+  await fs.writeFile(file, JSON.stringify({ governing: 'only one field' }));
+  await assert.rejects(run({ action: 'complete', id: 'bound' }), /nonempty narrative/);
+  await fs.writeFile(file, original);
+  const completed = await run({ action: 'complete', id: 'bound' });
+  assert.equal(completed.state.candidate.checkpoint, 'retained-checkpoint');
+  assert.equal(completed.state.candidate.comparison.path, '.projector/work/comparison.json');
+  assert.match(completed.state.candidate.comparison.hash, /^[a-f0-9]{64}$/);
+  await fs.writeFile(file, original + ' ');
+  const changed = await run({});
+  assert.equal(changed.status, 'due');
+  assert.match(changed.reason, /changed after completion/);
+  await assert.rejects(run({ action: 'complete', id: 'bound' }), /cannot rebind/);
+  assert.deepEqual((await run({})).state, changed.state);
+  await fs.writeFile(file, '{');
+  assert.match((await run({})).reason, /valid JSON/);
+  await fs.rm(file);
+  assert.match((await run({})).reason, /unavailable or invalid/);
+  await run({ action: 'begin', id: 'replacement' });
+  assert.equal((await run({})).status, 'assessing');
+});
+
+test('legacy candidates remain due and comparison paths cannot escape the project', async t => {
+  const { root, run } = await fixture(t);
+  await run({ action: 'begin', id: 'legacy' });
+  const completed = await run({ action: 'complete', id: 'legacy' });
+  delete completed.state.candidate.comparison;
+  await fs.writeFile(path.join(root, completed.cache), JSON.stringify(completed.state));
+  assert.equal((await run({})).status, 'due');
+  assert.match((await run({})).reason, /no bound comparison/);
+  await run({ action: 'begin', id: 'new' });
+  await assert.rejects(run({ action: 'complete', id: 'new', comparison: '../account.json' }), /escapes project/);
+  assert.equal((await run({})).status, 'assessing');
+});
+
+
+test('an unsaved completed handoff must still match its comparison bytes before working', async t => {
+  const { root, run } = await fixture(t);
+  let result = await run({ action: 'begin', id: 'pending', readOnly: true });
+  result = await run({ action: 'complete', id: 'pending', readOnly: true, handoff: result.handoff });
+  assert.equal(result.status, 'working');
+  await fs.appendFile(path.join(root, '.projector/work/comparison.json'), ' ');
+  const changed = await run({ handoff: result.handoff, readOnly: true });
+  assert.equal(changed.status, 'due');
+  assert.match(changed.reason, /changed after completion/);
+  await assert.rejects(fs.stat(path.join(root, result.cache)), { code: 'ENOENT' });
 });

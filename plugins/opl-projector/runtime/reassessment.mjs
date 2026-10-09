@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { readComparison, comparisonProblem } from './comparison.mjs';
 import { activeRoot, inactive } from './activation.mjs';
 import { hash, optionalJson, projectPath, writeJson } from './state.mjs';
 
@@ -54,7 +55,13 @@ export async function assessment(root, request = {}) {
     // A repeated receipt cannot close a newer assessment or change its cadence.
     if (state.assessment?.id !== request.id) {
       if (!(action === 'complete' && !state.assessment && state.lastCompletedId === request.id)) throw new Error('Assessment id does not match the active assessment.');
+      // Duplicate receipts cannot bind replacement bytes or reset the cadence.
+      if (request.comparison !== undefined) {
+        const repeated = await readComparison(root, request.comparison);
+        if (JSON.stringify(repeated) !== JSON.stringify(state.candidate?.comparison)) throw new Error('Duplicate completion cannot rebind the comparison account. Begin a new assessment.');
+      }
     } else {
+      const comparison = action === 'complete' ? await readComparison(root, request.comparison) : null;
       const extraWindows = nonnegative(request.extraWindows ?? 0, 'extraWindows');
       const checkpoint = request.checkpoint ?? state.assessment.checkpoint;
       const cost = state.carriedCosts + state.assessment.rootAssessmentCompactions + extraWindows;
@@ -64,7 +71,7 @@ export async function assessment(root, request = {}) {
       state.workingCompactions = 0;
       if (action === 'complete') {
         state.interval = Math.max(1, Math.ceil(9 * cost));
-        state.candidate = { id: request.id, checkpoint };
+        state.candidate = { id: request.id, checkpoint, comparison };
         state.lastCompletedId = request.id;
         state.carriedCosts = 0;
       } else {
@@ -83,10 +90,12 @@ export async function assessment(root, request = {}) {
   const transition = action !== 'status' || request.compact === true || request.handoff !== undefined;
   const saved = Boolean(file) && !readOnly && (stored !== null || transition);
   if (saved && JSON.stringify(stored) !== JSON.stringify(state)) await writeJson(file, state);
+  const reason = state.candidate ? await comparisonProblem(root, state.candidate) : 'No completed comparison account. Begin an assessment and complete it with a saved comparison JSON path.';
   const status = state.phase === 'assessing' ? 'assessing'
-    : !state.candidate || state.workingCompactions >= state.interval ? 'due' : 'working';
+    : reason || state.workingCompactions >= state.interval ? 'due' : 'working';
   return {
     status, saved, tracked: Boolean(file), state,
+    ...(reason ? { reason } : {}),
     ...(file ? { cache: path.relative(root, file).replaceAll('\\', '/') } : {}),
     heuristic: 'Compaction cadence approximates context cost; it is not a token or time bound.',
     ...(!saved ? {

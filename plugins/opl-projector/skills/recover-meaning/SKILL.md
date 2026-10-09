@@ -21,6 +21,6 @@ only for the relevant question; the saved checkpoint retains it. Inspect the
 actual diff and native task state. Inspect uncertain mutations in the checkout
 before action. Do not replay them.
 
-On a due compaction or without a current candidate, use [Reassess from purpose](../../references/applying-projector.md#reassess-from-purpose). Resume an active assessment and its accumulated cost. Recover the candidate from the checkpoint and check its premises before reusing it.
+On a due compaction or without a current candidate, use [Reassess from purpose](../../references/applying-projector.md#reassess-from-purpose). Resume an active assessment and its accumulated cost. Recover the comparison account from the checkpoint and check its premises before reusing it. Complete the assessment before implementation resumes.
 
 Give the root a compact packet: governing meaning, changed rule, actual participants and relevant transitions, reusable evidence, binding gaps, ownership, and the next useful action. Link detail instead of copying inventories. The root decides shared meaning, Lens updates, and delegation. Stop discovery when remaining uncertainty cannot change the next commitment. Withhold a dependent action whose premise remains unresolved; continue independent safe work.

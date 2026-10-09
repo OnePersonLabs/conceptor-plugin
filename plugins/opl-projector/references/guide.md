@@ -219,15 +219,33 @@ checks retain their own purpose and do not become application acceptance.
 
 ## Assessment requests
 
-Use `node <plugin-root>/runtime/cli.mjs assessment --root <project-root> --request <request.json>` for the lifecycle in [Reassess from purpose](applying-projector.md#reassess-from-purpose). The request has `action` (`status`, `begin`, `complete`, `abandon`), `sessionId` (defaults to `CODEX_THREAD_ID`), and a stable assessment `id` for mutations. `checkpoint` points to the existing task record. `complete` and `abandon` accept the nonnegative integer `extraWindows`: one per delegated assessment context plus its reported compactions. Use `readOnly: true` or `permissionMode: "plan"` when persistence is forbidden.
+Use `node <plugin-root>/runtime/cli.mjs assessment --root <project-root> --request <request.json>` for the lifecycle in [Reassess from purpose](applying-projector.md#reassess-from-purpose). The request has `action` (`status`, `begin`, `complete`, `abandon`), `sessionId` (defaults to `CODEX_THREAD_ID`), and a stable assessment `id` for mutations. `checkpoint` points to the existing task record. `complete` requires `comparison`, a project-relative path to the saved JSON account below. `complete` and `abandon` accept the nonnegative integer `extraWindows`: one per delegated assessment context plus its reported compactions. Use `readOnly: true` or `permissionMode: "plan"` when persistence is forbidden.
 
-For example, begin with `{"action":"begin","id":"engine-boundary","checkpoint":".projector/work/current.md"}`. After the comparison and decision, complete that same ID, adding `extraWindows` when applicable. Keep request files in temporary storage. The root owns this session's requests; workers return costs and broader decisions to it.
+For example, begin with `{"action":"begin","id":"engine-boundary","checkpoint":".projector/work/current.md"}`. Save the account under `.projector/work/` and link it from that checkpoint. After its required review, complete with `{"action":"complete","id":"engine-boundary","comparison":".projector/work/engine-comparison.json"}`, adding `extraWindows` when applicable. Keep transport request files in temporary storage. The root owns this session's transitions; workers return costs and broader decisions to it.
 
-The result reports `status` (`due`, `working`, `assessing`, or `inactive`), `saved`, and mechanical state. A candidate reference records a completed declaration, not approval of its reasoning. Repeated begin preserves the active ID and cost. Repeated completion of the most recent completed ID preserves the interval; a different active ID cannot be completed with an old receipt. Abandonment clears the candidate and carries spent cost into the next assessment. A missing session ID permits only untracked status; inactive projects short-circuit before project state access.
+The JSON account has these nonempty string fields. Write concrete reasoning, not a promise to perform it:
+
+| Field | Required account |
+| --- | --- |
+| `governing` | Observable outcome, governing source pointers, capabilities, conditions and accepted corrections. Distinguish requirements from selected mechanisms. |
+| `cleanCandidate` | Simplest coherent approach derived from those outcomes before adapting current code, or a prior candidate with its checked premises. |
+| `comparison` | Source-grounded differences and previous friction. Classify missed requirements, replaceable mechanisms, authorized retirements and unresolved decisions. |
+| `decision` | Keep, replace or replan, with remaining implementation, migration, verification and maintenance cost. Resolve dependencies of the chosen action. |
+| `boundary` | Connected inputs, outputs, owners, state, recovery, consumers, tests and cutover. Explain what must be engineered together. |
+| `validation` | Next integrated product result and the evidence that can accept or reject it. |
+| `review` | Required architecture review result and its evidence, or why the native rules do not require review for this decision. |
+
+The runtime reads this file and binds its bytes to the candidate. It checks structure and currentness; it cannot judge whether prose is true or sufficient. Native review supplies that judgment. An empty or missing account cannot complete assessment. A changed, missing, malformed or previously unbound account makes a candidate due. Duplicate completion preserves the original identity rather than accepting later edits. Begin a new assessment ID when a changed account requires a new decision.
+
+While due or assessing, the pre-tool hook blocks ordinary `Bash`, `apply_patch` and native delegation calls. Start assessment-only shell commands with `# projector-assessment: <purpose>` on the first line. This includes reading the guide and invoking the assessment CLI. Start read-only assessment/review assignments with `Projector assessment: <purpose>`. Planning patches can target `.projector/work/`. These declarations grant no implementation authority. The native host supplies the parent session ID to subagent hooks, so assigned implementation uses the root's current transition; workers do not complete a competing root assessment.
+
+The result reports `status` (`due`, `working`, `assessing`, or `inactive`), `saved`, and mechanical state. A candidate reference records the completed account identity, not approval of its reasoning. Repeated begin preserves the active ID and cost. Repeated completion of the most recent completed ID preserves the interval; a different active ID cannot be completed with an old receipt. Abandonment clears the candidate and carries spent cost into the next assessment. A missing session ID permits only untracked status; inactive projects short-circuit before project state access.
 
 Only `SessionStart` with `source: "compact"` advances the cost approximation. Other startup/resume sources inspect the same session state. Plan-mode hook input and read-only requests calculate unsaved state; carry unsaved phase and cost in the ordinary handoff. Cache deletion loses cadence, not authored decisions. Recover the candidate from the checkpoint and check its premises before beginning a new declaration.
 
 For read-only continuation, pass the previous result's `handoff` as the next request's `handoff`. It contains the activated root, session ID, baseline cache identity and pending state. Each read-only result returns its successor. An authorized `status` request with that handoff persists the pending state only while the root, session and baseline still match. A mismatch requires inspecting current state before reconciliation.
+
+Read-only completion can use an existing saved comparison. If the new account cannot be saved, retain its text in the ordinary unsaved-decision handoff and keep the assessment active. When writes become authorized, save the account and complete the assessment. Unsaved prose cannot authorize implementation through the file-bound gate.
 
 A read-only hook sees persisted state, not a newer handoff held in the conversation. If one exists, retain it and apply the hook's `compact: true` delta once through a read-only request with that handoff. Otherwise use the hook's returned handoff, which already includes its compact delta. Use the resulting status to choose due, working or resume. Preserve this pending handoff across compaction.
 

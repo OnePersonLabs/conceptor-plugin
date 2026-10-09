@@ -20,6 +20,7 @@ if (root) {
     ? await fs.readFile(new URL('../AGENTS.md', import.meta.url), 'utf8')
     : `Use the Projector consumer guidance already loaded in this session. If it is not loaded, read ${JSON.stringify(fileURLToPath(new URL('../AGENTS.md', import.meta.url)))} before Projector work. Recheck this project's .projector/active marker before using Projector; ordinary native work does not require its helpers.`;
   let cadence = '';
+  const guide = fileURLToPath(new URL('../references/applying-projector.md', import.meta.url));
   if (event === 'SessionStart') {
     const { assessment } = await import('../runtime/reassessment.mjs');
     const result = await assessment(root, {
@@ -39,7 +40,7 @@ if (root) {
       : '';
     const reported = result.saved ? instruction
       : `Cache-based status is provisional; an existing unsaved handoff takes precedence. Continue that handoff first, including any compact delta below, then decide due or resume status. Cache reports: ${instruction}`;
-    cadence = `Projector reassessment: ${reported} Read references/applying-projector.md#reassess-from-purpose. ${unsaved} Context delivery does not establish semantic compliance.`;
+    cadence = `Projector reassessment: ${reported} ${result.reason ?? ''} Read ${JSON.stringify(guide)}#reassess-from-purpose. Ordinary shell, patch, and delegation calls are blocked while assessment is due or active. Use first-line '# projector-assessment: <purpose>' for assessment-only shell reads/probes/planning, or 'Projector assessment: <purpose>' for read-only assessment delegation. Assessment patches must target only .projector/work/. Save the comparison account and complete with request.comparison before implementation. ${unsaved} Context delivery does not establish semantic compliance.`;
   }
   const additionalContext = [
     `Projector is active for project root: ${JSON.stringify(root)}.`,
