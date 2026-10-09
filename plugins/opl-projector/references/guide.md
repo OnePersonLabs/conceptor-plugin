@@ -217,6 +217,20 @@ existing runtime records cannot supply. Do not maintain duplicate manifests or
 hash the evidence again merely to label it accepted. Backup or asset integrity
 checks retain their own purpose and do not become application acceptance.
 
+## Assessment requests
+
+Use `node <plugin-root>/runtime/cli.mjs assessment --root <project-root> --request <request.json>` for the lifecycle in [Reassess from purpose](applying-projector.md#reassess-from-purpose). The request has `action` (`status`, `begin`, `complete`, `abandon`), `sessionId` (defaults to `CODEX_THREAD_ID`), and a stable assessment `id` for mutations. `checkpoint` points to the existing task record. `complete` and `abandon` accept the nonnegative integer `extraWindows`: one per delegated assessment context plus its reported compactions. Use `readOnly: true` or `permissionMode: "plan"` when persistence is forbidden.
+
+For example, begin with `{"action":"begin","id":"engine-boundary","checkpoint":".projector/work/current.md"}`. After the comparison and decision, complete that same ID, adding `extraWindows` when applicable. Keep request files in temporary storage. The root owns this session's requests; workers return costs and broader decisions to it.
+
+The result reports `status` (`due`, `working`, `assessing`, or `inactive`), `saved`, and mechanical state. A candidate reference records a completed declaration, not approval of its reasoning. Repeated begin preserves the active ID and cost. Repeated completion of the most recent completed ID preserves the interval; a different active ID cannot be completed with an old receipt. Abandonment clears the candidate and carries spent cost into the next assessment. A missing session ID permits only untracked status; inactive projects short-circuit before project state access.
+
+Only `SessionStart` with `source: "compact"` advances the cost approximation. Other startup/resume sources inspect the same session state. Plan-mode hook input and read-only requests calculate unsaved state; carry unsaved phase and cost in the ordinary handoff. Cache deletion loses cadence, not authored decisions. Recover the candidate from the checkpoint and check its premises before beginning a new declaration.
+
+For read-only continuation, pass the previous result's `handoff` as the next request's `handoff`. It contains the activated root, session ID, baseline cache identity and pending state. Each read-only result returns its successor. An authorized `status` request with that handoff persists the pending state only while the root, session and baseline still match. A mismatch requires inspecting current state before reconciliation.
+
+A read-only hook sees persisted state, not a newer handoff held in the conversation. If one exists, retain it and apply the hook's `compact: true` delta once through a read-only request with that handoff. Otherwise use the hook's returned handoff, which already includes its compact delta. Use the resulting status to choose due, working or resume. Preserve this pending handoff across compaction.
+
 ## Reviewable local commits
 
 The execution skill owns commit judgment. The native root uses Git directly; Projector does not create a commit daemon or require a new work ledger. This policy applies only while the project is activated. More specific user and repository rules take precedence.

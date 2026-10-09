@@ -2,7 +2,7 @@
 
 Projector preserves what a system must do, why it matters, and where implementation and evidence bear on that meaning. Use it to make the next decision without reconstructing the full history. The working loop is: recover relevant meaning, predict consequences, implement, compare actual effects, reconcile, and retain useful learning. Code remains revisable; an implementation discovery can justify an explicit meaning decision.
 
-This procedure belongs to the selected workflow skill. Use existing plans and checkpoints for task-specific decisions. Do not copy the procedure into each task or require a new artifact for routine work. Helpers are optional; their [request contracts](guide.md) define what they can establish.
+This procedure belongs to the selected workflow skill. Use existing plans and checkpoints for task-specific decisions. Do not copy the procedure into each task or require a new artifact for routine work. Discovery helpers are optional; their [request contracts](guide.md) define what they can establish. The assessment helper below maintains the requested compaction cadence.
 
 ## Recover the governing meaning
 
@@ -28,6 +28,31 @@ rg -n -F -g '*.md' -g '!**/archive/**' 'clip' .projector/meaning
 ```
 
 Read the matched records' frontmatter. Keep only relevant Relations whose `target` is the selected ID; other mentions are leads, not edges. Read each Relation's `type`, `status`, source record, and governing prose. Preserve `observed` versus `accepted`. Follow another endpoint only when it can change the current decision. Native search is discovery, not proof that all semantic relationships are modeled.
+
+## Reassess from purpose
+
+The root performs this procedure before the first consequential action without a current candidate and when the compaction hook reports it due. A changed goal, invalidated premise, or two unsuccessful repair cycles first requires a focused premise check. Expand that check only far enough to settle the changed premise; complete the full procedure when it changes the governing approach. A routine edit alone is not a trigger.
+
+1. Recover the observable product outcome, applicable capabilities, reasons, conditions, exceptions and accepted corrections from governing artifacts. Separate required outcomes from selected implementation mechanisms. Use existing authority rather than reconstructing all history.
+2. Describe the simplest coherent approach if starting today, before adapting it to current code. State the responsibilities, interfaces and evidence needed to deliver the outcome. Reuse the previous candidate when its premises remain applicable; identify those checked premises instead of inventing a new architecture.
+3. Compare that candidate with the implementation and the previous run's friction. Trace actual producers, state owners, consumers and recovery paths. Identify fragmented ownership, repeated translation, tests tied to replaceable internals, repeated discovery and repairs around the same premise. Treat these as hypotheses until source or execution evidence supports them.
+4. Classify consequential differences: a requirement the candidate missed; a replaceable mechanism; an obsolete obligation whose retirement has governing authority; or an unresolved decision. Carry real concerns into the candidate. A failed test or inconvenient implementation does not authorize retiring its required behavior.
+5. Choose keep, replace or replan by remaining implementation, migration, verification and maintenance cost. For a replacement, define the whole connected boundary: inputs, outputs, state, persistence, consumers, tests and cutover. Build from those interfaces inward, using old code as a reference for applicable concerns. Consolidate competing owners and remove superseded implementation within that boundary. Preserve useful work and required verification. Replacement is not automatically cheaper.
+6. Name the next integrated product result and its acceptance evidence. A helper or checked component alone cannot complete a consumer requirement. Record changed decisions and reasons with their existing meaning owner; keep the candidate, comparison, ownership, uncertainty and next action in the existing checkpoint only as needed for continuation.
+
+Make the comparison and consequential decision visible before dependent implementation. Preserve active ownership, uncertain mutations, user pauses and host permissions. Reassessment grants no authority to replay effects, cancel another writer or reduce product scope.
+
+### Assessment cadence
+
+Use the installed runtime's `assessment` command through the existing `--request` JSON transport. Read [assessment requests](guide.md#assessment-requests) for the small lifecycle contract. Begin a full assessment before its discovery and reconstruction work; complete it after review integration and the resulting decision. A focused premise check alone leaves the scheduled interval unchanged. Root assessment is the default; delegation must justify its added context and integration cost.
+
+The hook counts root compactions in the assessment phase separately from ordinary-work compactions. Completion sets the next work interval to `max(1, ceil(9 * cost))`, where cost includes assessment compactions, carried cost from abandoned assessments and `extraWindows`. Charge each delegated assessment context one extra window plus its reported compactions. If its compaction count is unavailable, charge one window and retain that measurement limit. This is a coarse scheduling proxy for a 10% overhead target, not a time or token bound; partial windows and unobserved worker usage limit precision.
+
+Compaction during assessment resumes the same assessment. Repeated begin and completion preserve existing progress. Abandon a cancelled or superseded assessment without claiming a valid candidate; retain its cost for the next authorized assessment. Resume uses the same session cache. A fresh session recovers the prior candidate from the checkpoint and checks its premises before using it.
+
+In Plan mode or read-only work, use read-only requests and retain unsaved phase, cost and decision changes in the ordinary handoff. Do not claim persistence. A missing cache or session identity cannot establish a current candidate: recover the checkpoint and perform the applicable premise check. Cache deletion preserves authored meaning and checkpoints.
+
+Hook delivery and helper state establish mechanical behavior only. Evaluate actual goal recovery, comparison, decisions and consumer progress through authorized work. Keep assessment, implementation and review costs separate where measurements permit; report missing measurements as unknown. Scale or simplify costly reassessment while preserving its obligation.
 
 ## Connect the changed rule to its consumers
 

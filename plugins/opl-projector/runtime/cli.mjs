@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import path from 'node:path';
-import { focus, revisit, reconcile, writeCheckpoint, resume, closeCheckpoint, repair } from './projector.mjs';
+import { focus, revisit, reconcile, writeCheckpoint, resume, closeCheckpoint, repair, assessment } from './projector.mjs';
 import { observe } from './providers/index.mjs';
 import { readJson } from './state.mjs';
 import { checkpointContext } from './work.mjs';
@@ -9,7 +9,7 @@ import { activate, deactivate, activationStatus, projectRoot, activeRoot, inacti
 async function main() {
   const [command, ...args] = process.argv.slice(2);
   if (!command || command === '--help' || command === 'help') {
-    console.log('OPL Projector (V5)\nCommands: activate, deactivate, status, focus, revisit, reconcile, observe, checkpoint, resume, close, repair\nUsage: opl-projector COMMAND [--root PATH] [--request REQUEST.json]\nProjector runs only in activated projects. The agent handles ordinary requests through the installed skills.');
+    console.log('OPL Projector (V5)\nCommands: activate, deactivate, status, focus, revisit, reconcile, observe, checkpoint, resume, close, repair, assessment\nUsage: opl-projector COMMAND [--root PATH] [--request REQUEST.json]\nProjector runs only in activated projects. The agent handles ordinary requests through the installed skills.');
     return;
   }
   const options = {};
@@ -18,7 +18,7 @@ async function main() {
     options[args[index].slice(2)] = args[index + 1];
   }
   const root = options.root ? path.resolve(options.root) : await projectRoot(process.cwd());
-  const operations = { activate, deactivate, status: activationStatus, focus, revisit, reconcile, observe, checkpoint: writeCheckpoint, resume: (root, request) => resume(root, request.id), close: (root, request) => closeCheckpoint(root, request.id), repair };
+  const operations = { activate, deactivate, status: activationStatus, focus, revisit, reconcile, observe, checkpoint: writeCheckpoint, resume: (root, request) => resume(root, request.id), close: (root, request) => closeCheckpoint(root, request.id), repair, assessment };
   if (!operations[command]) throw new Error(`Unknown command: ${command}`);
   if (!['activate', 'deactivate', 'status'].includes(command) && !await activeRoot(root)) {
     console.log(JSON.stringify(inactive(root), null, 2));

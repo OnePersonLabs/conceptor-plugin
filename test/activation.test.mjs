@@ -6,6 +6,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { activate, deactivate, activeRoot, projectRoot, activationStatus, inactive } from '../plugins/opl-projector/runtime/activation.mjs';
+import { assessment } from '../plugins/opl-projector/runtime/reassessment.mjs';
 
 async function fixture(t) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'projector-activation-'));
@@ -110,6 +111,7 @@ test('session hooks load guidance and prompt hooks link to it; inactive hooks em
       assert.ok(output.additionalContext.length < guidance.length);
     }
   }
+  await assert.rejects(fs.stat(path.join(root, '.projector', 'cache', 'reassessment')), { code: 'ENOENT' });
   const nested = path.join(child, 'unrelated');
   await fs.mkdir(path.join(nested, '.git'), { recursive: true });
   const boundary = await runHook({ cwd: nested, event: 'UserPromptSubmit' });
@@ -135,4 +137,28 @@ test('inactive hooks do not read consumer guidance; active hook failures surface
   assert.notEqual(on.code, 0);
   assert.match(on.stderr, /ENOENT/);
   assert.equal(on.stdout, '');
+});
+
+test('compact hooks advance only the root session cadence and preserve assessing work', async t => {
+  const root = await fixture(t);
+  await activate(root);
+  const input = { cwd: root, hook_event_name: 'SessionStart', session_id: 'session', permission_mode: 'default' };
+  for (const source of ['startup', 'resume', 'clear']) {
+    const result = await runHook({ ...input, source });
+    assert.equal(result.code, 0, result.stderr);
+    assert.match(JSON.parse(result.stdout).hookSpecificOutput.additionalContext, /full assessment from purpose is due/);
+  }
+  assert.equal((await assessment(root, { sessionId: 'session' })).state.workingCompactions, 0);
+  await assessment(root, { sessionId: 'session', action: 'begin', id: 'review', checkpoint: 'task' });
+  const compact = await runHook({ ...input, source: 'compact' });
+  assert.equal(compact.code, 0, compact.stderr);
+  assert.match(JSON.parse(compact.stdout).hookSpecificOutput.additionalContext, /Resume assessment "review"/);
+  assert.equal((await assessment(root, { sessionId: 'session' })).state.assessment.rootAssessmentCompactions, 1);
+  const plan = await runHook({ ...input, source: 'compact', permission_mode: 'plan' });
+  assert.equal(plan.code, 0, plan.stderr);
+  assert.match(JSON.parse(plan.stdout).hookSpecificOutput.additionalContext, /State is unsaved/);
+  assert.match(JSON.parse(plan.stdout).hookSpecificOutput.additionalContext, /"rootAssessmentCompactions":2/);
+  const prompt = await runHook({ ...input, source: 'compact', hook_event_name: 'UserPromptSubmit' });
+  assert.equal(prompt.code, 0, prompt.stderr);
+  assert.equal((await assessment(root, { sessionId: 'session' })).state.assessment.rootAssessmentCompactions, 1);
 });

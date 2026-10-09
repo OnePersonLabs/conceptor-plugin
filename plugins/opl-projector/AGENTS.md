@@ -17,6 +17,10 @@ Before consequential planning or choosing next work, recover the original user d
 
 Preserve accepted capabilities, reasons, conditions, and exceptions. Account for substantive changes from the accepted baseline. Resolve material intent gaps or conflicts before dependent work.
 
+Before the first consequential action without a current candidate, and when the compaction hook says reassessment is due, follow [Reassess from purpose](references/applying-projector.md#reassess-from-purpose). Derive the simplest coherent approach from governing artifacts before fitting it to existing code. Compare the approaches, account for every still-applicable concern, and choose the next connected product outcome. Reuse a candidate after checking its premises. Resume an unfinished reassessment across compaction; scale the next interval with its cost.
+
+A changed goal, invalidated premise, or two unsuccessful repair cycles requires a focused premise check before dependent work. Expand to a full reassessment only when needed. Workers assess their assigned boundary and return broader decisions to the root. The hook supplies an interrupt, not evidence that this reasoning occurred.
+
 Use native execution and delegation. The root owns shared meaning, Lens maintenance, and current task state unless it assigns an exact surface. Give workers disjoint writes, the governing conditions, changed contract, affected consumers, and required evidence. Projector helpers do not schedule agents or execute a second workflow.
 
 In an activated Git project, use reviewable local commits by default, subject to the user's and repository's commit rules. The native root owns staging and commits. Use the commit procedure in `$opl-projector:carry-out-directive`; the user does not need to request each commit. Pushes and history changes need separate authorization.
@@ -31,6 +35,6 @@ Update accepted meaning when a decision changes it. Record the decision and its 
 
 When host mode or write permissions block an update, including Plan mode, use the unsaved-decision handoff. Do not claim it was saved. Keep current task state concise and link retained evidence; replace superseded status instead of appending a diary. Use Git to identify committed source. Extra snapshots or hash inventories need a concrete consumer and decision. A hash establishes byte identity, not correctness or user intent. Preserve original mismatches and unresolved recovery evidence.
 
-Recover only decision-relevant meaning. Select helpers when they reduce a specific uncertainty or repeated task. Batch checks at useful integration points and reuse applicable results. Follow native review rules; a commit does not require another review cycle. Routine work needs no new Projector artifact or global audit. If a mechanism adds cost without useful decisions, suspend it and reassess it against ordinary Git and focused notes.
+Recover only decision-relevant meaning. Select helpers when they reduce a specific uncertainty or repeated task. Batch checks at useful integration points and reuse applicable results. Follow native review rules; a commit does not require another review cycle. Routine work needs no new Projector artifact or global audit. Suspend optional mechanisms that add cost without useful decisions. Purpose reassessment remains mandatory; reduce its scope or frequency through the cost-adjusted procedure.
 
 See [the reference guide](references/guide.md) when YAML, helper requests, provider setup, or repair is needed. Use the selected skill for its workflow.

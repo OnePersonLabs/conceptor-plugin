@@ -33,6 +33,6 @@ When a discovery changes where future work should look, update the existing Lens
 
 After two identical failed repair attempts, recurrence of an earlier state, or conflicting accepted conditions, stop repeating automatic repair of that discrepancy. Preserve useful work and competing explanations. Change approach or request the specific meaning decision. Independent work can continue.
 
-Manual patches can expose the same faulty premise through different symptoms. When that happens, pause dependent repairs, trace the responsible rule through its consumers, and revise the connected design before continuing. Do not wait for identical patches or add a new repair counter. Preserve the original mismatch and useful completed work.
+Manual patches can expose the same faulty premise through different symptoms. A changed goal, invalidated premise, or two unsuccessful repair cycles requires the focused check in [Reassess from purpose](../../references/applying-projector.md#reassess-from-purpose) before dependent work. Expand to a full assessment only when needed. Preserve the original mismatch and useful completed work; resolve accepted meaning changes with its owner.
 
 Close completed work through the native root when recovery state is no longer active. Keep closed checkpoints readable. Report unresolved coverage and any future action that still matters. Do not add global guards or compulsory maintenance for routine tasks.

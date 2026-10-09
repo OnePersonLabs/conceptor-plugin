@@ -9,6 +9,7 @@ import { readCheckpoint, updateCheckpoint, checkpointContext } from './work.mjs'
 import { observe } from './providers/index.mjs';
 export { writeCheckpoint, resume, closeCheckpoint } from './work.mjs';
 export { repair } from './repair.mjs';
+export { assessment } from './reassessment.mjs';
 
 export async function focus(root, request = {}) {
   const activatedProject = await activeRoot(root);

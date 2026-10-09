@@ -15,6 +15,8 @@ Before accepting a consequential design, use [Applying Projector](../../referenc
 
 Record decision-changing obligations and uncertainties in the existing plan or checkpoint when useful; do not create a second ledger. Probe a consequential premise before dependent implementation. Current local context can resolve a routine edit without a new artifact or helper call. Keep the full intended outcome and still-applicable plan commitments visible.
 
+Use [Reassess from purpose](../../references/applying-projector.md#reassess-from-purpose) when due or when the current candidate's premises change. Define a replacement through its whole consumer boundary, including affected tests and cutover. Let the accepted outcome determine that boundary rather than preserving each existing class.
+
 Give workers governing meaning pointers, the changed contract and settled shared interfaces, actual consumers, disjoint write paths, and required evidence. They return unexpected dependencies and proposed Lens changes to the root. Separate Unit or Lens IDs do not establish independent ownership of files, checkpoints, cache baselines, or the Git index.
 
 Compare traced participants and actual changes with affected Lens selectors. The root maintains their intended population, condition references, observations, check inputs, target, evidence kind, and coverage with the implementation. Verify globs against the actual tree. Refresh affected bindings when source or membership changes; report unresolved scope. Select unsafe implementations too, and accept valid handwritten alternatives. Follow [Lens maintenance](../../references/applying-projector.md#maintain-affected-lenses) for the concrete procedure.

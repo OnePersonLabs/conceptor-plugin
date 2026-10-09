@@ -22,6 +22,18 @@ Export focus(root, request), revisit(root, request), reconcile(root, request) fr
 
 Every verdict names condition, selector/participants, selection status, evidence, status (supported, mismatch, unresolved), and reason. Reconcile retains the original mismatch in the work checkpoint before applying any changed selector/checker/condition interpretation.
 
+## Purpose assessment
+
+`assessment(root, request)` uses the existing activation boundary. CLI command `assessment` accepts `action: status|begin|complete|abandon`, `sessionId` (default `CODEX_THREAD_ID`, explicit null means untracked status), mutation `id`, optional `checkpoint`, nonnegative integer `extraWindows` for complete/abandon, and `readOnly` or `permissionMode: plan`. Each session has one atomically replaced cache record under `.projector/cache/reassessment/`, keyed by the session ID hash. The native root and its synchronous hook are the writers. There is no cross-session task scheduler or semantic decision ledger.
+
+State retains phase, current assessment/candidate references, assessment and work compactions, interval, carried costs and most recent completed ID. Begin preserves an active matching ID. Complete calculates `max(1, ceil(9 * cost))`, where cost is root assessment compactions plus carried cost and extraWindows. Duplicate completion of the last completed ID changes nothing; an unmatched active ID is an error. Abandon invalidates the candidate and carries cost forward. The hook advances counters only on root SessionStart source compact, resuming an active assessment or reporting a due/working decision. Other startup sources inspect state without advancing counters.
+
+Results report status, saved/tracked flags, state and the approximation limit. Read-only requests and plan-mode hooks return calculated unsaved state without writes. Missing hook session identity produces untracked guidance. These interfaces establish cadence and declaration identity, not semantic compliance or a measured token/time ratio. Governing reasoning remains in the ordinary checkpoint; the application reference owns the procedure.
+
+An unsaved result includes `handoff: {root, sessionId, baseline, state}`. Pass it as `request.handoff` for the next transition. Baseline identifies the persisted parsed cache state, or null when absent. Root/session/baseline mismatch stops the transition without changing cache. Authorized status with a current handoff persists its pending state. A read-only hook emits a cache-based handoff and its compact delta; a root holding newer unsaved state applies that delta once to its own handoff instead. Cache-based status is provisional in that case.
+
+Passive status/startup/resume inspection preserves an absent cache. It returns unsaved initial state rather than creating a baseline that would invalidate a pending read-only handoff. Explicit transitions and authorized handoff saves create the cache.
+
 ## Shared filesystem functions
 
 runtime/state.mjs exports projectPath(root, relative), hash(value), captureInputs(root, paths), discover(root, patterns), captureScope(root, patterns, extraPaths=[]), readJson(path), writeJson(path,value), and writeText(path,text). Inputs are objects {path, hash}; missing files have hash=null. captureScope returns {patterns, inputs, fingerprint}; fingerprint covers membership and contents. Atomically replace individual metadata files. No global observation lock.
