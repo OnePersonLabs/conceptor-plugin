@@ -32,7 +32,7 @@ if (root) {
     const instruction = result.status === 'assessing'
       ? `Resume assessment ${JSON.stringify(state.assessment.id)} at checkpoint ${JSON.stringify(state.assessment.checkpoint)}; do not start a recursive assessment. Assessment compactions: ${state.assessment.rootAssessmentCompactions}.`
       : result.status === 'due'
-        ? 'A full assessment from purpose is due before the next consequential action; routine work alone does not trigger it.'
+        ? 'A full assessment from purpose is due before the next consequential action; routine work alone does not trigger it. Make the governing outcome, candidate, comparison and decision visible, then complete the assessment before dependent implementation.'
         : `Continue the current candidate; working compactions ${state.workingCompactions}/${state.interval}.`;
     const unsaved = !result.saved
       ? `${result.instruction} Cache-based handoff: ${JSON.stringify(result.handoff)}. ${request.source === 'compact' ? 'Unsaved compact delta: 1. If you already hold a handoff, apply compact:true exactly once to that handoff instead of replacing it with this cache-based handoff.' : 'If you already hold a handoff, continue that handoff instead of replacing it with this cache-based handoff.'}`
