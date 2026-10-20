@@ -1,5 +1,5 @@
 {
-  "name": "projector-v5-workspace",
+  "name": "conceptor-workspace",
   "private": true,
   "type": "module",
   "devDependencies": {
@@ -7,9 +7,9 @@
   },
   "scripts": {
     "test": "node --test test/*.test.mjs",
-    "setup:plugin": "npm ci --prefix plugins/opl-projector --ignore-scripts",
-    "pack:plugin": "npm pack ./plugins/opl-projector --pack-destination dist",
-    "projector": "node plugins/opl-projector/runtime/cli.mjs",
+    "setup:plugin": "npm ci --prefix plugins/conceptor --ignore-scripts",
+    "pack:plugin": "npm pack ./plugins/conceptor --pack-destination dist",
+    "conceptor": "node plugins/conceptor/runtime/cli.mjs",
     "plugin:prepare-local": "node scripts/prepare-plugin.mjs"
   },
   "engines": {

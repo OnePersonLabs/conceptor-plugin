@@ -1,4 +1,4 @@
-import { activate, deactivate } from '../plugins/opl-projector/runtime/activation.mjs';
+import { activate, deactivate } from '../plugins/conceptor/runtime/activation.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -7,11 +7,11 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 import { execFile } from 'node:child_process';
 import { stringify } from 'yaml';
-import { focus, revisit, reconcile, writeCheckpoint, resume, closeCheckpoint, repair } from '../plugins/opl-projector/runtime/projector.mjs';
-import { hash, projectPath, writeText } from '../plugins/opl-projector/runtime/state.mjs';
-import { readCheckpoint, updateCheckpoint } from '../plugins/opl-projector/runtime/work.mjs';
+import { focus, revisit, reconcile, writeCheckpoint, resume, closeCheckpoint, repair } from '../plugins/conceptor/runtime/conceptor.mjs';
+import { hash, projectPath, writeText } from '../plugins/conceptor/runtime/state.mjs';
+import { readCheckpoint, updateCheckpoint } from '../plugins/conceptor/runtime/work.mjs';
 const run = promisify(execFile);
-const cli = path.resolve('plugins/opl-projector/runtime/cli.mjs');
+const cli = path.resolve('plugins/conceptor/runtime/cli.mjs');
 
 async function fixture(t) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'v5-core-'));
@@ -26,8 +26,8 @@ async function fixture(t) {
   await meaning(root, 'lens', lens);
   return { root, lens };
 }
-async function meaning(root, name, metadata, body = 'Reasons and examples remain readable without Projector.') {
-  await writeText(path.join(root, `.projector/meaning/${name}.md`), `---\n${stringify(metadata)}---\n${body}\n`);
+async function meaning(root, name, metadata, body = 'Reasons and examples remain readable without Conceptor.') {
+  await writeText(path.join(root, `.conceptor/meaning/${name}.md`), `---\n${stringify(metadata)}---\n${body}\n`);
 }
 async function checkpoint(root) { return writeCheckpoint(root, { id: 'directive', goal: 'Retain meaningful progress', ownership: [{ owner: 'worker', paths: ['src/a.mjs', 'src/b.mjs'] }], boundaries: ['src/**'], completed: ['A useful native edit'], questions: ['Check current evidence'], uncertainMutations: [] }); }
 
@@ -35,12 +35,12 @@ test('inactive entrypoints bypass invalid requests and preserve existing state',
   const { root } = await fixture(t);
   await checkpoint(root);
   await deactivate(root);
-  const before = await fs.readFile(path.join(root, '.projector/work/directive.md'));
+  const before = await fs.readFile(path.join(root, '.conceptor/work/directive.md'));
   for (const operation of [focus, revisit, reconcile, writeCheckpoint, resume, closeCheckpoint, repair, updateCheckpoint]) {
     assert.equal((await operation(root, undefined)).status, 'inactive');
   }
-  assert.deepEqual(await fs.readFile(path.join(root, '.projector/work/directive.md')), before);
-  await assert.rejects(fs.access(path.join(root, '.projector/cache')), { code: 'ENOENT' });
+  assert.deepEqual(await fs.readFile(path.join(root, '.conceptor/work/directive.md')), before);
+  await assert.rejects(fs.access(path.join(root, '.conceptor/cache')), { code: 'ENOENT' });
   const result = await run(process.execPath, [cli, 'repair', '--root', root, '--request', path.join(root, 'does-not-exist.json')]);
   assert.equal(JSON.parse(result.stdout).status, 'inactive');
 });
@@ -66,14 +66,14 @@ test('routine checkpoint output retains recovery routes while full records remai
   const { root } = await fixture(t);
   await checkpoint(root);
   const repairId = 'interrupted';
-  const repairFile = `.projector/work/repairs/${repairId}/record.json`;
+  const repairFile = `.conceptor/work/repairs/${repairId}/record.json`;
   await writeText(path.join(root, repairFile), JSON.stringify({ status: 'interrupted', before: 'x'.repeat(20000) }));
   await updateCheckpoint(root, 'directive', {
     uncertainMutations: [repairId],
     body: 'Decision: retain the user recording. Exception: never replay an uncertain write.',
   });
   const saved = await readCheckpoint(root, 'directive');
-  const savedBytes = await fs.readFile(path.join(root, '.projector/work/directive.md'));
+  const savedBytes = await fs.readFile(path.join(root, '.conceptor/work/directive.md'));
   const compact = (await focus(root, { work: 'directive' })).checkpoint;
   assert.deepEqual(compact.questions, saved.questions);
   assert.deepEqual(compact.uncertainMutations, saved.uncertainMutations);
@@ -180,7 +180,7 @@ test('later checks cannot leave earlier evidence current after its configuration
   assert.equal(result.status, 'unresolved');
   assert.equal(result.receipts[0].observedStatus, 'supported');
   assert.equal(result.receipts[0].current, false);
-  await fs.writeFile(path.join(root, 'checks/mutate.mjs'), 'import fs from "node:fs"; fs.appendFileSync(".projector/meaning/concept.md", "Changed reason.\\n");\n');
+  await fs.writeFile(path.join(root, 'checks/mutate.mjs'), 'import fs from "node:fs"; fs.appendFileSync(".conceptor/meaning/concept.md", "Changed reason.\\n");\n');
   assert.equal((await reconcile(root, { lenses: ['lens'], runChecks: true })).status, 'unresolved');
 });
 
@@ -221,7 +221,7 @@ test('final publication rechecks earlier Lenses and retains original mismatch af
   await fs.writeFile(path.join(root, 'checks/pass.mjs'), 'process.exitCode = 1;\n');
   await fs.writeFile(path.join(root, 'settings.json'), 'original-again');
   await reconcile(root, { lenses: ['lens', 'other-lens'], work: 'directive', runChecks: true });
-  await fs.rm(path.join(root, '.projector/cache'), { recursive: true });
+  await fs.rm(path.join(root, '.conceptor/cache'), { recursive: true });
   const restored = await resume(root, 'directive');
   const original = restored.mismatches.find(verdict => verdict.lens === 'lens');
   assert.equal(original.receipt.exitCode, 1);
@@ -302,7 +302,7 @@ test('cache deletion preserves meaning/checkpoint and CLI exposes unsupported re
   const { root } = await fixture(t);
   await checkpoint(root);
   await reconcile(root, { lenses: ['lens'], runChecks: true });
-  await fs.rm(path.join(root, '.projector/cache'), { recursive: true });
+  await fs.rm(path.join(root, '.conceptor/cache'), { recursive: true });
   assert.ok((await focus(root, { concepts: ['idea'] })).meaning[0].body.includes('exception'));
   assert.deepEqual((await resume(root, 'directive')).changed, []);
   const request = path.join(root, 'request.json');

@@ -1,0 +1,42 @@
+# Conceptor consumer guidance
+
+Use Conceptor only while this project's `.conceptor/active` file exists. Check the marker before Conceptor work, including after a disable request in the same session. A nested Git repository needs its own activation. In an inactive project, carry out the user's request through the native host without Conceptor records or helpers.
+
+The user describes ordinary work. Select the relevant skill yourself.
+
+- `$conceptor:recover-meaning` covers unfamiliar meaning or interrupted work.
+- `$conceptor:carry-out-directive` covers implementation.
+- `$conceptor:reconcile-and-learn` covers consequential decisions raised in discussion, planning, or work, and changed evidence or reusable lessons.
+- `$conceptor:enable-conceptor` covers explicit enable, disable, or activation-status requests.
+
+Do not make the user remember this routing or runtime commands.
+
+Conceptor preserves meaning and reasons as implementations change. Concepts hold conditions and exceptions; typed Relations explain connections; Projection Units locate implementations. Lenses select participants and collect scoped evidence. Pattern Candidates retain useful approaches and counterexamples. Read the governing meaning, including its prose, before choosing consequential edits. Summaries and source patterns do not replace authority.
+
+Before consequential planning or choosing next work, recover the original user decisions and later corrections that govern it. Start from existing source indexes and linked evidence. Read surrounding replies when needed to distinguish adoption from proposals. Apply accepted priorities, prerequisites, and sequencing. Reuse source-anchored checks while their governing decisions remain current. Limit history retrieval to messages and evidence that can change the decision.
+
+Preserve accepted capabilities, reasons, conditions, and exceptions. Account for substantive changes from the accepted baseline. Resolve material intent gaps or conflicts before dependent work.
+
+Before the first consequential action without a current candidate, and when the compaction hook says reassessment is due, follow [Reassess from purpose](references/applying-conceptor.md#reassess-from-purpose). First derive the simplest coherent approach from governing artifacts. Then compare it with current code, account for still-applicable concerns, and choose the next connected product outcome. Save that comparison, resolve required architecture review, and complete the assessment before implementation. A plan to compare later does not complete this step. Reuse a candidate after checking its premises. Resume an unfinished assessment across compaction; scale the next interval with its cost.
+
+While assessment is due or active, the native pre-tool hook rejects ordinary shell, patch and delegation calls. For assessment-only shell work, put `# conceptor-assessment: <purpose>` on the first line. This permits discovery, bounded probes and planning artifacts, not production changes. Patches to `.conceptor/work/` remain available. Assessment-only delegation starts with `Conceptor assessment: <purpose>` and retains native ownership limits. Use [assessment requests](references/guide.md#assessment-requests) to complete the transition; do not relabel implementation to pass the hook.
+
+A changed goal, invalidated premise, or two unsuccessful repair cycles requires a focused premise check before dependent work. Expand to a full reassessment only when needed. Workers assess their assigned boundary and return broader decisions to the root. The hook checks the transition and comparison identity; native review and observed work establish whether the reasoning is useful.
+
+Use native execution and delegation. The root owns shared meaning, Lens maintenance, and current task state unless it assigns an exact surface. Give workers disjoint writes, the governing conditions, changed contract, affected consumers, and required evidence. Conceptor helpers do not schedule agents or execute a second workflow.
+
+In an activated Git project, use reviewable local commits by default, subject to the user's and repository's commit rules. The native root owns staging and commits. Use the commit procedure in `$conceptor:carry-out-directive`; the user does not need to request each commit. Pushes and history changes need separate authorization.
+
+Before accepting a consequential design, connect each changed rule to its owner, affected consumers, relevant state transitions, and evidence. Include unchanged consumers and recovery paths when the changed rule affects them. Use the selected skill and its application reference. Finish the behavior through its real consumer; a file list or participant check does not establish the complete outcome.
+
+Maintain affected Lenses with the implementation. Compare actual participants with selectors, verify globs against the source tree, and refresh affected bindings and check coverage. Selection is navigation; a Lens with no checks supplies no behavioral support. Keep missing evidence unresolved. Repeated symptom repairs require reassessing the responsible premise before more dependent patches.
+
+Human comprehension is an acceptance requirement. Make behavior, reasons, state changes, and failure paths understandable through code structure and local explanations. If the user cannot follow the result, correct that defect before adding dependent complexity. Mapping files to meaning does not establish comprehensibility.
+
+Update accepted meaning when a decision changes it. Record the decision and its reasons in the owning Concept or typed Relation before dependent implementation or handoff. Preserve proposals, observations, and accepted decisions as distinct. Use `$conceptor:reconcile-and-learn` for discussion-only changes.
+
+When host mode or write permissions block an update, including Plan mode, use the unsaved-decision handoff. Do not claim it was saved. Keep current task state concise and link retained evidence; replace superseded status instead of appending a diary. Use Git to identify committed source. Extra snapshots or hash inventories need a concrete consumer and decision. A hash establishes byte identity, not correctness or user intent. Preserve original mismatches and unresolved recovery evidence.
+
+Recover only decision-relevant meaning. Select helpers when they reduce a specific uncertainty or repeated task. Batch checks at useful integration points and reuse applicable results. Follow native review rules; a commit does not require another review cycle. Routine work needs no new Conceptor artifact or global audit. Suspend optional mechanisms that add cost without useful decisions. Purpose reassessment remains mandatory; reduce its scope or frequency through the cost-adjusted procedure.
+
+See [the reference guide](references/guide.md) when YAML, helper requests, provider setup, or repair is needed. Use the selected skill for its workflow.

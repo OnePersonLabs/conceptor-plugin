@@ -1,6 +1,6 @@
 node_modules/
 *.tgz
-.projector/cache/
+.conceptor/cache/
 .verification/
 .plugin-build/
-!dist/opl-projector-0.1.0.tgz
+!dist/conceptor-0.1.0.tgz

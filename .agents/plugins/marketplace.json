@@ -1,10 +1,10 @@
 {
-  "name": "opl-projector",
-  "interface": { "displayName": "OPL Projector" },
+  "name": "conceptor",
+  "interface": { "displayName": "Conceptor" },
   "plugins": [
     {
-      "name": "opl-projector",
-      "source": { "source": "local", "path": "./.plugin-build/opl-projector" },
+      "name": "conceptor",
+      "source": { "source": "local", "path": "./.plugin-build/conceptor" },
       "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
       "category": "Developer Tools"
     }

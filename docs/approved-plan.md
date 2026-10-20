@@ -182,3 +182,13 @@ Require a saved comparison account before the assessment-to-implementation trans
 Initial, due and active assessments conservatively hold ordinary source edits, including routine edits. A routine edit with a current candidate does not trigger a new assessment. This tightens the initial execution boundary; routine inspection remains available through the assessment route. Read-only completion needs an existing saved account. New unsaved reasoning remains in the handoff until writes are authorized.
 
 Keep one lifecycle owner and the existing cadence. Preserve activation, nested repository boundaries, read-only handoffs, native worker ownership and the complete consumer obligation. Inspect the same boundary through runtime, hooks, instructions, review and the installed host. Repeat the authorized real trial in a fresh session with the same model and effort. Inspect comparison substance and ordering before allowing a long implementation stretch. A marked production mutation or inadequate account is a trial failure. Retain the failed baseline and report differences that limit cost comparisons. No source push or unrelated installation repair is authorized by this amendment.
+
+## 11. Authorized Conceptor naming amendment -- 2026-10-20
+
+The user renamed the product to **Conceptor**, meaning **Concept Projector**, to give the plugin a distinct public identity. Use `conceptor` for the GitHub repository, plugin ID, marketplace, npm package, executable and plugin directory. Use `conceptor-workspace` for the private root tooling package. The user authorized the GitHub repository rename and publication of this connected naming change on `main`.
+
+Use `.conceptor/` for activation, meaning, evidence caches and recovery records. The user requested a one-shot shell rename of existing `.projector` directories under `C:/dev/projects`, rather than runtime migration code or compatibility aliases. Check each destination for collisions and preserve the directory contents. Other checkouts stay in their current locations. Keep this active checkout at `C:/dev/projects/projector-v5`.
+
+Update the installed Windows and WSL plugin copies through the supported native installer. Remove the old installed plugin identity after the new copy is verified. Run the authorized post-refresh OPL checks. Installation does not establish that an existing session loaded the new identity.
+
+This amendment changes naming, not product meaning or behavior. Preserve dated trial reports and recorded source identities as historical evidence. Earlier references to Projector, `opl-projector`, `.projector` and branch `v5` describe their original context; current usage follows this amendment and `main`. Keep untracked personal files out of publication.

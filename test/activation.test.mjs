@@ -5,16 +5,16 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { activate, deactivate, activeRoot, projectRoot, activationStatus, inactive } from '../plugins/opl-projector/runtime/activation.mjs';
-import { assessment } from '../plugins/opl-projector/runtime/reassessment.mjs';
+import { activate, deactivate, activeRoot, projectRoot, activationStatus, inactive } from '../plugins/conceptor/runtime/activation.mjs';
+import { assessment } from '../plugins/conceptor/runtime/reassessment.mjs';
 
 async function fixture(t) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'projector-activation-'));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'conceptor-activation-'));
   t.after(() => fs.rm(root, { recursive: true, force: true }));
   return root;
 }
 
-const hook = fileURLToPath(new URL('../plugins/opl-projector/hooks/projector-context.mjs', import.meta.url));
+const hook = fileURLToPath(new URL('../plugins/conceptor/hooks/conceptor-context.mjs', import.meta.url));
 function runHook(input, script = hook) {
   return new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [script], { stdio: ['pipe', 'pipe', 'pipe'] });
@@ -40,8 +40,8 @@ test('activation resolves the nearest marker and deactivation preserves stored p
   assert.equal(await activeRoot(child), root);
   assert.equal(await projectRoot(child), root);
   for (const folder of ['meaning', 'checkpoints', 'cache']) {
-    await fs.mkdir(path.join(root, '.projector', folder));
-    await fs.writeFile(path.join(root, '.projector', folder, 'keep'), folder);
+    await fs.mkdir(path.join(root, '.conceptor', folder));
+    await fs.writeFile(path.join(root, '.conceptor', folder, 'keep'), folder);
   }
   await activate(path.join(root, 'src'));
   assert.equal(await activeRoot(child), path.join(root, 'src'));
@@ -51,7 +51,7 @@ test('activation resolves the nearest marker and deactivation preserves stored p
   await deactivate(root);
   assert.equal((await activationStatus(child)).status, 'inactive');
   for (const folder of ['meaning', 'checkpoints', 'cache']) {
-    assert.equal(await fs.readFile(path.join(root, '.projector', folder, 'keep'), 'utf8'), folder);
+    assert.equal(await fs.readFile(path.join(root, '.conceptor', folder, 'keep'), 'utf8'), folder);
   }
   assert.equal(inactive(child).root, child);
 });
@@ -80,7 +80,7 @@ test('Git directories and worktree files stop activation from leaking into anoth
 
 test('a directory at the marker path is inactive and mutation errors surface', async t => {
   const root = await fixture(t);
-  await fs.mkdir(path.join(root, '.projector', 'active'), { recursive: true });
+  await fs.mkdir(path.join(root, '.conceptor', 'active'), { recursive: true });
   assert.equal(await activeRoot(root), undefined);
   await assert.rejects(activate(root));
   await assert.rejects(deactivate(root));
@@ -91,7 +91,7 @@ test('session hooks load guidance and prompt hooks link to it; inactive hooks em
   const root = await fixture(t);
   const child = path.join(root, 'src');
   await fs.mkdir(child);
-  const guidance = await fs.readFile(new URL('../plugins/opl-projector/AGENTS.md', import.meta.url), 'utf8');
+  const guidance = await fs.readFile(new URL('../plugins/conceptor/AGENTS.md', import.meta.url), 'utf8');
   for (const event of ['SessionStart', 'UserPromptSubmit']) {
     const off = await runHook({ cwd: child, hook_event_name: event });
     assert.equal(off.code, 0, off.stderr);
@@ -106,12 +106,12 @@ test('session hooks load guidance and prompt hooks link to it; inactive hooks em
     assert.ok(output.additionalContext.includes(JSON.stringify(root)));
     if (event === 'SessionStart') assert.ok(output.additionalContext.includes(guidance));
     else {
-      const guidancePath = fileURLToPath(new URL('../plugins/opl-projector/AGENTS.md', import.meta.url));
+      const guidancePath = fileURLToPath(new URL('../plugins/conceptor/AGENTS.md', import.meta.url));
       assert.ok(output.additionalContext.includes(JSON.stringify(guidancePath)));
       assert.ok(output.additionalContext.length < guidance.length);
     }
   }
-  await assert.rejects(fs.stat(path.join(root, '.projector', 'cache', 'reassessment')), { code: 'ENOENT' });
+  await assert.rejects(fs.stat(path.join(root, '.conceptor', 'cache', 'reassessment')), { code: 'ENOENT' });
   const nested = path.join(child, 'unrelated');
   await fs.mkdir(path.join(nested, '.git'), { recursive: true });
   const boundary = await runHook({ cwd: nested, event: 'UserPromptSubmit' });
@@ -124,9 +124,9 @@ test('inactive hooks do not read consumer guidance; active hook failures surface
   const plugin = path.join(root, 'plugin');
   await fs.mkdir(path.join(plugin, 'hooks'), { recursive: true });
   await fs.mkdir(path.join(plugin, 'runtime'));
-  await fs.copyFile(hook, path.join(plugin, 'hooks', 'projector-context.mjs'));
-  await fs.copyFile(new URL('../plugins/opl-projector/runtime/activation.mjs', import.meta.url), path.join(plugin, 'runtime', 'activation.mjs'));
-  const script = path.join(plugin, 'hooks', 'projector-context.mjs');
+  await fs.copyFile(hook, path.join(plugin, 'hooks', 'conceptor-context.mjs'));
+  await fs.copyFile(new URL('../plugins/conceptor/runtime/activation.mjs', import.meta.url), path.join(plugin, 'runtime', 'activation.mjs'));
+  const script = path.join(plugin, 'hooks', 'conceptor-context.mjs');
   const project = path.join(root, 'project');
   await fs.mkdir(project);
   const off = await runHook({ cwd: project, event: 'SessionStart' }, script);

@@ -4,11 +4,11 @@ Runtime uses Node.js 24 ESM. Runtime source and these interfaces own helper cont
 
 ## Activation
 
-`activeRoot(start)` returns the nearest activated ancestor inside the nearest Git boundary, or undefined. `.projector/active` must be a regular file. A `.git` directory or worktree file stops the search after checking its own marker. `projectRoot(start)` returns that activated root, the nearest Git root, or the original directory when neither exists.
+`activeRoot(start)` returns the nearest activated ancestor inside the nearest Git boundary, or undefined. `.conceptor/active` must be a regular file. A `.git` directory or worktree file stops the search after checking its own marker. `projectRoot(start)` returns that activated root, the nearest Git root, or the original directory when neither exists.
 
 `activate(root)` creates the empty marker at the supplied root. `deactivate(root)` removes only that marker. `activationStatus(start)` reports active/inactive and the applicable root and marker. CLI activate/deactivate default to `projectRoot(cwd)`; `--root` selects an explicit directory.
 
-Focus, revisit, reconciliation, observations, checkpoint reads/writes/updates/resume/close, and repair require activation before reading project data or mutating Projector state. They return an inactive result when no marker applies. CLI checks activation before reading a request file. Hooks read consumer guidance only for activated projects.
+Focus, revisit, reconciliation, observations, checkpoint reads/writes/updates/resume/close, and repair require activation before reading project data or mutating Conceptor state. They return an inactive result when no marker applies. CLI checks activation before reading a request file. Hooks read consumer guidance only for activated projects.
 
 ## Meaning files
 
@@ -18,13 +18,13 @@ A Lens has conditions expressed as concept-id#condition-id. Its selectors are ob
 
 ## Helper functions and CLI
 
-Export focus(root, request), revisit(root, request), reconcile(root, request) from runtime/projector.mjs. Requests may select concepts, lenses, paths, query, and work. reconcile runs checks only when runChecks=true; otherwise it reuses applicable receipts. CLI accepts: COMMAND --root PATH --request REQUEST.json. Commands: focus, revisit, reconcile, checkpoint, resume, close, repair, observe. There is no automatic provider installation or semantic indexing.
+Export focus(root, request), revisit(root, request), reconcile(root, request) from runtime/conceptor.mjs. Requests may select concepts, lenses, paths, query, and work. reconcile runs checks only when runChecks=true; otherwise it reuses applicable receipts. CLI accepts: COMMAND --root PATH --request REQUEST.json. Commands: focus, revisit, reconcile, checkpoint, resume, close, repair, observe. There is no automatic provider installation or semantic indexing.
 
 Every verdict names condition, selector/participants, selection status, evidence, status (supported, mismatch, unresolved), and reason. Reconcile retains the original mismatch in the work checkpoint before applying any changed selector/checker/condition interpretation.
 
 ## Purpose assessment
 
-`assessment(root, request)` uses the existing activation boundary. CLI command `assessment` accepts `action: status|begin|complete|abandon`, `sessionId` (default `CODEX_THREAD_ID`, explicit null means untracked status), mutation `id`, optional `checkpoint`, required completion `comparison` path, nonnegative integer `extraWindows` for complete/abandon, and `readOnly` or `permissionMode: plan`. Each session has one atomically replaced cache record under `.projector/cache/reassessment/`, keyed by the session ID hash. The native root and its synchronous hook are the writers. There is no cross-session task scheduler or semantic decision ledger.
+`assessment(root, request)` uses the existing activation boundary. CLI command `assessment` accepts `action: status|begin|complete|abandon`, `sessionId` (default `CODEX_THREAD_ID`, explicit null means untracked status), mutation `id`, optional `checkpoint`, required completion `comparison` path, nonnegative integer `extraWindows` for complete/abandon, and `readOnly` or `permissionMode: plan`. Each session has one atomically replaced cache record under `.conceptor/cache/reassessment/`, keyed by the session ID hash. The native root and its synchronous hook are the writers. There is no cross-session task scheduler or semantic decision ledger.
 
 State retains phase, current assessment/candidate references, assessment and work compactions, interval, carried costs and most recent completed ID. Begin preserves an active matching ID. Complete calculates `max(1, ceil(9 * cost))`, where cost is root assessment compactions plus carried cost and extraWindows. Duplicate completion of the last completed ID changes nothing; an unmatched active ID is an error. Abandon invalidates the candidate and carries cost forward. The hook advances counters only on root SessionStart source compact, resuming an active assessment or reporting a due/working decision. Other startup sources inspect state without advancing counters.
 
@@ -32,7 +32,7 @@ Completion reads the project-relative JSON comparison account. Its nonempty stri
 
 Results report status, saved/tracked flags, state and the approximation limit. Read-only requests and plan-mode hooks return calculated unsaved state without writes. Missing hook session identity produces untracked guidance. These interfaces establish cadence and declaration identity, not semantic compliance or a measured token/time ratio. The application reference owns the procedure.
 
-The PreToolUse hook checks native `Bash`, `apply_patch` and delegation calls through the same lifecycle. It uses the hook's `session_id`, which the native host supplies as the parent ID for subagents. Working candidates allow ordinary calls. Due or active assessments reject them before execution, except explicit assessment-only shell/delegation declarations and patches confined to `.projector/work/`. Active gate errors return a denial with the reason; inactive projects return no output. The declarations are cooperative scope statements, not proof that arbitrary scripts are read-only. Existing `write_stdin` sessions, worker follow-up tools and other uncovered host paths remain coverage limits.
+The PreToolUse hook checks native `Bash`, `apply_patch` and delegation calls through the same lifecycle. It uses the hook's `session_id`, which the native host supplies as the parent ID for subagents. Working candidates allow ordinary calls. Due or active assessments reject them before execution, except explicit assessment-only shell/delegation declarations and patches confined to `.conceptor/work/`. Active gate errors return a denial with the reason; inactive projects return no output. The declarations are cooperative scope statements, not proof that arbitrary scripts are read-only. Existing `write_stdin` sessions, worker follow-up tools and other uncovered host paths remain coverage limits.
 
 An unsaved result includes `handoff: {root, sessionId, baseline, state}`. Pass it as `request.handoff` for the next transition. Baseline identifies the persisted parsed cache state, or null when absent. Root/session/baseline mismatch stops the transition without changing cache. Authorized status with a current handoff persists its pending state. A read-only hook emits a cache-based handoff and its compact delta; a root holding newer unsaved state applies that delta once to its own handoff instead. Cache-based status is provisional in that case.
 

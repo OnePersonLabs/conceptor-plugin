@@ -4,7 +4,7 @@
   "concepts": ["clip"],
   "lenses": ["clip-playback"],
   "ownership": [{"owner":"export-worker","paths":["published/clip-export.json"]}],
-  "boundaries": ["shared/**", "js/**", "python/**", "published/**", ".projector/meaning/**"],
+  "boundaries": ["shared/**", "js/**", "python/**", "published/**", ".conceptor/meaning/**"],
   "completed": ["Authored JS, Python, and Rust checks; source-only C#, frontend and styling examples."],
   "questions": ["Which native language checks should cover the source-only seams in the consuming repository?"],
   "uncertainMutations": [],

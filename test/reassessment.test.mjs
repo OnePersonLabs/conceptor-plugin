@@ -5,29 +5,29 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { activate } from '../plugins/opl-projector/runtime/activation.mjs';
-import { assessment } from '../plugins/opl-projector/runtime/reassessment.mjs';
+import { activate } from '../plugins/conceptor/runtime/activation.mjs';
+import { assessment } from '../plugins/conceptor/runtime/reassessment.mjs';
 
 async function fixture(t) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'projector-reassessment-'));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'conceptor-reassessment-'));
   t.after(() => fs.rm(root, { recursive: true, force: true }));
   await activate(root);
-  await fs.mkdir(path.join(root, '.projector', 'work'));
-  await fs.writeFile(path.join(root, '.projector/work/comparison.json'), JSON.stringify(Object.fromEntries(['governing', 'cleanCandidate', 'comparison', 'decision', 'boundary', 'validation', 'review'].map(field => [field, `Narrative for ${field}.`]))));
-  return { root, run: request => assessment(root, { sessionId: 'root-session', comparison: '.projector/work/comparison.json', ...request }) };
+  await fs.mkdir(path.join(root, '.conceptor', 'work'));
+  await fs.writeFile(path.join(root, '.conceptor/work/comparison.json'), JSON.stringify(Object.fromEntries(['governing', 'cleanCandidate', 'comparison', 'decision', 'boundary', 'validation', 'review'].map(field => [field, `Narrative for ${field}.`]))));
+  return { root, run: request => assessment(root, { sessionId: 'root-session', comparison: '.conceptor/work/comparison.json', ...request }) };
 }
 
 test('cadence uses completed assessment costs and changes to due exactly at its interval', async t => {
   const { run } = await fixture(t);
   assert.equal((await run({})).status, 'due');
-  await run({ action: 'begin', id: 'a', checkpoint: '.projector/work/task.json' });
+  await run({ action: 'begin', id: 'a', checkpoint: '.conceptor/work/task.json' });
   assert.equal((await run({ compact: true })).state.assessment.rootAssessmentCompactions, 1);
   const repeated = await run({ action: 'begin', id: 'a' });
   assert.equal(repeated.state.assessment.rootAssessmentCompactions, 1);
   assert.equal(repeated.status, 'assessing');
   const completed = await run({ action: 'complete', id: 'a', extraWindows: 2 });
   assert.equal(completed.state.interval, 27);
-  assert.equal(completed.state.candidate.checkpoint, '.projector/work/task.json');
+  assert.equal(completed.state.candidate.checkpoint, '.conceptor/work/task.json');
   assert.equal(completed.status, 'working');
   for (let count = 1; count < 27; count++) assert.equal((await run({ compact: true })).status, 'working');
   assert.equal((await run({ compact: true })).status, 'due');
@@ -81,12 +81,12 @@ test('inactive and nested Git operations do not read or create cadence cache', a
   const nested = path.join(root, 'nested');
   await fs.mkdir(path.join(nested, '.git'), { recursive: true });
   assert.equal((await assessment(nested, { action: 'begin', id: 'x', sessionId: 's' })).status, 'inactive');
-  await assert.rejects(fs.stat(path.join(nested, '.projector')), { code: 'ENOENT' });
+  await assert.rejects(fs.stat(path.join(nested, '.conceptor')), { code: 'ENOENT' });
 });
 
 test('CLI assessment JSON transport uses environment session and honors read-only status', async t => {
   const { root } = await fixture(t);
-  const cli = fileURLToPath(new URL('../plugins/opl-projector/runtime/cli.mjs', import.meta.url));
+  const cli = fileURLToPath(new URL('../plugins/conceptor/runtime/cli.mjs', import.meta.url));
   const requestFile = path.join(root, 'request.json');
   await fs.writeFile(requestFile, JSON.stringify({ action: 'begin', id: 'cli-assessment', checkpoint: 'work' }));
   const invoke = () => spawnSync(process.execPath, [cli, 'assessment', '--root', root, '--request', requestFile], {
@@ -95,18 +95,18 @@ test('CLI assessment JSON transport uses environment session and honors read-onl
   const begin = invoke();
   assert.equal(begin.status, 0, begin.stderr);
   assert.equal(JSON.parse(begin.stdout).status, 'assessing');
-  const hook = fileURLToPath(new URL('../plugins/opl-projector/hooks/projector-context.mjs', import.meta.url));
+  const hook = fileURLToPath(new URL('../plugins/conceptor/hooks/conceptor-context.mjs', import.meta.url));
   const compact = spawnSync(process.execPath, [hook], {
     encoding: 'utf8', input: JSON.stringify({ cwd: root, hook_event_name: 'SessionStart', source: 'compact', session_id: 'cli-session', permission_mode: 'acceptEdits' }),
   });
   assert.equal(compact.status, 0, compact.stderr);
   assert.match(JSON.parse(compact.stdout).hookSpecificOutput.additionalContext, /Resume assessment "cli-assessment"/);
-  await fs.writeFile(requestFile, JSON.stringify({ action: 'complete', comparison: '.projector/work/comparison.json', id: 'cli-assessment', readOnly: true }));
+  await fs.writeFile(requestFile, JSON.stringify({ action: 'complete', comparison: '.conceptor/work/comparison.json', id: 'cli-assessment', readOnly: true }));
   const complete = invoke();
   assert.equal(complete.status, 0, complete.stderr);
   assert.equal(JSON.parse(complete.stdout).saved, false);
   assert.equal((await assessment(root, { sessionId: 'cli-session' })).status, 'assessing');
-  await fs.writeFile(requestFile, JSON.stringify({ action: 'complete', comparison: '.projector/work/comparison.json', id: 'cli-assessment' }));
+  await fs.writeFile(requestFile, JSON.stringify({ action: 'complete', comparison: '.conceptor/work/comparison.json', id: 'cli-assessment' }));
   const saved = invoke();
   assert.equal(saved.status, 0, saved.stderr);
   assert.equal(JSON.parse(saved.stdout).state.interval, 9);
@@ -116,7 +116,7 @@ test('read-only lifecycle carries pending state through compacts and completion 
   const { root, run } = await fixture(t);
   let result = await run({ action: 'begin', id: 'planned', checkpoint: 'work', permissionMode: 'plan' });
   const original = JSON.stringify(result.handoff);
-  const hook = fileURLToPath(new URL('../plugins/opl-projector/hooks/projector-context.mjs', import.meta.url));
+  const hook = fileURLToPath(new URL('../plugins/conceptor/hooks/conceptor-context.mjs', import.meta.url));
   for (let count = 1; count <= 2; count++) {
     const compact = spawnSync(process.execPath, [hook], {
       encoding: 'utf8', input: JSON.stringify({ cwd: root, hook_event_name: 'SessionStart', source: 'compact', session_id: 'root-session', permission_mode: 'plan' }),
@@ -167,14 +167,14 @@ test('completion requires a saved valid comparison and binds exact bytes without
   await assert.rejects(run({ action: 'complete', id: 'bound', comparison: undefined }), /project-relative path/);
   await assert.rejects(run({ action: 'complete', id: 'bound', comparison: 'missing.json' }), /ENOENT/);
   assert.equal((await run({})).status, 'assessing');
-  const file = path.join(root, '.projector/work/comparison.json');
+  const file = path.join(root, '.conceptor/work/comparison.json');
   const original = await fs.readFile(file, 'utf8');
   await fs.writeFile(file, JSON.stringify({ governing: 'only one field' }));
   await assert.rejects(run({ action: 'complete', id: 'bound' }), /nonempty narrative/);
   await fs.writeFile(file, original);
   const completed = await run({ action: 'complete', id: 'bound' });
   assert.equal(completed.state.candidate.checkpoint, 'retained-checkpoint');
-  assert.equal(completed.state.candidate.comparison.path, '.projector/work/comparison.json');
+  assert.equal(completed.state.candidate.comparison.path, '.conceptor/work/comparison.json');
   assert.match(completed.state.candidate.comparison.hash, /^[a-f0-9]{64}$/);
   await fs.writeFile(file, original + ' ');
   const changed = await run({});
@@ -209,7 +209,7 @@ test('an unsaved completed handoff must still match its comparison bytes before 
   let result = await run({ action: 'begin', id: 'pending', readOnly: true });
   result = await run({ action: 'complete', id: 'pending', readOnly: true, handoff: result.handoff });
   assert.equal(result.status, 'working');
-  await fs.appendFile(path.join(root, '.projector/work/comparison.json'), ' ');
+  await fs.appendFile(path.join(root, '.conceptor/work/comparison.json'), ' ');
   const changed = await run({ handoff: result.handoff, readOnly: true });
   assert.equal(changed.status, 'due');
   assert.match(changed.reason, /changed after completion/);

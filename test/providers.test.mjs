@@ -1,4 +1,4 @@
-import { activate, deactivate } from '../plugins/opl-projector/runtime/activation.mjs';
+import { activate, deactivate } from '../plugins/conceptor/runtime/activation.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -6,13 +6,13 @@ import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
-import { observe } from '../plugins/opl-projector/runtime/providers/index.mjs';
-import { captureInputs } from '../plugins/opl-projector/runtime/state.mjs';
+import { observe } from '../plugins/conceptor/runtime/providers/index.mjs';
+import { captureInputs } from '../plugins/conceptor/runtime/state.mjs';
 
 const range = {start:{line:0,character:0},end:{line:0,character:3}};
-const pluginRequire = createRequire(new URL('../plugins/opl-projector/package.json', import.meta.url));
+const pluginRequire = createRequire(new URL('../plugins/conceptor/package.json', import.meta.url));
 async function fixture(t, files) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(),'projector-providers-'));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(),'conceptor-providers-'));
   t.after(() => fs.rm(root,{recursive:true,force:true}));
   await activate(root);
   for (const [file,text] of Object.entries(files)) {
@@ -28,7 +28,7 @@ test('inactive observation does not inspect source or invoke a configured provid
   const result = await observe(root, { provider: 'lsp', files: ['../invalid'], config: { command: 'missing-provider' } });
   assert.equal(result.status, 'inactive');
   assert.equal(result.facts, undefined);
-  await assert.rejects(fs.access(path.join(root, '.projector/cache')), { code: 'ENOENT' });
+  await assert.rejects(fs.access(path.join(root, '.conceptor/cache')), { code: 'ENOENT' });
 });
 async function server(t, mode = 'normal') {
   const root = await fixture(t, {'src/main.rs':'fn main() {}','src/second.rs':'fn second() {}'});

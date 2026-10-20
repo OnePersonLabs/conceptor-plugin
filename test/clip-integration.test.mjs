@@ -1,4 +1,4 @@
-import { activate } from '../plugins/opl-projector/runtime/activation.mjs';
+import { activate } from '../plugins/conceptor/runtime/activation.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -7,15 +7,15 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 import { execFile } from 'node:child_process';
 import { parse, stringify } from 'yaml';
-import { focus, revisit, reconcile, writeCheckpoint, resume, repair } from '../plugins/opl-projector/runtime/projector.mjs';
-import { hash } from '../plugins/opl-projector/runtime/state.mjs';
+import { focus, revisit, reconcile, writeCheckpoint, resume, repair } from '../plugins/conceptor/runtime/conceptor.mjs';
+import { hash } from '../plugins/conceptor/runtime/state.mjs';
 
 const run = promisify(execFile);
 const fixture = new URL('../examples/clip/', import.meta.url);
-const lensPath = '.projector/meaning/lenses/clip-playback.md';
+const lensPath = '.conceptor/meaning/lenses/clip-playback.md';
 
 async function copyFixture(t) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'projector-clip-'));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'conceptor-clip-'));
   await fs.cp(fixture, root, { recursive: true });
   t.after(() => fs.rm(root, { recursive: true, force: true }));
   await activate(root);
@@ -47,8 +47,8 @@ async function checkpoint(root) {
 test('Clip runtime evidence preserves source meaning and distinguishes committed edits', async t => {
   const root = await copyFixture(t);
   await checkpoint(root);
-  const conceptPath = path.join(root, '.projector/meaning/concepts/clip.md');
-  const patternPath = path.join(root, '.projector/meaning/patterns/read-time-transform.md');
+  const conceptPath = path.join(root, '.conceptor/meaning/concepts/clip.md');
+  const patternPath = path.join(root, '.conceptor/meaning/patterns/read-time-transform.md');
   const before = [await fs.readFile(conceptPath, 'utf8'), await fs.readFile(patternPath, 'utf8')];
   const packet = await focus(root, { concepts: ['clip'], work: 'clip-export' });
   assert.ok(packet.meaning.some(record => record.id === 'clip'));
@@ -109,9 +109,9 @@ test('failed observation retains supported evidence and original mismatch in che
   const root = await copyFixture(t);
   await checkpoint(root);
   await editLens(root, lens => {
-    lens.checks.find(check => check.id === 'python-save').command = 'projector-missing-python-executable';
+    lens.checks.find(check => check.id === 'python-save').command = 'conceptor-missing-python-executable';
     lens.observations.push({ provider: 'lsp', operation: 'references', files: ['rust/playback.rs'],
-      position: { line: 15, character: 8 }, config: { command: 'projector-missing-lsp-executable', args: [] } });
+      position: { line: 15, character: 8 }, config: { command: 'conceptor-missing-lsp-executable', args: [] } });
   });
   const partial = await reconcile(root, { lenses: ['clip-playback'], work: 'clip-export', runChecks: true });
   assert.equal(participant(partial, 'clip#playback-isolation', 'js/playback.mjs').status, 'supported');

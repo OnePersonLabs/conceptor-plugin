@@ -1,5 +1,7 @@
 # Projector V5 implementation
 
+Current name: **Conceptor**. This report retains the names and observations from its original implementation. See the [current README](../README.md) and [naming amendment](approved-plan.md) for current usage.
+
 Implemented in `C:/dev/projects/projector-v5` on 2026-10-02 and 2026-10-03. The baseline is [the approved plan](approved-plan.md). The initial implementation preserved V3 and ran no AI-consuming trials. The later user request authorized renaming, activation, local installation, old-plugin removal, and publication on branch `v5`.
 
 ## Delivered design
@@ -73,4 +75,4 @@ C# runtime and a real C# language server were not exercised because this machine
 
 This workspace is a Git checkout connected to `https://github.com/OnePersonLabs/projector`, with V4 retained as the parent of branch `v5`. Meaning in a consuming Git repository can use its ordinary history. No automatic distillation quality, long-project economics, or eventual convergence has been established by these deterministic checks. Agent interpretation, check completeness, and framework delivery still need evidence from actual work.
 
-Use the [README](../README.md) to try the helper. Use [the plugin reference](../plugins/opl-projector/references/guide.md) for request formats. Keep the first Psychord directive's actual friction and benefit in its checkpoint. If upkeep dominates that work, revise or suspend the costly Lens while continuing native development.
+Use the [README](../README.md) to try the helper. Use [the plugin reference](../plugins/conceptor/references/guide.md) for request formats. Keep the first Psychord directive's actual friction and benefit in its checkpoint. If upkeep dominates that work, revise or suspend the costly Lens while continuing native development.
