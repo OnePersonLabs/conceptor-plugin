@@ -8,7 +8,7 @@ import { isReleaseCommandCleanupUnconfirmed } from "./npm-command.mjs";
 import { bundlePluginRuntime } from "./bundle-plugin-runtime.mjs";
 
 const repositoryRoot = fileURLToPath(new URL("..", import.meta.url));
-const pluginSource = join(repositoryRoot, "plugins/projector-v3");
+const pluginSource = join(repositoryRoot, "plugins/conceptor-v3");
 const inside = (parent, child) => {
   const path = relative(parent, child);
   return path === "" || (path !== ".." && !path.startsWith(`..${sep}`) && !isAbsolute(path));
@@ -56,14 +56,14 @@ export async function buildPluginRuntime(outputRoot, options = {}) {
       await buildReleasePackage(releaseRoot, join(temporary, "artifacts"), { signal: options.signal });
     }
     const manifest = JSON.parse(await readFile(join(releaseRoot, "package.json"), "utf8"));
-    if (manifest.name !== releasePackageName || manifest.version !== releaseVersion || manifest.bin?.projector !== "./dist/command-main.mjs" || manifest.exports?.["./operations"] === undefined || manifest.exports?.["./commands"] === undefined) throw new Error("plugin runtime is not the expected Projector release");
+    if (manifest.name !== releasePackageName || manifest.version !== releaseVersion || manifest.bin?.conceptor !== "./dist/command-main.mjs" || manifest.exports?.["./operations"] === undefined || manifest.exports?.["./commands"] === undefined) throw new Error("plugin runtime is not the expected Conceptor release");
     await cp(pluginSource, target, { recursive: true, filter: (source) => source !== join(pluginSource, "runtime") });
     const pluginManifestPath = join(target, ".codex-plugin/plugin.json");
     const pluginManifest = JSON.parse(await readFile(pluginManifestPath, "utf8"));
     pluginManifest.version = releaseVersion;
     await writeFile(pluginManifestPath, `${JSON.stringify(pluginManifest, null, 2)}\n`);
     await mkdir(join(target, "runtime"), { recursive: true });
-    await bundlePluginRuntime(releaseRoot, join(target, "runtime/projector"), manifest, options);
+    await bundlePluginRuntime(releaseRoot, join(target, "runtime/conceptor"), manifest, options);
     return { root: target, releaseVersion, nodeRuntime: { executable: "node", resolution: "host-path" } };
   } catch (error) {
     if (isReleaseCommandCleanupUnconfirmed(error)) {

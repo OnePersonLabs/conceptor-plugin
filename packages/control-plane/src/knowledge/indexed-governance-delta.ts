@@ -1,6 +1,6 @@
-import { canonicalJson, hashFramedDomain, manifestKey, updateManifest, type ContentHash, type ManifestUpdate, type ProjectionUnit } from "@projector/core";
-import { governancePopulationEntry, lensMembershipFingerprint, summarizeGovernanceManifest, type GovernanceObservation, type GovernancePopulationSummary, type ProjectionLensCompilation } from "@projector/engine";
-import type { IndexedObservationDelta } from "@projector/runtime";
+import { canonicalJson, hashFramedDomain, manifestKey, updateManifest, type ContentHash, type ManifestUpdate, type ProjectionUnit } from "@conceptor/core";
+import { governancePopulationEntry, lensMembershipFingerprint, summarizeGovernanceManifest, type GovernanceObservation, type GovernancePopulationSummary, type ProjectionLensCompilation } from "@conceptor/engine";
+import type { IndexedObservationDelta } from "@conceptor/runtime";
 import { captureDecisionTriggerObservations, type KnowledgeDecisionBaseline } from "./decision-baselines.js";
 import type { IndexedGraphDeltaInput } from "./indexed-delta.js";
 import type { KnowledgeGraph } from "./graph.js";

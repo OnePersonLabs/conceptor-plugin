@@ -4,9 +4,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 
-import { deriveEntityId, hashFramedDomain, hashSemantic, parseChangeProposal, withCanonicalHashes, type AuthorityRecord, type BehavioralScenario, type ChangeProposal, type Requirement } from "@projector/core";
-import { createRepositoryScriptLens, executionPlanHash } from "@projector/engine";
-import { CanonicalFileRepository } from "@projector/runtime";
+import { deriveEntityId, hashFramedDomain, hashSemantic, parseChangeProposal, withCanonicalHashes, type AuthorityRecord, type BehavioralScenario, type ChangeProposal, type Requirement } from "@conceptor/core";
+import { createRepositoryScriptLens, executionPlanHash } from "@conceptor/engine";
+import { CanonicalFileRepository } from "@conceptor/runtime";
 import { describe, expect, it, vi } from "vitest";
 import * as repositoryObserver from "./repository-observer.js";
 import { validateCompiledRepositoryChangeCurrentness } from "./currentness.js";

@@ -10,7 +10,7 @@ import {
   type TransformPreview,
   type TransformResult,
   type ValidationResult,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { TransformPreconditionError, TransformScopeError, type TransformMutationPort } from "./contracts.js";
 

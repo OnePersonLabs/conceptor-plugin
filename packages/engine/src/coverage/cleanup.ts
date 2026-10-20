@@ -1,4 +1,4 @@
-import { canonicalJson, hashFramedDomain, type AdapterContext, type ContentHash, type StateBinding, type StateBindingValidator, type StateDigest } from "@projector/core";
+import { canonicalJson, hashFramedDomain, type AdapterContext, type ContentHash, type StateBinding, type StateBindingValidator, type StateDigest } from "@conceptor/core";
 
 import { createStateBinding } from "../state/index.js";
 

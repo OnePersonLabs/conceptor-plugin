@@ -1,4 +1,4 @@
-import type { SelectorExpr } from "@projector/core";
+import type { SelectorExpr } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { projectionUnit, rule, tagSelector } from "./test-fixtures.js";

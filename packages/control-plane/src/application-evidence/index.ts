@@ -10,4 +10,4 @@ export {
   type ApplicationEvidenceAssessment,
   type ApplicationEvidenceAssessmentRequest,
   type ApplicationEvidencePort,
-} from "@projector/core";
+} from "@conceptor/core";

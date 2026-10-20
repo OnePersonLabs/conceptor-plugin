@@ -1,8 +1,8 @@
 import { mkdir, mkdtemp, readdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { canonicalJson, hashFramedDomain, type ExecutionPlan } from "@projector/core";
-import { SqliteObservationStore, readDerivedCacheSource, withDerivedCacheAdmission, withProjectOperationAccess, withObservationScope } from "@projector/runtime";
+import { canonicalJson, hashFramedDomain, type ExecutionPlan } from "@conceptor/core";
+import { SqliteObservationStore, readDerivedCacheSource, withDerivedCacheAdmission, withProjectOperationAccess, withObservationScope } from "@conceptor/runtime";
 import { expect, it } from "vitest";
 import { ChangeLifecycleStore } from "../change-lifecycle/store.js";
 import { impactReference, type RepositoryImpactSnapshot } from "../impact/service.js";
@@ -24,9 +24,9 @@ function context(request: string) {
 }
 async function fixture() {
   const root = await mkdtemp(join(tmpdir(), "projector-maintenance-"));
-  await mkdir(join(root, ".projector/runtime"), { recursive: true });
+  await mkdir(join(root, ".conceptor/runtime"), { recursive: true });
   const older = context("older"); const newer = context("newer");
-  const writes = [{ relativePath: `.projector/runtime/impact/${snapshot.contentHash.slice("sha256:v1:".length)}.json`, content: `${canonicalJson(snapshot)}\n` }, knowledgeContextWrite(older), knowledgeContextWrite(newer)];
+  const writes = [{ relativePath: `.conceptor/runtime/impact/${snapshot.contentHash.slice("sha256:v1:".length)}.json`, content: `${canonicalJson(snapshot)}\n` }, knowledgeContextWrite(older), knowledgeContextWrite(newer)];
   await withDerivedCacheAdmission(root, (cache) => cache.publishAll(writes));
   await cacheRow(root, writes[1]!.relativePath, writes[1]!.content, 1);
   await cacheRow(root, writes[2]!.relativePath, writes[2]!.content, 2);
@@ -53,8 +53,8 @@ it("evicts least recently used context while retaining a snapshot shared by a re
 
 it("does no deletion when lifecycle ownership or the protection budget is incomplete", async () => {
   const { root, writes } = await fixture();
-  await mkdir(join(root, ".projector/runtime/change-lifecycles/captures"), { recursive: true });
-  await writeFile(join(root, ".projector/runtime/change-lifecycles/captures/unknown.json"), "{}");
+  await mkdir(join(root, ".conceptor/runtime/change-lifecycles/captures"), { recursive: true });
+  await writeFile(join(root, ".conceptor/runtime/change-lifecycles/captures/unknown.json"), "{}");
   await expect(maintainDerivedCache(root, { targetBytes: 0 })).rejects.toThrow();
   for (const write of writes) expect(await readDerivedCacheSource(root, write.relativePath)).toBe(write.content);
 });
@@ -63,13 +63,13 @@ it("does not wait behind a live reader or leave a collector request", async () =
   const { root } = await fixture();
   await withProjectOperationAccess(root, { mode: "shared", operation: "read" }, async () => {
     expect(await maintainDerivedCache(root, { targetBytes: 0 })).toEqual({ status: "busy", removedEntries: 0 });
-    expect(await readdir(join(root, ".projector/runtime/operation-access/requests"))).toEqual([]);
+    expect(await readdir(join(root, ".conceptor/runtime/operation-access/requests"))).toEqual([]);
   });
 });
 
 it("retires oversized unprotected payloads by metadata while preserving an explicit context and shared snapshot", async () => {
   const { root, older, newer, writes } = await fixture();
-  const oversized = `.projector/runtime/knowledge/contexts/${"d".repeat(32)}.json`;
+  const oversized = `.conceptor/runtime/knowledge/contexts/${"d".repeat(32)}.json`;
   await cacheRow(root, oversized, "not valid context JSON".repeat(1_000));
   const targetBytes = Buffer.byteLength(writes[0]!.content) + Buffer.byteLength(writes[1]!.content);
   expect(await withObservationScope({ limits: { maxDerivedBytes: targetBytes + 256 } }, () => maintainDerivedCache(root, { targetBytes, preserveContextIds: [older.id.slice("knowledge_context_".length)] }))).toMatchObject({ status: "collected", removedEntries: 2, retainedBytes: targetBytes });

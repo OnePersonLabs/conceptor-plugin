@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { createHash } from "node:crypto";
-import { hashFramedDomain, ObservationBudget } from "@projector/core";
+import { hashFramedDomain, ObservationBudget } from "@conceptor/core";
 import { afterEach, expect, it, vi } from "vitest";
 import * as sqlite from "./index.js";
 import { SqliteObservationStore } from "./index.js";
@@ -547,8 +547,8 @@ it("rejects an external observation directory redirected outside its cache owner
   process.env.PROJECTOR_CACHE_DIRECTORY=join(root,"cache");
   try {
     const location=await checkoutCacheLocation(root);
-    await mkdir(join(location.cacheRoot, ".projector", "runtime"), { recursive: true });
-    await symlink(outside, join(location.cacheRoot, ".projector", "runtime", "observations"), process.platform === "win32" ? "junction" : "dir");
+    await mkdir(join(location.cacheRoot, ".conceptor", "runtime"), { recursive: true });
+    await symlink(outside, join(location.cacheRoot, ".conceptor", "runtime", "observations"), process.platform === "win32" ? "junction" : "dir");
     await expect(SqliteObservationStore.open(root)).rejects.toThrow();
   } finally { if(original===undefined)delete process.env.PROJECTOR_CACHE_DIRECTORY;else process.env.PROJECTOR_CACHE_DIRECTORY=original; }
 });

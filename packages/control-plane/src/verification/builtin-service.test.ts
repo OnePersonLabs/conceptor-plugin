@@ -32,8 +32,8 @@ test("trusted installed check retains empty canonical population and rebinds acr
   await git(clone, "config", "user.email", "test@example.invalid"); await git(clone, "config", "user.name", "Test");
   await writeFile(join(clone, "another-unrelated.txt"), "new"); await git(clone, "add", "."); await git(clone, "commit", "-qm", "unrelated");
   expect(await run(clone, f.store, "assess", { eventId: record.id, target: "HEAD" })).toMatchObject({ reusable: true, scope: "projector.canonical-integrity/v1", bindingStatus: "rebound", authorization: false });
-  await mkdir(join(clone, ".projector"));
-  await writeFile(join(clone, ".projector/config.toml"), 'apiVersion = "projector.config/v3"\nenabled = true\nprojectorVersion = "3.0.0"\n');
+  await mkdir(join(clone, ".conceptor"));
+  await writeFile(join(clone, ".conceptor/config.toml"), 'apiVersion = "projector.config/v3"\nenabled = true\nprojectorVersion = "3.0.0"\n');
   await git(clone, "add", "."); await git(clone, "commit", "-qm", "config presence");
   expect(await run(clone, f.store, "assess", { eventId: record.id, target: "HEAD" })).toMatchObject({ reusable: false, bindingStatus: "stale" });
 });
@@ -65,10 +65,10 @@ test("canonical changes, trust/environment changes, and required artifact loss d
   expect(await run(f.root, f.store, "assess", { eventId: record.id, target: "HEAD" }, { trustedChecks: [] })).toMatchObject({ reusable: false });
   expect(await run(f.root, f.store, "assess", { eventId: record.id, target: "HEAD" }, { trustPolicyVersion: "2" })).toMatchObject({ reusable: false, bindingStatus: "stale" });
   expect(await run(f.root, f.store, "assess", { eventId: record.id, target: "HEAD" }, { env: { TZ: "Pacific/Honolulu" } })).toMatchObject({ reusable: false, bindingStatus: "stale" });
-  await mkdir(join(f.root, ".projector")); await writeFile(join(f.root, ".projector/config.toml"), 'apiVersion = "projector.config/v3"\nenabled = true\nprojectorVersion = "3.0.0"\n');
+  await mkdir(join(f.root, ".conceptor")); await writeFile(join(f.root, ".conceptor/config.toml"), 'apiVersion = "projector.config/v3"\nenabled = true\nprojectorVersion = "3.0.0"\n');
   await git(f.root, "add", "."); await git(f.root, "commit", "-qm", "canonical");
   const configured = await run(f.root, f.store, "execute", { check: "projector.canonical-integrity/v1", target: "HEAD" });
-  await writeFile(join(f.root, ".projector/config.toml"), 'apiVersion = "projector.config/v3"\nenabled = false\nprojectorVersion = "3.0.0"\n');
+  await writeFile(join(f.root, ".conceptor/config.toml"), 'apiVersion = "projector.config/v3"\nenabled = false\nprojectorVersion = "3.0.0"\n');
   await git(f.root, "add", "."); await git(f.root, "commit", "-qm", "canonical change");
   expect(await run(f.root, f.store, "assess", { eventId: configured.id, target: "HEAD" })).toMatchObject({ reusable: false, bindingStatus: "stale" });
   await rm(join(f.store, "builtin-verification/published", `${record.id}_completed`, "blobs/result.json"));
@@ -79,7 +79,7 @@ test("terminal publication recovers retained artifacts without running the check
   const record = await run(f.root, f.store, "execute", { check: "projector.canonical-integrity/v1", target: "HEAD" });
   const slot = `${record.id}_completed`, evidence = join(f.store, "builtin-verification");
   await rename(join(evidence, "published", slot), join(evidence, "finalizing", slot));
-  await mkdir(join(f.root, ".projector")); await writeFile(join(f.root, ".projector/invalid.md"), "invalid canonical data");
+  await mkdir(join(f.root, ".conceptor")); await writeFile(join(f.root, ".conceptor/invalid.md"), "invalid canonical data");
   await git(f.root, "add", "."); await git(f.root, "commit", "-qm", "would fail rerun");
   const result = await run(f.root, f.store, "recover", undefined);
   expect(result.recoveredArtifactSetIds).toEqual([slot]);

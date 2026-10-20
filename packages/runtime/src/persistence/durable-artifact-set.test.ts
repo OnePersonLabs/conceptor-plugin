@@ -3,7 +3,7 @@ import { mkdir, mkdtemp, readFile, rename, rm, symlink, writeFile } from "node:f
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { ObservationBudget } from "@projector/core";
+import { ObservationBudget } from "@conceptor/core";
 import { afterEach, describe, expect, test } from "vitest";
 
 import { DurableArtifactSetStore } from "./durable-artifact-set.js";

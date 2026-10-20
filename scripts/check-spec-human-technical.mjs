@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { lintHumanTechnical } from "@projector/engine";
-import { collectCanonicalSnapshotSources, parseCanonicalSnapshotSources } from "@projector/runtime";
+import { lintHumanTechnical } from "@conceptor/engine";
+import { collectCanonicalSnapshotSources, parseCanonicalSnapshotSources } from "@conceptor/runtime";
 
 const defaultRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
 function proseOnly(source) {

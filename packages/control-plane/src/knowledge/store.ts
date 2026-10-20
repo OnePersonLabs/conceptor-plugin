@@ -1,11 +1,11 @@
-import { canonicalJson, hashFramedDomain } from "@projector/core";
-import { RepositoryPathService, readDerivedCacheSource, withDerivedCacheAdmission, touchDerivedCacheEntry, withObservationScope, type DerivedCacheSession, type DerivedCacheWrite } from "@projector/runtime";
+import { canonicalJson, hashFramedDomain } from "@conceptor/core";
+import { RepositoryPathService, readDerivedCacheSource, withDerivedCacheAdmission, touchDerivedCacheEntry, withObservationScope, type DerivedCacheSession, type DerivedCacheWrite } from "@conceptor/runtime";
 import { runObservationTask } from "../observation/task-runner.js";
 import { readDerivedObservationSource } from "../observation/read-derived.js";
 
 import { KnowledgeContextResultSchema, type KnowledgeContextResult } from "./types.js";
 
-const storeRoot = ".projector/runtime/knowledge/contexts";
+const storeRoot = ".conceptor/runtime/knowledge/contexts";
 
 type KnowledgeContextBasis = Omit<KnowledgeContextResult, "id" | "contentHash">;
 

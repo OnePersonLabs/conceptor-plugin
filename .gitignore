@@ -1,13 +1,13 @@
 .worktrees/
 node_modules/
 dist/
-!plugins/projector-v3/runtime/projector/dist/
-!plugins/projector-v3/runtime/projector/dist/**
+!plugins/conceptor-v3/runtime/conceptor/dist/
+!plugins/conceptor-v3/runtime/conceptor/dist/**
 *.tsbuildinfo
 .temp/
 .build/
 /.borg/
 *Zone.Identifier
-!plugins/projector-v3/runtime/projector/node_modules/
-!plugins/projector-v3/runtime/projector/node_modules/**
+!plugins/conceptor-v3/runtime/conceptor/node_modules/
+!plugins/conceptor-v3/runtime/conceptor/node_modules/**
 

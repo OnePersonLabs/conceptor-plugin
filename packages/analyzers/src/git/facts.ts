@@ -1,11 +1,11 @@
 import { createHash } from "node:crypto";
-import { DerivedObservationBudget, ObservationBudget, ObservationError, type AnalyzerFailure, type SourceClass } from "@projector/core";
+import { DerivedObservationBudget, ObservationBudget, ObservationError, type AnalyzerFailure, type SourceClass } from "@conceptor/core";
 import { compareCodePoint } from "../ordering.js";
 import { normalizeJavaScriptSemantics } from "../typescript/facts.js";
 import { isExcludedInventoryPath, type InventoryEntry } from "../filesystem/inventory.js";
 import { observationGit, observationGitBytes, observationMap } from "../filesystem/observation-io.js";
 import { InventoryContentStore, inventoryEntryBytes, inventoryEntryChunks, type InventoryContentDescriptor } from "../filesystem/inventory-content-store.js";
-import { hashFramedDomain } from "@projector/core";
+import { hashFramedDomain } from "@conceptor/core";
 
 export interface GitIdentityFact {
   readonly sourceClass: SourceClass; readonly path: string; readonly tracked: boolean | "unknown";

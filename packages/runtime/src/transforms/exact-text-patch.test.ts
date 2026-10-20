@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { compileWriteAuthorization, hashFramedDomain, type StateBinding, type TransformContext } from "@projector/core";
+import { compileWriteAuthorization, hashFramedDomain, type StateBinding, type TransformContext } from "@conceptor/core";
 
 import {
   ExactTextPatchTransform,

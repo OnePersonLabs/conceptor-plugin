@@ -136,5 +136,5 @@ export async function reconcileRepresentationProfileUpgrade(plan: UpgradeInvalid
   const body = { invalidatedIds, refreshed, preservedCanonicalEntityIds, requiredAction: plan.requiredAction };
   return { status: "reconciled", ...body, refreshedIds: Object.keys(refreshed).sort(), receiptHash: hashFramedDomain("representation-upgrade-reconciliation", body) };
 }
-import { canonicalJson, hashFramedDomain } from "@projector/core";
+import { canonicalJson, hashFramedDomain } from "@conceptor/core";
 import { z } from "zod";

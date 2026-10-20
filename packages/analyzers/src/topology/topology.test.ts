@@ -1,4 +1,4 @@
-import { hashFramedDomain, type AdapterContext, type ContentHash } from "@projector/core";
+import { hashFramedDomain, type AdapterContext, type ContentHash } from "@conceptor/core";
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 

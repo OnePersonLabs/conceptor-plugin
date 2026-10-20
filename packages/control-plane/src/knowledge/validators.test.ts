@@ -1,7 +1,7 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { ObservationError } from "@projector/core";
+import { ObservationError } from "@conceptor/core";
 import { expect, test } from "vitest";
 import { observeChangeRepository } from "../change-lifecycle/repository-observer.js";
 import { KnowledgeValidatorRun } from "./validators.js";

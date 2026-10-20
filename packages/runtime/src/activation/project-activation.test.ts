@@ -22,15 +22,15 @@ describe("project activation authority", () => {
   it("reads one strict prepared marker", async () => {
     const repositoryRoot = await root();
     expect(await inspectProjectActivation(repositoryRoot)).toMatchObject({ status: "disabled", failure: "missing" });
-    await mkdir(join(repositoryRoot, ".projector"));
-    await writeFile(join(repositoryRoot, ".projector", "config.toml"), 'apiVersion = "projector.config/v3"\nenabled = true\nprojectorVersion = "2.1.0"\n');
+    await mkdir(join(repositoryRoot, ".conceptor"));
+    await writeFile(join(repositoryRoot, ".conceptor", "config.toml"), 'apiVersion = "projector.config/v3"\nenabled = true\nprojectorVersion = "2.1.0"\n');
     expect(await inspectProjectActivation(repositoryRoot)).toMatchObject({ status: "enabled", config: { projectorVersion: "2.1.0" } });
   });
 
   it("never replaces invalid or unsupported configuration", async () => {
     const repositoryRoot = await root();
-    const path = join(repositoryRoot, ".projector", "config.toml");
-    await mkdir(join(repositoryRoot, ".projector"));
+    const path = join(repositoryRoot, ".conceptor", "config.toml");
+    await mkdir(join(repositoryRoot, ".conceptor"));
     const original = 'apiVersion = "projector.config/v2"\nenabled = true\nprojectorVersion = "2.1.0"\n';
     await writeFile(path, original);
 
@@ -41,7 +41,7 @@ describe("project activation authority", () => {
   it("keeps accepted project files visible while ignoring local state and preserving project rules on repeated init", async () => {
     const repositoryRoot = await root();
     await exec("git", ["init", "-q", repositoryRoot]);
-    const directory = join(repositoryRoot, ".projector");
+    const directory = join(repositoryRoot, ".conceptor");
     await mkdir(directory);
     const ignorePath = join(directory, ".gitignore");
     const original = "# Project-specific exception\r\n/state.db\r\n!/watch/\r\n";
@@ -59,15 +59,15 @@ describe("project activation authority", () => {
       await mkdir(join(target, ".."), { recursive: true });
       await writeFile(target, "{}\n");
     }
-    const visible = (await exec("git", ["ls-files", "--others", "--exclude-standard", "--", ".projector"], { cwd: repositoryRoot })).stdout.trim().split(/\r?\n/u).sort();
-    expect(visible).toEqual([".projector/.gitignore", ".projector/authorities/one.json", ".projector/decisions/one.json", ".projector/lenses/one.json", ".projector/model/concepts/one.json", ".projector/watch/local.json"]);
+    const visible = (await exec("git", ["ls-files", "--others", "--exclude-standard", "--", ".conceptor"], { cwd: repositoryRoot })).stdout.trim().split(/\r?\n/u).sort();
+    expect(visible).toEqual([".conceptor/.gitignore", ".conceptor/authorities/one.json", ".conceptor/decisions/one.json", ".conceptor/lenses/one.json", ".conceptor/model/concepts/one.json", ".conceptor/watch/local.json"]);
     expect((await exec("git", ["ls-files", "--cached"], { cwd: repositoryRoot })).stdout).toBe("");
   });
 
   it("rejects symlink escape at the marker directory", async () => {
     const repositoryRoot = await root();
     const outside = await root();
-    await symlink(outside, join(repositoryRoot, ".projector"), "dir");
+    await symlink(outside, join(repositoryRoot, ".conceptor"), "dir");
 
     expect(await inspectProjectActivation(repositoryRoot)).toMatchObject({ status: "disabled", failure: "unsafe" });
     await expect(readFile(join(outside, "config.toml"), "utf8")).rejects.toMatchObject({ code: "ENOENT" });

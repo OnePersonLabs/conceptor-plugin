@@ -4,8 +4,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 
-import { hashFramedDomain, withCanonicalHashes } from "@projector/core";
-import { CanonicalFileRepository, FileTransactionJournal } from "@projector/runtime";
+import { hashFramedDomain, withCanonicalHashes } from "@conceptor/core";
+import { CanonicalFileRepository, FileTransactionJournal } from "@conceptor/runtime";
 import { afterAll, afterEach, expect, vi } from "vitest";
 import { integrationTest } from "../../../../scripts/testing/integration-test.mjs";
 import { ResidentObservationWorkerPool, withResidentObservationWorkerPool } from "../observation/resident-pool.js";
@@ -200,7 +200,7 @@ test("cleanup distinguishes missing committed proof and preserves safe publicati
   const publish = vi.spyOn(ChangeLifecycleStore.prototype, "writeArtifact").mockRejectedValueOnce(new Error("publication interrupted"));
   await expect(lifecycle.apply(approval.id)).rejects.toThrow("publication interrupted");
   publish.mockRestore();
-  const preparedRoot = join(root, ".projector/runtime/change-lifecycles/prepared");
+  const preparedRoot = join(root, ".conceptor/runtime/change-lifecycles/prepared");
   const preparedPath = join(preparedRoot, (await readdir(preparedRoot))[0]!);
   const preparedBytes = await readFile(preparedPath);
   await rm(preparedPath);
@@ -225,7 +225,7 @@ test("cleanup retains failed validation outcomes and routes missing representati
   const captured = await lifecycle.capture({ request: "Implement the accepted greeting", proposal: { ...proposal, edits: [{ ...proposal.edits[0], after: "export const greet = () => 'wrong';\n" }] } });
   const approval = await lifecycle.approve(captured.capture.semanticChangeId, captured.capture.planHash);
   expect((await lifecycle.apply(approval.id)).outcome).toBe("partial");
-  const artifactRoot = join(root, ".projector/runtime/representations");
+  const artifactRoot = join(root, ".conceptor/runtime/representations");
   await rm(artifactRoot, { recursive: true });
   const report = await inspectRepositoryCoverage(root, { scope: ".", approvalSelector: approval.id, evidenceLimit: 50 }, "cleanup");
   expect(report.continuation).toMatchObject({ lifecycle: { status: "unresolved" }, nextAction: { operation: "change.plan", input: { changeSelector: captured.capture.semanticChangeId } } });

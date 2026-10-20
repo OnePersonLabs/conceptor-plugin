@@ -19,11 +19,11 @@ import {
   type StateDigest,
   type TransactionJournalEntry,
   type TransactionPhase,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import type { RepositoryPathService } from "../security/index.js";
 
-const journalRoot = ".projector/runtime/journal";
+const journalRoot = ".conceptor/runtime/journal";
 const transientWindowsRenameCodes = new Set(["EACCES", "EBUSY", "EPERM"]);
 
 async function publishJournalRecord(source: string, destination: string, renameRecord: typeof rename, platform: NodeJS.Platform): Promise<void> {

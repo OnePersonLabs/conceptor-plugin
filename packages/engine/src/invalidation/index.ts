@@ -16,7 +16,7 @@ import {
   type StateBinding,
   type StateQueryDependency,
   type ValidationResult,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { evaluateSelector, selectorHash, type SelectorSubject } from "../governance/selectors.js";
 import { BUILT_IN_QUERY_PROGRAM_IDS, createBuiltInQueryDependency } from "../query/index.js";

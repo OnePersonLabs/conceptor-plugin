@@ -1,4 +1,4 @@
-import type { CommandSpec } from "@projector/core";
+import type { CommandSpec } from "@conceptor/core";
 
 const clone = <T>(value: T): T => structuredClone(value);
 

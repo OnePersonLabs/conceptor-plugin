@@ -2,11 +2,11 @@ import { createHash, randomUUID } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { opendir, stat, lstat } from "node:fs/promises";
 import { join } from "node:path";
-import { canonicalJson, DerivedObservationBudget, hashFramedDomain, GeneratedOutputEvidenceSchema, GeneratedOutputRequestSchema, ObservationBudget, type GeneratedOutputEvidence, type GeneratedOutputRequest } from "@projector/core";
-import { DurableArtifactSetStore, RepositoryPathService, WriterLeaseManager, type GenerationWriterLeaseHandle, type ArtifactSetReadScope } from "@projector/runtime";
+import { canonicalJson, DerivedObservationBudget, hashFramedDomain, GeneratedOutputEvidenceSchema, GeneratedOutputRequestSchema, ObservationBudget, type GeneratedOutputEvidence, type GeneratedOutputRequest } from "@conceptor/core";
+import { DurableArtifactSetStore, RepositoryPathService, WriterLeaseManager, type GenerationWriterLeaseHandle, type ArtifactSetReadScope } from "@conceptor/runtime";
 import { VerificationService, validateVerificationEvent, type VerificationOptions } from "../verification/service.js";
 import { retainImmutableRecord } from "../verification/retention.js";
-import { readObservationFile } from "@projector/analyzers";
+import { readObservationFile } from "@conceptor/analyzers";
 
 /** Executes a repository source entrypoint through a bound runtime. Evidence observes declared scope;
  * it does not prove exclusive causation, sandbox execution, or completeness of declared inputs. */
@@ -15,7 +15,7 @@ export class GeneratedOutputService {
   static async create(root: string, options: VerificationOptions = {}): Promise<GeneratedOutputService> {
     const paths = await RepositoryPathService.create(root);
     const observationTimeoutMs = new ObservationBudget({ timeoutMs: options.observationTimeoutMs ?? null }).limits.timeoutMs;
-    return new GeneratedOutputService(paths, await VerificationService.create(root, options), (await paths.resolveWrite(".projector/runtime/change-lifecycles/generated-outputs")).realTarget, options.signal ?? new AbortController().signal, observationTimeoutMs, options.evidenceStoreRoot === undefined ? undefined : join(options.evidenceStoreRoot, "generated-outputs"), options);
+    return new GeneratedOutputService(paths, await VerificationService.create(root, options), (await paths.resolveWrite(".conceptor/runtime/change-lifecycles/generated-outputs")).realTarget, options.signal ?? new AbortController().signal, observationTimeoutMs, options.evidenceStoreRoot === undefined ? undefined : join(options.evidenceStoreRoot, "generated-outputs"), options);
   }
   private observation() {
     return new ObservationBudget({ timeoutMs: this.observationTimeoutMs });
@@ -91,12 +91,12 @@ export class GeneratedOutputService {
     const inputs = [...new Set([request.sourcePath, ...request.inputPaths])];
     const outputs = request.outputs.map((output) => output.path);
     for (const path of [...inputs, ...outputs]) {
-      if (this.paths.canonicalize(path) !== path || path === ".projector/runtime" || path.startsWith(".projector/runtime/")) throw new Error(`Invalid generated scope path: ${path}`);
+      if (this.paths.canonicalize(path) !== path || path === ".conceptor/runtime" || path.startsWith(".conceptor/runtime/")) throw new Error(`Invalid generated scope path: ${path}`);
     }
     if (new Set(outputs).size !== outputs.length || outputs.some((path) => inputs.includes(path))) throw new Error("Generated output scope must be unique and separate from inputs");
     for (const path of outputs) {
       const reserved = path.toLowerCase();
-      if (reserved === ".projector" || reserved.startsWith(".projector/") || reserved === ".git" || reserved.startsWith(".git/")) throw new Error(`Generation cannot authorize canonical or Git-owned output writes: ${path}`);
+      if (reserved === ".conceptor" || reserved.startsWith(".conceptor/") || reserved === ".git" || reserved.startsWith(".git/")) throw new Error(`Generation cannot authorize canonical or Git-owned output writes: ${path}`);
       await this.paths.resolveWrite(path);
     }
     this.signal.throwIfAborted();

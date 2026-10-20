@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DerivedObservationBudget } from "@projector/core";
+import { DerivedObservationBudget } from "@conceptor/core";
 import { mkdtemp, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";

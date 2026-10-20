@@ -15,7 +15,7 @@ import {
   type TransformPreview,
   type TransformResult,
   type ValidationResult,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { createExecutionCapsule, createExecutionPlan } from "../planning/index.js";
 import {
@@ -162,7 +162,7 @@ class MemoryArtifactStore implements ChangeArtifactStore {
 
   async write(kind: "certificate" | "receipt", hash: `sha256:v1:${string}`, content: string): Promise<string> {
     this.writes.push({ kind, hash, content });
-    return `.projector/${kind === "receipt" ? "receipts" : "runtime/certificates"}/${hash}.json`;
+    return `.conceptor/${kind === "receipt" ? "receipts" : "runtime/certificates"}/${hash}.json`;
   }
 }
 

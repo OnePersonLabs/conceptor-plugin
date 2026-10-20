@@ -19,7 +19,7 @@ import {
   type TransformPreview,
   type TransformResult,
   type ValidationResult,
-} from "@projector/core";
+} from "@conceptor/core";
 import { qualifiesIndependentValidation } from "../invalidation/index.js";
 
 export * from "./compiler.js";

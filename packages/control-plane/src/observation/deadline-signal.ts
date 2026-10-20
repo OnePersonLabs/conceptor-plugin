@@ -1,4 +1,4 @@
-import type { ObservationScope } from "@projector/runtime";
+import type { ObservationScope } from "@conceptor/runtime";
 
 /** A caller deadline can exceed Node's maximum single timer delay. Reschedule
  * until the actual deadline instead of converting an unlimited run to a timer. */

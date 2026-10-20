@@ -4,21 +4,21 @@ import path from "node:path";
 import ts from "typescript";
 
 const allowed = {
-  "@projector/core": new Set(),
-  "@projector/engine": new Set(["@projector/core"]),
-  "@projector/analyzers": new Set(["@projector/core"]),
-  "@projector/runtime": new Set(["@projector/core"]),
-  "@projector/integrations": new Set(["@projector/core", "@projector/engine"]),
-  "@projector/control-plane": new Set(["@projector/core", "@projector/engine", "@projector/analyzers", "@projector/runtime", "@projector/integrations"]),
-  "@projector/cli": new Set([
-    "@projector/core",
-    "@projector/engine",
-    "@projector/analyzers",
-    "@projector/runtime",
-    "@projector/integrations",
-    "@projector/control-plane",
+  "@conceptor/core": new Set(),
+  "@conceptor/engine": new Set(["@conceptor/core"]),
+  "@conceptor/analyzers": new Set(["@conceptor/core"]),
+  "@conceptor/runtime": new Set(["@conceptor/core"]),
+  "@conceptor/integrations": new Set(["@conceptor/core", "@conceptor/engine"]),
+  "@conceptor/control-plane": new Set(["@conceptor/core", "@conceptor/engine", "@conceptor/analyzers", "@conceptor/runtime", "@conceptor/integrations"]),
+  "@conceptor/cli": new Set([
+    "@conceptor/core",
+    "@conceptor/engine",
+    "@conceptor/analyzers",
+    "@conceptor/runtime",
+    "@conceptor/integrations",
+    "@conceptor/control-plane",
   ]),
-  "@projector/testkit": new Set(["@projector/core"]),
+  "@conceptor/testkit": new Set(["@conceptor/core"]),
 };
 
 function sourceFile(source) {
@@ -85,7 +85,7 @@ export function validatePackageDependencies(graph) {
     const packageAllowed = allowed[name];
     if (packageAllowed === undefined) continue;
     for (const dependency of dependencies) {
-      if (dependency.startsWith("@projector/") && !packageAllowed.has(dependency)) {
+      if (dependency.startsWith("@conceptor/") && !packageAllowed.has(dependency)) {
         errors.push(`${name} must not depend on ${dependency}`);
       }
     }
@@ -137,7 +137,7 @@ async function readImportGraph(root) {
     const manifest = JSON.parse(await readFile(path.join(packageRoot, "package.json"), "utf8"));
     const imports = [];
     for (const file of await sourceFiles(path.join(packageRoot, "src"))) imports.push(...extractTypeScriptImports(await readFile(file, "utf8")));
-    graph[manifest.name] = [...new Set(imports.filter((specifier) => specifier.startsWith("@projector/")).map((specifier) => specifier.split("/").slice(0, 2).join("/")))];
+    graph[manifest.name] = [...new Set(imports.filter((specifier) => specifier.startsWith("@conceptor/")).map((specifier) => specifier.split("/").slice(0, 2).join("/")))];
   }
   return graph;
 }

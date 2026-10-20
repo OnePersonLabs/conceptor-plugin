@@ -2,8 +2,8 @@ import { EventEmitter } from "node:events";
 import { PassThrough, Writable } from "node:stream";
 import { resolve } from "node:path";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { ObservationBudget } from "@projector/core";
-import type { InventoryResult } from "@projector/analyzers";
+import { ObservationBudget } from "@conceptor/core";
+import type { InventoryResult } from "@conceptor/analyzers";
 
 const protocol = vi.hoisted(() => ({ replies: [] as unknown[], requests: [] as unknown[][], args: [] as string[][] }));
 vi.mock("node:child_process", () => ({
@@ -128,7 +128,7 @@ it("rejects new consumers, canonical edits and repeated edits during the warm pr
   protocol.replies.push({ config: {} }, { clock: "c:start", is_fresh_instance: false, files: [{ name: "already-dirty.ts", exists: true, type: "f" }] });
   const result = await watchmanByteReuse(baseline, inventory, budget, signal);
   if (result.kind !== "reuse") throw new Error("Expected reuse proof");
-  for (const path of ["already-dirty.ts", "new-consumer.ts", ".projector/canonical.json"]) {
+  for (const path of ["already-dirty.ts", "new-consumer.ts", ".conceptor/canonical.json"]) {
     protocol.replies.push({ config: {} }, { clock: "c:end", is_fresh_instance: false, files: [{ name: path, exists: true, type: "f" }] });
     await expect(validateWatchmanByteReuse(result.reuse, budget, signal)).rejects.toThrow("Repository changed during byte reuse");
   }

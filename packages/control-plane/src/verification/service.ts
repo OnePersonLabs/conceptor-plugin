@@ -2,8 +2,8 @@ import { createHash, randomUUID } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { opendir, realpath, stat, lstat } from "node:fs/promises";
 import { isAbsolute, join } from "node:path";
-import { canonicalJson, hashFramedDomain, ObservationBudget, DerivedObservationBudget, VerificationEvidenceSchema, VerificationRequestSchema, type VerificationEvidence, type VerificationRequest } from "@projector/core";
-import { DurableArtifactSetStore, NativeProcessLauncher, RepositoryPathService, type ProcessLauncher } from "@projector/runtime";
+import { canonicalJson, hashFramedDomain, ObservationBudget, DerivedObservationBudget, VerificationEvidenceSchema, VerificationRequestSchema, type VerificationEvidence, type VerificationRequest } from "@conceptor/core";
+import { DurableArtifactSetStore, NativeProcessLauncher, RepositoryPathService, type ProcessLauncher } from "@conceptor/runtime";
 import { retainImmutableRecord } from "./retention.js";
 
 export interface VerificationOptions {
@@ -35,7 +35,7 @@ export class VerificationService {
         const paths = await RepositoryPathService.create(root);
         if (options.evidenceStoreRoot !== undefined && !isAbsolute(options.evidenceStoreRoot))
             throw new Error("Host verification evidence store must be absolute");
-        return new VerificationService(paths, (await paths.resolveWrite(".projector/runtime/verification")).realTarget, options.evidenceStoreRoot, options.launcher ?? new NativeProcessLauncher(), options.signal ?? new AbortController().signal, new ObservationBudget({ timeoutMs: options.observationTimeoutMs ?? null }).limits.timeoutMs);
+        return new VerificationService(paths, (await paths.resolveWrite(".conceptor/runtime/verification")).realTarget, options.evidenceStoreRoot, options.launcher ?? new NativeProcessLauncher(), options.signal ?? new AbortController().signal, new ObservationBudget({ timeoutMs: options.observationTimeoutMs ?? null }).limits.timeoutMs);
     }
     private budget() { return new ObservationBudget({ timeoutMs: this.observationTimeoutMs }); }
     private store(root: string, budget = this.budget()) { return new DurableArtifactSetStore<VerificationEvidence>(root, validate, {}, { budget, signal: this.signal, derivedBudget: new DerivedObservationBudget(budget.limits.maxDerivedBytes) }); }
@@ -198,7 +198,7 @@ export class VerificationService {
                 if (canonical !== path)
                     throw new Error(`Verification input path must be canonical: ${path}`);
                 const folded = path.toLowerCase();
-                if (folded === ".projector/runtime" || folded.startsWith(".projector/runtime/"))
+                if (folded === ".conceptor/runtime" || folded.startsWith(".conceptor/runtime/"))
                     throw new Error("Verification inputs cannot include runtime evidence");
                 return canonical;
             }))].sort();
@@ -246,7 +246,7 @@ export class VerificationService {
         const populations: VerificationEvidence["inputs"]["populations"] = [];
         for (const population of request.populations) {
             this.canonicalPaths([population.directory]);
-            if (population.recursive && [".", ".projector"].includes(population.directory.toLowerCase()))
+            if (population.recursive && [".", ".conceptor"].includes(population.directory.toLowerCase()))
                 throw new Error("Recursive root or .projector populations include runtime evidence; select root files nonrecursively and declare narrower source directories");
             const members: string[] = [];
             const visit = async (directory: string) => {

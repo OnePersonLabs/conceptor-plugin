@@ -15,7 +15,7 @@ import {
   type Surface,
   type ObservationDescriptor,
   type ObservationLimits,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { inventoryRepository, type InventoryEntry, type InventoryResult, type InventoryByteReuse } from "./filesystem/inventory.js";
 import {inventoryTextHash} from "./filesystem/inventory-content-store.js";

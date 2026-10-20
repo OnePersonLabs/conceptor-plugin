@@ -1,9 +1,9 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { hashFramedDomain, hashSemantic, withCanonicalHashes, type ApplicationEvidencePort, type AuthorityRecord, type CanonicalDocumentEnvelope, type ProjectionLens } from "@projector/core";
-import { createRepositoryScriptLens } from "@projector/engine";
-import { CanonicalFileRepository } from "@projector/runtime";
+import { hashFramedDomain, hashSemantic, withCanonicalHashes, type ApplicationEvidencePort, type AuthorityRecord, type CanonicalDocumentEnvelope, type ProjectionLens } from "@conceptor/core";
+import { createRepositoryScriptLens } from "@conceptor/engine";
+import { CanonicalFileRepository } from "@conceptor/runtime";
 import { describe, expect, it, vi } from "vitest";
 import { observeChangeRepository } from "../change-lifecycle/repository-observer.js";
 import { KnowledgeGraph } from "../knowledge/graph.js";

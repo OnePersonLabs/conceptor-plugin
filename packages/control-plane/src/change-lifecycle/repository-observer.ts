@@ -1,12 +1,12 @@
-import { collectLocalRepositoryInputs, observationGit, readObservationFile, type LocalRepositoryAnalysis } from "@projector/analyzers";
-import { buildManifest, manifestKey, hashFramedDomain, type ContentHash, type StateDigest, type DerivedObservationBudget } from "@projector/core";
-import { collectCanonicalSnapshotSources, currentObservationScope, withObservationScope, RepositoryPathService, type CanonicalSnapshot } from "@projector/runtime";
+import { collectLocalRepositoryInputs, observationGit, readObservationFile, type LocalRepositoryAnalysis } from "@conceptor/analyzers";
+import { buildManifest, manifestKey, hashFramedDomain, type ContentHash, type StateDigest, type DerivedObservationBudget } from "@conceptor/core";
+import { collectCanonicalSnapshotSources, currentObservationScope, withObservationScope, RepositoryPathService, type CanonicalSnapshot } from "@conceptor/runtime";
 import { compileCanonicalRealizations, type CanonicalRealizationObservation } from "../knowledge/realizations.js";
 import { runObservationTask } from "../observation/task-runner.js";
 import type { RepositoryObservationData } from "../observation/tasks.js";
 import { enrollWatchman, watchmanByteReuse, validateWatchmanByteReuse, type WatchmanBaseline } from "./watchman-observation.js";
 
-const operationalPrefix = ".projector/";
+const operationalPrefix = ".conceptor/";
 const observationInputs = new WeakMap<ChangeRepositoryObservation, {
   identity: ContentHash; state: StateDigest;
   inventory: Awaited<ReturnType<typeof collectLocalRepositoryInputs>>["inventoryResult"];
@@ -28,7 +28,7 @@ function inputIdentity(collected: Awaited<ReturnType<typeof collectLocalReposito
 }
 
 function governedPath(path: string): boolean {
-  return path !== ".projector" && !path.startsWith(operationalPrefix);
+  return path !== ".conceptor" && !path.startsWith(operationalPrefix);
 }
 
 function filterOperationalAnalysis(analysis: LocalRepositoryAnalysis): LocalRepositoryAnalysis {

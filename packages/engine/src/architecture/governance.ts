@@ -8,7 +8,7 @@ import {
   type AuthorityRecord,
   type ContentHash,
   type DecisionConsequence,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { authorityRecordHashIsValid, type AuthenticatedAuthorityPort } from "./evaluation.js";
 

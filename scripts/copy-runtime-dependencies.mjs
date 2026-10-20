@@ -19,7 +19,7 @@ export async function copyRuntimeDependencies(requests, stagingRoot, options = {
   const bundled = new Map();
   async function copy(name, from, parent, ancestors) {
     options.signal?.throwIfAborted();
-    if (name.startsWith("@projector/")) return;
+    if (name.startsWith("@conceptor/")) return;
     const source = await realpath(await packageRoot(name, from));
     const manifest = JSON.parse(await readFile(join(source, "package.json"), "utf8"));
     const key = `${manifest.name}@${manifest.version}`;

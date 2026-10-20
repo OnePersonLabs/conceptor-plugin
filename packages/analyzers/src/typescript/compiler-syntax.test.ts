@@ -1,4 +1,4 @@
-import { hashFramedDomain } from "@projector/core";
+import { hashFramedDomain } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 import type { InventoryEntry } from "../filesystem/inventory.js";
 import { analyzeJavaScript, hashJavaScriptSemantics, normalizeJavaScriptSemantics } from "./facts.js";

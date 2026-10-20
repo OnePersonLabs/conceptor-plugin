@@ -4,12 +4,12 @@ import {
   type CodeContextSummary,
   type CodeNeighborhood,
   type ProjectionUnit,
-} from "@projector/core";
+} from "@conceptor/core";
 import {
   SqliteCodeStore,
   type SqliteObservationStore,
-} from "@projector/runtime";
-import { verifyCodeInputBinding } from "@projector/analyzers";
+} from "@conceptor/runtime";
+import { verifyCodeInputBinding } from "@conceptor/analyzers";
 import type { IndexedObservationDescriptor } from "../observation/indexed-types.js";
 
 export const SEMANTIC_TOPOLOGY_PROGRAM =

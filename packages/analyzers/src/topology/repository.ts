@@ -1,4 +1,4 @@
-import { hashFramedDomain, type AnalyzerCapabilities, type AnalyzerFailure, type ContentHash } from "@projector/core";
+import { hashFramedDomain, type AnalyzerCapabilities, type AnalyzerFailure, type ContentHash } from "@conceptor/core";
 
 import type { ActionsWorkflowFact } from "../formats/documents.js";
 import { compareCodePoint } from "../ordering.js";

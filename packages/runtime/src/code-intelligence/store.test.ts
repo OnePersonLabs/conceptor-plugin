@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { describe, expect, it, vi } from "vitest";
-import { canonicalJson, hashFramedDomain, type CodeSnapshot } from "@projector/core";
+import { canonicalJson, hashFramedDomain, type CodeSnapshot } from "@conceptor/core";
 import { SqliteCodeStore } from "./store.js";
 import { CodeFactWriter } from "./store-fact-writer.js";
 

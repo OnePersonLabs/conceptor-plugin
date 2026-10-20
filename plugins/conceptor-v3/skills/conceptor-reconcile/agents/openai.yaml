@@ -1,0 +1,5 @@
+interface:
+  display_name: "Conceptor reconcile"
+  short_description: "Compare external edits with accepted meaning"
+policy:
+  allow_implicit_invocation: true

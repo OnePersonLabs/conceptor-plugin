@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { Worker } from "node:worker_threads";
 
-import { hashRootManifest, withCanonicalHashes, type CanonicalDocumentEnvelope } from "@projector/core";
+import { hashRootManifest, withCanonicalHashes, type CanonicalDocumentEnvelope } from "@conceptor/core";
 import { afterEach, describe, expect, test } from "vitest";
 
 import { CanonicalFileRepository } from "../persistence/index.js";
@@ -211,7 +211,7 @@ describe("SQLite derived canonical index", () => {
     await canonical.write(governanceDocument("projection-lens", "lens-a"));
     await canonical.write(governanceDocument("exception", "exception-a"));
     await canonical.write(governanceDocument("migration", "migration-a"));
-    const databasePath = join(root, ".projector", "state.db");
+    const databasePath = join(root, ".conceptor", "state.db");
 
     const initialStore = new SqliteDerivedStore(databasePath);
     const initialResult = await rebuildDerivedStore(canonical, initialStore);
@@ -240,7 +240,7 @@ describe("SQLite derived canonical index", () => {
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a", "before"));
     await canonical.write(concept("concept-b", "unrelated"));
-    const databasePath = join(root, ".projector", "state.db");
+    const databasePath = join(root, ".conceptor", "state.db");
     const store = new SqliteDerivedStore(databasePath);
     const initial = await rebuildDerivedStore(canonical, store);
 
@@ -265,7 +265,7 @@ describe("SQLite derived canonical index", () => {
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a", "before"));
     await canonical.write(concept("concept-b", "unrelated"));
-    const store = new SqliteDerivedStore(join(root, ".projector", "state.db"));
+    const store = new SqliteDerivedStore(join(root, ".conceptor", "state.db"));
     const beforeRevision = await rebuildDerivedStore(canonical, store);
     const beforeRows = store.canonicalRows();
     const updated = concept("concept-a", "after");
@@ -281,7 +281,7 @@ describe("SQLite derived canonical index", () => {
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a"));
     await canonical.write(concept("concept-b"));
-    const store = new SqliteDerivedStore(join(root, ".projector", "state.db"));
+    const store = new SqliteDerivedStore(join(root, ".conceptor", "state.db"));
     await rebuildDerivedStore(canonical, store);
     await canonical.delete("concept", "concept-a");
     const snapshot = await canonical.snapshot();
@@ -303,7 +303,7 @@ describe("SQLite derived canonical index", () => {
     await canonical.write(lineage("lineage-a"));
     await canonical.write(tombstone("tombstone-a", "deleted-concept"));
     await canonical.write(rule("rule-a"));
-    const store = new SqliteDerivedStore(join(root, ".projector", "state.db"));
+    const store = new SqliteDerivedStore(join(root, ".conceptor", "state.db"));
 
     await rebuildDerivedStore(canonical, store);
 
@@ -324,7 +324,7 @@ describe("SQLite derived canonical index", () => {
     const canonical = new CanonicalFileRepository(root);
     const original = concept("concept-a");
     await canonical.write(original);
-    const store = new SqliteDerivedStore(join(root, ".projector", "state.db"));
+    const store = new SqliteDerivedStore(join(root, ".conceptor", "state.db"));
     const beforeRevision = await rebuildDerivedStore(canonical, store);
     const beforeRows = store.canonicalRows();
     const conflicting = concept("concept-b", "different entity", original.key);
@@ -346,7 +346,7 @@ describe("SQLite derived canonical index", () => {
 
   test("opens state.db with foreign keys, trusted-schema isolation, and defensive mode", async () => {
     const root = await temporaryRepository();
-    const store = new SqliteDerivedStore(join(root, ".projector", "state.db"));
+    const store = new SqliteDerivedStore(join(root, ".conceptor", "state.db"));
 
     expect(store.securityPosture()).toEqual({
       foreignKeysEnabled: true,
@@ -364,7 +364,7 @@ describe("SQLite derived canonical index", () => {
     const root = await temporaryRepository();
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a"));
-    const path = join(root, ".projector", "state.db");
+    const path = join(root, ".conceptor", "state.db");
     const store = new SqliteDerivedStore(path);
     await rebuildDerivedStore(canonical, store);
     store.close();
@@ -378,7 +378,7 @@ describe("SQLite derived canonical index", () => {
     const root = await temporaryRepository();
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a"));
-    const path = join(root, ".projector", "state.db");
+    const path = join(root, ".conceptor", "state.db");
     const store = new SqliteDerivedStore(path);
     await rebuildDerivedStore(canonical, store);
     store.close();
@@ -393,7 +393,7 @@ describe("SQLite derived canonical index", () => {
     const root = await temporaryRepository();
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a"));
-    const path = join(root, ".projector", "state.db");
+    const path = join(root, ".conceptor", "state.db");
     const store = new SqliteDerivedStore(path);
     await rebuildDerivedStore(canonical, store);
     const raw = new DatabaseSync(path);
@@ -407,7 +407,7 @@ describe("SQLite derived canonical index", () => {
     const root = await temporaryRepository();
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a"));
-    const path = join(root, ".projector", "state.db");
+    const path = join(root, ".conceptor", "state.db");
     const first = new SqliteDerivedStore(path);
     await rebuildDerivedStore(canonical, first);
     const second = new SqliteDerivedStore(path);
@@ -424,7 +424,7 @@ describe("SQLite derived canonical index", () => {
 
   test("waits for a concurrent fresh-database migration lock", async () => {
     const root = await temporaryRepository();
-    const path = join(root, ".projector", "state.db");
+    const path = join(root, ".conceptor", "state.db");
     await mkdir(join(path, ".."), { recursive: true });
     const worker = new Worker(`
       const { parentPort, workerData } = require('node:worker_threads');
@@ -448,7 +448,7 @@ describe("SQLite derived canonical index", () => {
     const root = await temporaryRepository();
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a"));
-    const path = join(root, ".projector", "state.db");
+    const path = join(root, ".conceptor", "state.db");
     const store = new SqliteDerivedStore(path);
     await rebuildDerivedStore(canonical, store);
     const raw = new DatabaseSync(path);
@@ -462,7 +462,7 @@ describe("SQLite derived canonical index", () => {
     const root = await temporaryRepository();
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a"));
-    const path = join(root, ".projector", "state.db");
+    const path = join(root, ".conceptor", "state.db");
     const store = new SqliteDerivedStore(path);
     await rebuildDerivedStore(canonical, store);
     store.close();
@@ -476,7 +476,7 @@ describe("SQLite derived canonical index", () => {
     const root = await temporaryRepository();
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a"));
-    const path = join(root, ".projector", "state.db");
+    const path = join(root, ".conceptor", "state.db");
     const store = new SqliteDerivedStore(path);
     await rebuildDerivedStore(canonical, store);
     const raw = new DatabaseSync(path);
@@ -492,7 +492,7 @@ describe("SQLite derived canonical index", () => {
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a"));
     const snapshot = await canonical.snapshot();
-    const path = join(root, ".projector", "state.db");
+    const path = join(root, ".conceptor", "state.db");
     const store = new SqliteDerivedStore(path);
     await rebuildDerivedStore(canonical, store);
     store.close();
@@ -513,10 +513,10 @@ describe("SQLite derived canonical index", () => {
 
   test("reports an absent derived store without creating it", async () => {
     const root = await temporaryRepository();
-    await mkdir(join(root, ".projector"));
-    const path = join(root, ".projector", "state.db");
+    await mkdir(join(root, ".conceptor"));
+    const path = join(root, ".conceptor", "state.db");
     await expect(inspectExistingSqliteDerivedState(path, zeroHash)).resolves.toEqual({ status: "absent" });
-    expect(await readdir(join(root, ".projector"))).toEqual([]);
+    expect(await readdir(join(root, ".conceptor"))).toEqual([]);
   });
 
   test("rejects a derived logical table that no longer matches its authenticated canonical row", async () => {
@@ -524,7 +524,7 @@ describe("SQLite derived canonical index", () => {
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a"));
     const snapshot = await canonical.snapshot();
-    const path = join(root, ".projector", "state.db");
+    const path = join(root, ".conceptor", "state.db");
     const store = new SqliteDerivedStore(path);
     await rebuildDerivedStore(canonical, store);
     store.close();
@@ -539,7 +539,7 @@ describe("SQLite derived canonical index", () => {
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a"));
     const snapshot = await canonical.snapshot();
-    const path = join(root, ".projector", "state.db");
+    const path = join(root, ".conceptor", "state.db");
     const store = new SqliteDerivedStore(path);
     await rebuildDerivedStore(canonical, store);
     store.close();
@@ -554,7 +554,7 @@ describe("SQLite derived canonical index", () => {
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a"));
     const snapshot = await canonical.snapshot();
-    const path = join(root, ".projector", "state.db");
+    const path = join(root, ".conceptor", "state.db");
     const store = new SqliteDerivedStore(path);
     await rebuildDerivedStore(canonical, store);
     store.close();
@@ -570,8 +570,8 @@ describe("SQLite derived canonical index", () => {
 
   test("refuses oversized files and hot rollback journals before opening SQLite", async () => {
     const root = await temporaryRepository();
-    await mkdir(join(root, ".projector"));
-    const path = join(root, ".projector", "state.db");
+    await mkdir(join(root, ".conceptor"));
+    const path = join(root, ".conceptor", "state.db");
     await writeFile(path, "");
     await truncate(path, 256 * 1024 * 1024 + 1);
     await expect(inspectExistingSqliteDerivedState(path, zeroHash, { maxDatabaseBytes: 256 * 1024 * 1024 })).rejects.toThrow(/requested.*inspection limit/i);
@@ -583,8 +583,8 @@ describe("SQLite derived canonical index", () => {
 
   test("bounds table rows before materializing inspection results", async () => {
     const root = await temporaryRepository();
-    await mkdir(join(root, ".projector"));
-    const path = join(root, ".projector", "state.db");
+    await mkdir(join(root, ".conceptor"));
+    const path = join(root, ".conceptor", "state.db");
     const database = new DatabaseSync(path);
     database.exec(`
       PRAGMA journal_mode = DELETE;
@@ -613,7 +613,7 @@ describe("SQLite derived canonical index", () => {
     const canonical = new CanonicalFileRepository(root);
     await canonical.write(concept("concept-a"));
     const snapshot = await canonical.snapshot();
-    const path = join(root, ".projector", "state.db");
+    const path = join(root, ".conceptor", "state.db");
     const store = new SqliteDerivedStore(path);
     await rebuildDerivedStore(canonical, store);
     store.close();

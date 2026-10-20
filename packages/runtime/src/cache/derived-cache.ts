@@ -1,5 +1,5 @@
 import { SqliteObservationStore } from "../sqlite/observation-store.js";
-import { ObservationBudget } from "@projector/core";
+import { ObservationBudget } from "@conceptor/core";
 
 export interface DerivedCacheBudget { deadline: number | null; remainingEntries: number | null; remainingBytes: number | null }
 export interface DerivedCacheWrite { readonly relativePath: string; readonly content: string }
@@ -21,7 +21,7 @@ export async function withDerivedCacheAdmission<T>(root: string, body: (session:
   return withIndexedCacheAdmission(root,body,options);
 }
 function classify(path: string): DerivedCacheEntry["kind"] {
-  const match = /^\.projector\/runtime\/(knowledge\/contexts\/[0-9a-f]{32}|impact\/[0-9a-f]{64})\.json(\.\d+\.(?:[0-9a-f-]+)\.tmp)?$/u.exec(path);
+  const match = /^\.conceptor\/runtime\/(knowledge\/contexts\/[0-9a-f]{32}|impact\/[0-9a-f]{64})\.json(\.\d+\.(?:[0-9a-f-]+)\.tmp)?$/u.exec(path);
   if (match === null) throw new DerivedCacheError("cache-corrupt", `Unrecognized disposable cache entry: ${path}`);
   return match[2] !== undefined ? "staging" : path.includes("/contexts/") ? "context" : "impact";
 }

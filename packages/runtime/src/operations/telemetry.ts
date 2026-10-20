@@ -1,6 +1,6 @@
 import { appendFile, mkdir, readFile, rm } from "node:fs/promises";
 import { posix } from "node:path";
-import { canonicalJson, ContentHashSchema, hashFramedDomain, type ContentHash } from "@projector/core";
+import { canonicalJson, ContentHashSchema, hashFramedDomain, type ContentHash } from "@conceptor/core";
 import { z } from "zod";
 import { RepositoryPathService } from "../security/repository-path.js";
 

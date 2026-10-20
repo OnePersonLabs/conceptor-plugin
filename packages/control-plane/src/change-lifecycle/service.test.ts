@@ -5,9 +5,9 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 
-import { hashFramedDomain, withCanonicalHashes, type ArchitectureDecision, type AuthorityRecord, type ChangeProposal, type Requirement } from "@projector/core";
-import { createRepositoryScriptLens } from "@projector/engine";
-import { CanonicalFileRepository, FileTransactionJournal, RepositoryPathService } from "@projector/runtime";
+import { hashFramedDomain, withCanonicalHashes, type ArchitectureDecision, type AuthorityRecord, type ChangeProposal, type Requirement } from "@conceptor/core";
+import { createRepositoryScriptLens } from "@conceptor/engine";
+import { CanonicalFileRepository, FileTransactionJournal, RepositoryPathService } from "@conceptor/runtime";
 import { afterAll, describe, expect, vi } from "vitest";
 import { integrationTest } from "../../../../scripts/testing/integration-test.mjs";
 
@@ -300,7 +300,7 @@ describe("repository change lifecycle service", () => {
       const selected = { ...proposal(), identityResolution: { contextId: context.id, contextHash: context.contentHash, outcome: "reuse-existing" as const, selectedEntityIds: ["requirement:legacy-greeting"], rationale: "The existing requirement owns greeting behavior." } };
       const service = await RepositoryChangeLifecycleService.create(root);
       await expect(service.capture({ request: "Change greeting.", proposal: selected })).rejects.toThrow(/application evidence is unknown/iu);
-      expect(await readdir(join(root, ".projector", "runtime", "change-lifecycles", "captures")).catch(() => [])).toHaveLength(0);
+      expect(await readdir(join(root, ".conceptor", "runtime", "change-lifecycles", "captures")).catch(() => [])).toHaveLength(0);
     } finally { await rm(root, { recursive: true, force: true }); }
   });
 
@@ -329,7 +329,7 @@ describe("repository change lifecycle service", () => {
     try {
       const service = await RepositoryChangeLifecycleService.create(root);
       await expect(service.capture({ request: "Introduce a clock port", proposal: modelProposal() })).rejects.toThrow(/Pre-edit meaning is unresolved|newBoundary/u);
-      expect(await readdir(join(root, ".projector", "runtime", "change-lifecycles", "captures")).catch(() => [])).toHaveLength(0);
+      expect(await readdir(join(root, ".conceptor", "runtime", "change-lifecycles", "captures")).catch(() => [])).toHaveLength(0);
     } finally { await rm(root, { recursive: true, force: true }); }
   });
 
@@ -518,10 +518,10 @@ describe("repository change lifecycle service", () => {
 
       await expect(service.capture({ request: "Let greet accept a name while preserving zero-argument callers.", proposal: proposal(), knowledgeContextId: unresolved.id }))
         .rejects.toThrow(/no direct, accepted, usable interpretation branch/iu);
-      expect(await readdir(join(root, ".projector", "runtime", "change-lifecycles", "captures")).catch(() => [])).toHaveLength(0);
+      expect(await readdir(join(root, ".conceptor", "runtime", "change-lifecycles", "captures")).catch(() => [])).toHaveLength(0);
 
       const baseline = await service.capture({ request: "Let greet accept a name while preserving zero-argument callers.", proposal: proposal() });
-      await rm(join(root, ".projector", "runtime", "change-lifecycles", "captures"), { recursive: true, force: true });
+      await rm(join(root, ".conceptor", "runtime", "change-lifecycles", "captures"), { recursive: true, force: true });
       const store = await ChangeLifecycleStore.create(root);
       await store.capture({
         request: baseline.capture.request,
@@ -583,7 +583,7 @@ describe("repository change lifecycle service", () => {
       await expect(service.plan(captured.capture.semanticChangeId)).rejects.toThrow(/knowledge context binding is stale/iu);
       await expect(service.approve(captured.capture.semanticChangeId, captured.capture.planHash)).rejects.toThrow(/knowledge context binding is stale/iu);
       await expect(service.apply(approved.id)).rejects.toThrow(/knowledge context binding is stale/iu);
-      expect(await readdir(join(root, ".projector", "runtime", "journal")).catch(() => [])).toHaveLength(0);
+      expect(await readdir(join(root, ".conceptor", "runtime", "journal")).catch(() => [])).toHaveLength(0);
     } finally { await rm(root, { recursive: true, force: true }); }
   });
 
@@ -761,7 +761,7 @@ describe("repository change lifecycle service", () => {
           expect(error).toBeInstanceOf(Error);
           expect((error as Error).message).toMatch(/stale|dependenc|current|exact before/iu);
         }
-        expect(await readdir(join(root, ".projector", "runtime", "journal")).catch(() => [])).toHaveLength(0);
+        expect(await readdir(join(root, ".conceptor", "runtime", "journal")).catch(() => [])).toHaveLength(0);
       } finally { await rm(root, { recursive: true, force: true }); }
     }
   });
@@ -868,14 +868,14 @@ describe("repository change lifecycle service", () => {
         "import { existsSync, writeFileSync } from 'node:fs';",
         "import { setTimeout as delay } from 'node:timers/promises';",
         "import { greet } from '../src/index.mjs';",
-        "if (existsSync('.projector/runtime/interruption-hold')) { writeFileSync('.projector/runtime/interruption-hold-entered', 'entered\\n'); await delay(20_000); }",
+        "if (existsSync('.conceptor/runtime/interruption-hold')) { writeFileSync('.conceptor/runtime/interruption-hold-entered', 'entered\\n'); await delay(20_000); }",
         "assert.equal(greet(), 'hello');",
         "",
       ].join("\n"));
       await exec("git", ["add", "test/public-contract.test.mjs"], { cwd: root });
       await exec("git", ["commit", "--amend", "--no-edit", "-q"], { cwd: root });
-      await mkdir(join(root, ".projector", "runtime"), { recursive: true });
-      await writeFile(join(root, ".projector", "runtime", "interruption-hold"), "hold\n");
+      await mkdir(join(root, ".conceptor", "runtime"), { recursive: true });
+      await writeFile(join(root, ".conceptor", "runtime", "interruption-hold"), "hold\n");
       const service = await RepositoryChangeLifecycleService.create(root, { leaseStaleAfterMs: 300 });
       const captured = await service.capture({ request: "Change greeting across a real interruption.", proposal: proposal() });
       const approval = await service.approve(captured.capture.semanticChangeId, captured.capture.planHash);
@@ -902,7 +902,7 @@ describe("repository change lifecycle service", () => {
       if (process.platform !== "win32") expect(child.signalCode).toBe("SIGKILL");
       else expect(child.exitCode).not.toBe(0);
       child = undefined;
-      await rm(join(root, ".projector", "runtime", "interruption-hold"), { force: true });
+      await rm(join(root, ".conceptor", "runtime", "interruption-hold"), { force: true });
       await new Promise((resolve) => setTimeout(resolve, 450));
 
       expect(await service.recover(approval.id)).toEqual([expect.objectContaining({ transactionId, action: "rolled-back" })]);
@@ -992,14 +992,14 @@ describe("repository change lifecycle service", () => {
   it("propagates cancellation into host validation and rolls back exactly", async () => {
     const root = await repository();
     try {
-      await writeFile(join(root, "test", "public-contract.test.mjs"), ["import { existsSync } from 'node:fs';", "import { setTimeout as delay } from 'node:timers/promises';", "if (existsSync('.projector/runtime/cancellation-hold')) await delay(20_000);", ""].join("\n"));
+      await writeFile(join(root, "test", "public-contract.test.mjs"), ["import { existsSync } from 'node:fs';", "import { setTimeout as delay } from 'node:timers/promises';", "if (existsSync('.conceptor/runtime/cancellation-hold')) await delay(20_000);", ""].join("\n"));
       await exec("git", ["add", "test/public-contract.test.mjs"], { cwd: root });
       await exec("git", ["commit", "--amend", "--no-edit", "-q"], { cwd: root });
       const service = await RepositoryChangeLifecycleService.create(root);
       const captured = await service.capture({ request: "Cancel during validation safely.", proposal: proposal() });
       const approval = await service.approve(captured.capture.semanticChangeId, captured.capture.planHash);
-      await mkdir(join(root, ".projector", "runtime"), { recursive: true });
-      await writeFile(join(root, ".projector", "runtime", "cancellation-hold"), "hold\n");
+      await mkdir(join(root, ".conceptor", "runtime"), { recursive: true });
+      await writeFile(join(root, ".conceptor", "runtime", "cancellation-hold"), "hold\n");
       const controller = new AbortController();
       const applying = service.apply(approval.id, { signal: controller.signal });
       await Promise.race([
@@ -1017,7 +1017,7 @@ describe("repository change lifecycle service", () => {
 });
 
 async function waitForValidatingTransaction(root: string): Promise<string> {
-  const journalRoot = join(root, ".projector", "runtime", "journal");
+  const journalRoot = join(root, ".conceptor", "runtime", "journal");
   const deadline = Date.now() + 10_000;
   while (Date.now() < deadline) {
     let names: string[] = [];
@@ -1032,7 +1032,7 @@ async function waitForValidatingTransaction(root: string): Promise<string> {
 }
 
 async function waitForInterruptionHold(root: string): Promise<void> {
-  const marker = join(root, ".projector", "runtime", "interruption-hold-entered");
+  const marker = join(root, ".conceptor", "runtime", "interruption-hold-entered");
   const deadline = Date.now() + 10_000;
   while (Date.now() < deadline) {
     try {

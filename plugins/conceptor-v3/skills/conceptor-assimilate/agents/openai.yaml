@@ -1,0 +1,5 @@
+interface:
+  display_name: "Conceptor assimilate"
+  short_description: "Synthesize sources before accepting meaning"
+policy:
+  allow_implicit_invocation: true

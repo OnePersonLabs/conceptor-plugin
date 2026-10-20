@@ -1,5 +1,5 @@
-import { hydrateInventory, type InventoryEntry, type InventoryResult } from "@projector/analyzers";
-import { SqliteObservationSourceCapture } from "@projector/runtime";
+import { hydrateInventory, type InventoryEntry, type InventoryResult } from "@conceptor/analyzers";
+import { SqliteObservationSourceCapture } from "@conceptor/runtime";
 
 /** Worker readers resolve sealed source versions by capture identity. */
 export function hydrateCapturedInventory(inventory: InventoryResult): { inventory: InventoryResult; close(): void } {

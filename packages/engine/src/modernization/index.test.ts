@@ -1,4 +1,4 @@
-import { hashFramedDomain, hashSemantic, type ArchitectureConcern, type AuthorityRecord, type ContentHash, type DecisionOption, type StateQueryDependency } from "@projector/core";
+import { hashFramedDomain, hashSemantic, type ArchitectureConcern, type AuthorityRecord, type ContentHash, type DecisionOption, type StateQueryDependency } from "@conceptor/core";
 import { describe, expect, it, vi } from "vitest";
 
 import { compileUpgradePlan, createFrictionObservation, createResearchRecord, evaluateModernization, researchConcern } from "./index.js";

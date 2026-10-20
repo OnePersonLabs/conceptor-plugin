@@ -13,9 +13,9 @@ import {
   type ProjectionLens,
   type Relation,
   type Requirement,
-} from "@projector/core";
-import { createRepositoryScriptLens } from "@projector/engine";
-import { CanonicalFileRepository, readDerivedCacheSource, SqliteObservationStore } from "@projector/runtime";
+} from "@conceptor/core";
+import { createRepositoryScriptLens } from "@conceptor/engine";
+import { CanonicalFileRepository, readDerivedCacheSource, SqliteObservationStore } from "@conceptor/runtime";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { RepositoryKnowledgeService } from "./service.js";
@@ -378,7 +378,7 @@ describe("RepositoryKnowledgeService", () => {
     await writeConcept(root, concept("concept:loop", "conceptual-loop", "Close the loop."));
     const service = await RepositoryKnowledgeService.create(root);
     const context = await service.context({ request: "inspect", entities: ["concept:loop"] });
-    const path = `.projector/runtime/knowledge/contexts/${context.id.slice("knowledge_context_".length)}.json`;
+    const path = `.conceptor/runtime/knowledge/contexts/${context.id.slice("knowledge_context_".length)}.json`;
     const tampered = JSON.parse((await readDerivedCacheSource(root, path))!) as Record<string, unknown>;
     tampered.request = "tampered";
     const index = await SqliteObservationStore.open(root);

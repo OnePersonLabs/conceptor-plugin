@@ -2,8 +2,8 @@ import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promis
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { hashFramedDomain, type ExecutionCapsule, type ExecutionPlan, type StateBinding } from "@projector/core";
-import { createExecutionApproval, executionCapsuleHash, executionPlanHash } from "@projector/engine";
+import { hashFramedDomain, type ExecutionCapsule, type ExecutionPlan, type StateBinding } from "@conceptor/core";
+import { createExecutionApproval, executionCapsuleHash, executionPlanHash } from "@conceptor/engine";
 import { describe, expect, it } from "vitest";
 
 import { ChangeLifecycleStore } from "./store.js";
@@ -53,7 +53,7 @@ describe("change lifecycle store", () => {
     try {
       const store = await ChangeLifecycleStore.create(root);
       const capture = await store.capture({ request: "Change value.", proposal, proposalHash, semanticChangeId: "change:1", plan: plan(), capsules: [capsule()], exactPatchInputHash: hash });
-      const relativePath = `.projector/runtime/change-lifecycles/captures/${hashFramedDomain("change-lifecycle-selector", "change:1").slice("sha256:v1:".length)}.json`;
+      const relativePath = `.conceptor/runtime/change-lifecycles/captures/${hashFramedDomain("change-lifecycle-selector", "change:1").slice("sha256:v1:".length)}.json`;
       const source = await readFile(join(root, relativePath), "utf8");
       const collected = ChangeLifecycleStore.fromCollectedSources(root, { [relativePath]: source });
       await writeFile(join(root, relativePath), "corrupt live file");
@@ -93,7 +93,7 @@ describe("change lifecycle store", () => {
       const approval = await store.approve("change:1", captured.planHash, plan(), [capsule()]);
       expect(approval.approvals).toEqual([createExecutionApproval(plan(), capsule(), approval.approvals[0]!.id)]);
 
-      const directory = join(root, ".projector", "runtime", "change-lifecycles", "captures");
+      const directory = join(root, ".conceptor", "runtime", "change-lifecycles", "captures");
       const [name] = await readdir(directory);
       const path = join(directory, name!);
       const raw = JSON.parse(await readFile(path, "utf8")) as Record<string, unknown>;

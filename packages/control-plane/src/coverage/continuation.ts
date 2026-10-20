@@ -1,6 +1,6 @@
-import { ContentHashSchema, ProjectorOperationInputSchemas, ProjectorOperationRequestSchema, StateDependencyObservationSchema, StateDigestSchema, hashFramedDomain, type StateBindingValidation, type StateDependencyObservation, type StateDigest } from "@projector/core";
+import { ContentHashSchema, ProjectorOperationInputSchemas, ProjectorOperationRequestSchema, StateDependencyObservationSchema, StateDigestSchema, hashFramedDomain, type StateBindingValidation, type StateDependencyObservation, type StateDigest } from "@conceptor/core";
 import { z } from "zod";
-import { FileTransactionJournal, RepositoryPathService } from "@projector/runtime";
+import { FileTransactionJournal, RepositoryPathService } from "@conceptor/runtime";
 
 import { ChangeLifecycleStore } from "../change-lifecycle/store.js";
 import type { ApplicationEvidencePort } from "../knowledge/application-evidence.js";

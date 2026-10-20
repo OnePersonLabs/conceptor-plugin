@@ -1,5 +1,5 @@
 {
-  "name": "@projector/cli",
+  "name": "@conceptor/cli",
   "version": "3.0.0",
   "private": true,
   "type": "module",
@@ -19,12 +19,12 @@
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {
-    "@projector/analyzers": "workspace:*",
-    "@projector/core": "workspace:*",
-    "@projector/control-plane": "workspace:*",
-    "@projector/engine": "workspace:*",
-    "@projector/integrations": "workspace:*",
-    "@projector/runtime": "workspace:*",
+    "@conceptor/analyzers": "workspace:*",
+    "@conceptor/core": "workspace:*",
+    "@conceptor/control-plane": "workspace:*",
+    "@conceptor/engine": "workspace:*",
+    "@conceptor/integrations": "workspace:*",
+    "@conceptor/runtime": "workspace:*",
     "zod": "^4.0.15"
   }
 }

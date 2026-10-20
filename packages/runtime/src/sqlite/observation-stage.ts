@@ -1,7 +1,7 @@
 import { DatabaseSync } from "node:sqlite";
 import { isAbsolute, toNamespacedPath } from "node:path";
 import { createHash } from "node:crypto";
-import { canonicalJson } from "@projector/core";
+import { canonicalJson } from "@conceptor/core";
 import type { IndexedObservationDelta } from "./observation-store.js";
 
 export interface ObservationStageDescriptor {

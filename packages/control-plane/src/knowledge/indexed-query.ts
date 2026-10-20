@@ -1,6 +1,6 @@
-import { hashFramedDomain, type ContentHash } from "@projector/core";
-import type { QueryMemoEntry, QueryMemoPort } from "@projector/engine";
-import type { IndexedObservationDelta, SqliteObservationStore } from "@projector/runtime";
+import { hashFramedDomain, type ContentHash } from "@conceptor/core";
+import type { QueryMemoEntry, QueryMemoPort } from "@conceptor/engine";
+import type { IndexedObservationDelta, SqliteObservationStore } from "@conceptor/runtime";
 
 /** One evaluation owner holds a pinned observation generation. Writes are staged
  * and admitted by its publisher after the read transaction has ended. */

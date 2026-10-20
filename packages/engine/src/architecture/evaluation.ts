@@ -24,7 +24,7 @@ import {
   type StateBindingValidator,
   type StateDigest,
   type StateQueryDependency,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { normalizeSelector } from "../governance/selectors.js";
 import { createStateBinding } from "../state/index.js";

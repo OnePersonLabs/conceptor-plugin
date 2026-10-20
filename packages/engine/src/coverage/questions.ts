@@ -8,7 +8,7 @@ import {
   type StateBinding,
   type StateBindingValidator,
   type StateDigest,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { authorityRecordHashIsValid } from "../architecture/evaluation.js";
 import { createStateBinding } from "../state/index.js";

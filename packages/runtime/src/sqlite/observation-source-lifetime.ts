@@ -1,6 +1,6 @@
 import { toNamespacedPath } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import type { ObservationBudget } from "@projector/core";
+import type { ObservationBudget } from "@conceptor/core";
 import { removeAbandonedObservationTemporaryFiles } from "./observation-temporary-files.js";
 
 /** SQLite and the OS release reader ownership on process death without persisted owner records. */

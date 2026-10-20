@@ -11,7 +11,7 @@ import {
   type ObservabilityClass,
   type RelevanceClosure,
   type RiskClass,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { normalizeSelector } from "../governance/selectors.js";
 import {

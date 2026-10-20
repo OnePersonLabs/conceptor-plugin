@@ -2,9 +2,9 @@ import { execFileSync } from "node:child_process";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { DerivedObservationBudget, hashFramedDomain, withCanonicalHashes, type CanonicalDocumentEnvelope, type RealizationBinding } from "@projector/core";
-import { evaluateSelectorMembership, projectionUnitSelectorSubject } from "@projector/engine";
-import { CanonicalFileRepository } from "@projector/runtime";
+import { DerivedObservationBudget, hashFramedDomain, withCanonicalHashes, type CanonicalDocumentEnvelope, type RealizationBinding } from "@conceptor/core";
+import { evaluateSelectorMembership, projectionUnitSelectorSubject } from "@conceptor/engine";
+import { CanonicalFileRepository } from "@conceptor/runtime";
 import { afterEach, describe, expect, it } from "vitest";
 import { observeChangeRepository } from "../change-lifecycle/repository-observer.js";
 import { inspectRepositoryCoverage } from "../coverage/service.js";
@@ -23,7 +23,7 @@ async function file(root: string, path: string, contents = "export const value =
 async function repository() {
   const root = await mkdtemp(join(tmpdir(), "projector-realizations-")); roots.push(root);
   await file(root, "package.json", '{"name":"realization-fixture","type":"module"}\n');
-  await file(root, ".gitignore", ".projector/runtime/\n");
+  await file(root, ".gitignore", ".conceptor/runtime/\n");
   execFileSync("git", ["init", "--quiet"], { cwd: root });
   execFileSync("git", ["config", "core.autocrlf", "false"], { cwd: root });
   return root;

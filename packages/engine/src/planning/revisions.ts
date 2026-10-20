@@ -1,4 +1,4 @@
-import { canonicalJson, hashFramedDomain, type ContentHash, type EntityId, type ExecutionPlan, type StateBinding, type StateBindingValidation } from "@projector/core";
+import { canonicalJson, hashFramedDomain, type ContentHash, type EntityId, type ExecutionPlan, type StateBinding, type StateBindingValidation } from "@conceptor/core";
 import { createExecutionPlan } from "./index.js";
 import { createStateBinding } from "../state/index.js";
 

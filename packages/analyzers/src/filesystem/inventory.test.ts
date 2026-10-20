@@ -137,19 +137,19 @@ describe("repository inventory boundary", () => {
       mkdir(join(root, ".temp")),
       mkdir(join(root, "dist")),
       mkdir(join(root, "src")),
-      mkdir(join(root, ".projector", "runtime"), { recursive: true }),
+      mkdir(join(root, ".conceptor", "runtime"), { recursive: true }),
     ]);
     await Promise.all([
-      writeFile(join(root, ".gitignore"), ".temp/\ndist/\n.projector/runtime/\n"),
+      writeFile(join(root, ".gitignore"), ".temp/\ndist/\n.conceptor/runtime/\n"),
       writeFile(join(root, ".temp", "scratch.ts"), "await import('./unknown.js');\n"),
       writeFile(join(root, "dist", "tracked.ts"), "await import('./tracked-unknown.js');\n"),
       writeFile(join(root, "src", "new.ts"), "export const current = true;\n"),
-      writeFile(join(root, ".projector", "runtime", "tracked.ts"), "export const operational = true;\n"),
+      writeFile(join(root, ".conceptor", "runtime", "tracked.ts"), "export const operational = true;\n"),
       writeFile(join(root, "deleted.ts"), "export const deleted = true;\n"),
       writeFile(join(root, "unicode-.ts"), "export const unicode = true;\n"),
     ]);
     await execFileAsync("git", ["add", ".gitignore", "deleted.ts", "unicode-.ts"], { cwd: root });
-    await execFileAsync("git", ["add", "--force", "dist/tracked.ts", ".projector/runtime/tracked.ts"], { cwd: root });
+    await execFileAsync("git", ["add", "--force", "dist/tracked.ts", ".conceptor/runtime/tracked.ts"], { cwd: root });
     await unlink(join(root, "deleted.ts"));
 
     const inventory = await inventoryRepository(root);
@@ -160,7 +160,7 @@ describe("repository inventory boundary", () => {
     expect(paths).toContain("src/new.ts");
     expect(paths).toContain("unicode-.ts");
     expect(paths).not.toContain(".temp/scratch.ts");
-    expect(paths).not.toContain(".projector/runtime/tracked.ts");
+    expect(paths).not.toContain(".conceptor/runtime/tracked.ts");
     expect(paths).not.toContain("deleted.ts");
     expect(inventory.failures).toEqual([]);
 
@@ -196,15 +196,15 @@ describe("repository inventory boundary", () => {
     const root = await mkdtemp(join(tmpdir(), "projector-inventory-gitless-"));
     temporaryRoots.push(root);
     await mkdir(join(root, ".temp"));
-    await mkdir(join(root, ".projector", "runtime"), { recursive: true });
+    await mkdir(join(root, ".conceptor", "runtime"), { recursive: true });
     await writeFile(join(root, ".temp", "source.ts"), "export const fallback = true;\n");
-    await writeFile(join(root, ".projector", "runtime", "state.json"), "{}\n");
+    await writeFile(join(root, ".conceptor", "runtime", "state.json"), "{}\n");
 
     const inventory = await inventoryRepository(root);
 
     expect(inventory.enumeration.method).toBe("recursive-filesystem-fallback");
     expect(inventory.entries.map(({ path }) => path)).toContain(".temp/source.ts");
-    expect(inventory.entries.some(({ path }) => path.startsWith(".projector/runtime/"))).toBe(false);
+    expect(inventory.entries.some(({ path }) => path.startsWith(".conceptor/runtime/"))).toBe(false);
     expect(inventory.failures).not.toContainEqual(expect.objectContaining({ capability: "git-aware-inventory" }));
   });
 

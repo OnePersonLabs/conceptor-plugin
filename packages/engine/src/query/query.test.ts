@@ -6,7 +6,7 @@ import type {
   Relation,
   StateDigest,
   StateQuerySpec,
-} from "@projector/core";
+} from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import {

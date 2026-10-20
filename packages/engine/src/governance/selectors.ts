@@ -7,7 +7,7 @@ import {
   type ObservabilityClass,
   type ProjectionUnit,
   type SelectorExpr,
-} from "@projector/core";
+} from "@conceptor/core";
 
 type SelectorField = Extract<SelectorExpr, { op: "atom" }>["field"];
 

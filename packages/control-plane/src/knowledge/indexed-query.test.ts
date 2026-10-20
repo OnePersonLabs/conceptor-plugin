@@ -1,9 +1,9 @@
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { hashFramedDomain, type AdapterContext } from "@projector/core";
-import { InMemoryGraphReader, QueryDependencyRegistry } from "@projector/engine";
-import { SqliteObservationStore } from "@projector/runtime";
+import { hashFramedDomain, type AdapterContext } from "@conceptor/core";
+import { InMemoryGraphReader, QueryDependencyRegistry } from "@conceptor/engine";
+import { SqliteObservationStore } from "@conceptor/runtime";
 import { expect, it } from "vitest";
 import { IndexedQueryMemo } from "./indexed-query.js";
 

@@ -1,22 +1,22 @@
 # Troubleshooting
 
-Use the exact error and retained ID as evidence. Do not guess which context, approval, or transaction Projector meant.
+Use the exact error and retained ID as evidence. Do not guess which context, approval, or transaction Conceptor meant.
 
 ## Contents
 
-- [Projector says the repository is inactive](#projector-says-the-repository-is-inactive)
+- [Conceptor says the repository is inactive](#conceptor-says-the-repository-is-inactive)
 - [The context omits an obligation](#the-context-omits-an-obligation)
 - [A check reports changed assumptions or new source members](#a-check-reports-changed-assumptions-or-new-source-members)
 - [A retained context is stale](#a-retained-context-is-stale)
 - [An apply is rejected as stale](#an-apply-is-rejected-as-stale)
 - [A controlled operation reports recovery required](#a-controlled-operation-reports-recovery-required)
 - [The artifact format is unsupported](#the-artifact-format-is-unsupported)
-- [Projector is unavailable](#projector-is-unavailable)
+- [Conceptor is unavailable](#conceptor-is-unavailable)
 - [The behavior check passes but uncertainty remains](#the-behavior-check-passes-but-uncertainty-remains)
 
-## Projector says the repository is inactive
+## Conceptor says the repository is inactive
 
-Installation does not activate a repository. Run `projector init` only when activation is intended. If a valid model already exists, inspect the readiness output and configuration before retrying.
+Installation does not activate a repository. Run `conceptor init` only when activation is intended. If a valid model already exists, inspect the readiness output and configuration before retrying.
 
 ## The context omits an obligation
 
@@ -24,7 +24,7 @@ An omitted item remains unresolved. Retrieve focused context with its exact `--e
 
 ## A check reports changed assumptions or new source members
 
-Inspect the changed code and new query results. Decide whether the difference is harmless, changes an assumption, reveals a violation, or leaves unavailable evidence. Use `$projector-reconcile` for outside changes and `$projector-verify` to compare a consequential diff with accepted meaning. Use `$projector` when intent changes.
+Inspect the changed code and new query results. Decide whether the difference is harmless, changes an assumption, reveals a violation, or leaves unavailable evidence. Use `$conceptor-reconcile` for outside changes and `$conceptor-verify` to compare a consequential diff with accepted meaning. Use `$conceptor` when intent changes.
 
 ## A retained context is stale
 
@@ -32,19 +32,19 @@ Resume the actual context ID to inspect currentness. If its dependencies changed
 
 ## An apply is rejected as stale
 
-The reviewed plan no longer matches current dependencies or the proposal changed. Read the reason and return to `$projector` for a current plan and lifecycle result. Do not substitute a fresh hash onto an old review.
+The reviewed plan no longer matches current dependencies or the proposal changed. Read the reason and return to `$conceptor` for a current plan and lifecycle result. Do not substitute a fresh hash onto an old review.
 
 ## A controlled operation reports recovery required
 
-Read the actual approval or operation ID. Run `projector resume <ID>` to inspect the retained state. If the journal is recognized and recovery is authorized, use the explicit recovery route. Preserve unknown journals and failed evidence for investigation. Recovery does not retry the operation.
+Read the actual approval or operation ID. Run `conceptor resume <ID>` to inspect the retained state. If the journal is recognized and recovery is authorized, use the explicit recovery route. Preserve unknown journals and failed evidence for investigation. Recovery does not retry the operation.
 
 ## The artifact format is unsupported
 
-Stop before editing or deleting existing project data. Projector 3 supports one authored format. An older project requires a checked cutover; it does not automatically walk through historic package versions. Read the format decision linked from `.projector/README.md` and determine the supported cutover before proceeding.
+Stop before editing or deleting existing project data. Conceptor 3 supports one authored format. An older project requires a checked cutover; it does not automatically walk through historic package versions. Read the format decision linked from `.conceptor/README.md` and determine the supported cutover before proceeding.
 
-## Projector is unavailable
+## Conceptor is unavailable
 
-Read canonical Markdown under `.projector/` directly and state that automated retrieval and currentness assurance were unavailable. Continue only when the available evidence and authorization support the work.
+Read canonical Markdown under `.conceptor/` directly and state that automated retrieval and currentness assurance were unavailable. Continue only when the available evidence and authorization support the work.
 
 ## The behavior check passes but uncertainty remains
 

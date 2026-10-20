@@ -30,7 +30,7 @@ import {
   type StateBindingValidation,
   type StateValueDependencyRef,
   validateLineage,
-} from "@projector/core";
+} from "@conceptor/core";
 import { z } from "zod";
 
 import { createStateBinding } from "../state/index.js";

@@ -1,4 +1,4 @@
-import { hashFramedDomain, type AdapterContext, type AnalyzerFailure, type ContentHash, type StateBinding, type StateDigest } from "@projector/core";
+import { hashFramedDomain, type AdapterContext, type AnalyzerFailure, type ContentHash, type StateBinding, type StateDigest } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { REQUIRED_COVERAGE_LANES, compileAuthenticatedCoverageSnapshot, type CoverageEvidenceSnapshot, type CoverageLaneEvidence } from "./snapshot.js";

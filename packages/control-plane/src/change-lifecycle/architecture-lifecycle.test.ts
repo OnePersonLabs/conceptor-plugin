@@ -3,8 +3,8 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
-import { hashFramedDomain, hashSemantic, withCanonicalHashes, type AuthorityRecord } from "@projector/core";
-import { CanonicalFileRepository } from "@projector/runtime";
+import { hashFramedDomain, hashSemantic, withCanonicalHashes, type AuthorityRecord } from "@conceptor/core";
+import { CanonicalFileRepository } from "@conceptor/runtime";
 import { afterAll, describe, expect, it as unitIt } from "vitest";
 import { integrationTest } from "../../../../scripts/testing/integration-test.mjs";
 import { ResidentObservationWorkerPool, withResidentObservationWorkerPool } from "../observation/resident-pool.js";
@@ -150,7 +150,7 @@ describe("public architectural products", () => {
           : { ...payload, semanticHash: placeholder };
         await files.write(withCanonicalHashes({ apiVersion: "projector/v3", schemaVersion: "3.0.0", kind, id: payload.id, key: payload.key, lifecycle, payload: hashedPayload }));
       }
-      await exec("git", ["add", ".projector"], { cwd: root });
+      await exec("git", ["add", ".conceptor"], { cwd: root });
       await exec("git", ["commit", "-qm", "tracked architecture baseline"], { cwd: root });
 
       const beforeRequirement = (await files.read("requirement", requirement.id))!;
@@ -247,7 +247,7 @@ describe("public architectural products", () => {
       expect(await inspected.population.inspect(inspected.decisions[0]!)).toMatchObject({ count: 1, observability: "closed" });
       expect(await inspected.validity(decision.id)).toMatchObject({ state: "valid", blocksCurrentChange: false });
       expect((await files.read("architecture-decision", decision.id))!.payload.appliedPreferences).toEqual(decision.appliedPreferences);
-      await exec("git", ["add", "src", ".projector/model", ".projector/concerns", ".projector/preferences", ".projector/decisions", ".projector/authorities"], { cwd: root });
+      await exec("git", ["add", "src", ".conceptor/model", ".conceptor/concerns", ".conceptor/preferences", ".conceptor/decisions", ".conceptor/authorities"], { cwd: root });
       await exec("git", ["commit", "-qm", "accepted conceptual architecture"], { cwd: root });
       await exec("git", ["clone", "-q", "--no-hardlinks", root, clone]);
       const fresh = await RepositoryKnowledgeService.create(clone);

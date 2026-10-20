@@ -1,5 +1,5 @@
-import { buildManifest, manifestKey, hashFramedDomain, type ContentHash, type Relation } from "@projector/core";
-import type { IndexedObservationDelta } from "@projector/runtime";
+import { buildManifest, manifestKey, hashFramedDomain, type ContentHash, type Relation } from "@conceptor/core";
+import type { IndexedObservationDelta } from "@conceptor/runtime";
 import type { RepositoryObservationData } from "../observation/tasks.js";
 import type { RepositoryImpactSnapshot } from "../impact/service.js";
 import { KnowledgeGraph, tokens } from "./graph.js";

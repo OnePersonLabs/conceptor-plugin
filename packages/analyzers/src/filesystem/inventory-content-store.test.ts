@@ -2,7 +2,7 @@ import {mkdtemp,mkdir,writeFile,rm,readFile} from "node:fs/promises";
 import {join} from "node:path";
 import {tmpdir} from "node:os";
 import {afterEach,expect,it} from "vitest";
-import {ObservationBudget,hashFramedDomain} from "@projector/core";
+import {ObservationBudget,hashFramedDomain} from "@conceptor/core";
 import {InventoryContentStore,hydrateInventory,inventoryForTransport,inventoryEntryBytes,inventoryTextHash} from "./inventory-content-store.js";
 import {inventoryRepository} from "./inventory.js";
 import {analyzeCollectedLocalRepository,collectLocalRepositoryInputs} from "../local-repository.js";

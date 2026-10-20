@@ -1,5 +1,5 @@
 {
-  "name": "@projector/testkit",
+  "name": "@conceptor/testkit",
   "version": "3.0.0",
   "private": true,
   "type": "module",
@@ -22,7 +22,7 @@
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {
-    "@projector/core": "workspace:*",
+    "@conceptor/core": "workspace:*",
     "smol-toml": "1.8.0"
   }
 }

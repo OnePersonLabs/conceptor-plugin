@@ -4,8 +4,8 @@ import { mkdtemp, mkdir, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { codeInputHash } from "@projector/analyzers";
-import { resolveDerivedCachePath, SqliteCodeStore, withObservationScope } from "@projector/runtime";
+import { codeInputHash } from "@conceptor/analyzers";
+import { resolveDerivedCachePath, SqliteCodeStore, withObservationScope } from "@conceptor/runtime";
 import { ResidentObservationWorkerPool, withResidentObservationWorkerPool } from "../observation/resident-pool.js";
 import { executeCodeOperation, shutdownCodeIndexRuns } from "./service.js";
 import { executeCodeTestReplay } from "./test-replay.js";
@@ -39,7 +39,7 @@ afterEach(async () => {
 describe("code index host lifecycle", () => {
   it("bounds history while preserving interrupted runs and direct status lookup", async () => {
     const root = await fixture();
-    const directory = await resolveDerivedCachePath(root, ".projector/runtime/code/runs");
+    const directory = await resolveDerivedCachePath(root, ".conceptor/runtime/code/runs");
     await mkdir(directory, { recursive: true });
     const firstId = "code_index_00000000-0000-0000-0000-000000000000";
     const interruptedId = "code_index_ffffffff-ffff-ffff-ffff-ffffffffffff";
@@ -83,16 +83,16 @@ describe("code index host lifecycle", () => {
 
   it("keeps bundled runtime dependencies out of syntax fallback", async () => {
     const root = await fixture();
-    const dependency = join(root, "plugins/projector-v3/runtime/projector/node_modules/example");
+    const dependency = join(root, "plugins/conceptor-v3/runtime/conceptor/node_modules/example");
     await mkdir(dependency, { recursive: true });
     await writeFile(join(dependency, "package.json"), '{"name":"example","type":"module","main":"index.js"}\n');
     await writeFile(join(dependency, "index.js"), "export function bundledRuntimeOnly() { return 1; }\n");
     await writeFile(join(root, "src/first-party.js"),
       "export function firstPartyJs() { return 2; }\n");
-    await writeFile(join(root, "plugins/projector-v3/runtime/projector/entry.js"),
+    await writeFile(join(root, "plugins/conceptor-v3/runtime/conceptor/entry.js"),
       'import { bundledRuntimeOnly } from "example";\nexport const runtimeEntry = bundledRuntimeOnly();\n');
     await writeFile(join(root, "tsconfig.json"),
-      '{"compilerOptions":{"allowJs":true,"module":"NodeNext","moduleResolution":"NodeNext","target":"ES2022"},"include":["src","plugins/projector-v3/runtime/projector/entry.js"]}\n');
+      '{"compilerOptions":{"allowJs":true,"module":"NodeNext","moduleResolution":"NodeNext","target":"ES2022"},"include":["src","plugins/conceptor-v3/runtime/conceptor/entry.js"]}\n');
     await run("git", ["add", "."], { cwd: root });
     await run("git", ["-c", "user.name=Projector Test", "-c", "user.email=test@example.invalid", "commit", "-qm", "javascript sources"], { cwd: root });
 
@@ -114,11 +114,11 @@ describe("code index host lifecycle", () => {
     const store = await SqliteCodeStore.open(root);
     try {
       const head = store.head()!;
-      expect(store.partition(head, "plugins/projector-v3/runtime/projector/node_modules/example/index.js")).toBeUndefined();
+      expect(store.partition(head, "plugins/conceptor-v3/runtime/conceptor/node_modules/example/index.js")).toBeUndefined();
       expect(store.partition(head, "src/first-party.js")).toBeDefined();
-      expect(store.partition(head, "plugins/projector-v3/runtime/projector/entry.js")).toBeDefined();
+      expect(store.partition(head, "plugins/conceptor-v3/runtime/conceptor/entry.js")).toBeDefined();
       expect(store.manifest(head)?.binding.resolutionInputs.some((entry) =>
-        entry.path === "plugins/projector-v3/runtime/projector/node_modules/example/package.json",
+        entry.path === "plugins/conceptor-v3/runtime/conceptor/node_modules/example/package.json",
       )).toBe(true);
     } finally { store.close(); }
   }, 60_000);

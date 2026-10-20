@@ -4,8 +4,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 
-import { DerivedObservationBudget, hashFramedDomain, withCanonicalHashes, type Requirement } from "@projector/core";
-import { CanonicalFileRepository } from "@projector/runtime";
+import { DerivedObservationBudget, hashFramedDomain, withCanonicalHashes, type Requirement } from "@conceptor/core";
+import { CanonicalFileRepository } from "@conceptor/runtime";
 import { describe, expect, it } from "vitest";
 
 import { observeChangeRepository } from "./repository-observer.js";

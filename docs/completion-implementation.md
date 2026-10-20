@@ -1,7 +1,7 @@
 # Completion implementation
 
 This contributor record tracks implementation and qualification. It does not
-replace accepted meaning under `.projector/`. The baseline is commit
+replace accepted meaning under `.conceptor/`. The baseline is commit
 `8b92ce4ca507eee7c0dd3cc31ff3a361c94170c3`.
 
 ## Shared contracts
@@ -132,7 +132,7 @@ support closure. Existing passing checks are evidence only for unchanged inputs.
 | C16 | Human discovery and comprehension without semantic loss | Partly closed. Renderer connects whole meaning to typed relevance, uncertainty and continuation. Independent agent navigation answered 5/5 tasks; human comprehension remains unqualified. |
 | C17 | Change cost follows relevant impact | Implemented for complete scoped source deltas with an external SQLite index, addressed graph/query reads and Merkle population updates. Fresh public CLI measurements include filesystem reads, main/worker SQL rows and bytes. Explicit rebuilds remain for unsupported structural, history and global-analysis changes; unrestricted locality is not established. |
 | C18 | Existing checkout and ordinary independent PR integration | Ordinary immutable Git assessment covers independent clones, source deletion, both merge orders, rebase, squash, linked worktrees, conflicts and contribution accounting. Actual result reconciliation finds static newly relevant consumers and obligations. Static observations do not qualify arbitrary behavioral reuse. Local push/pull/conflict/resolve/push replaces the earlier hosted PR/CI requirement. |
-| C19 | Impact-aware verification with maintained protection | Installed in this checkout and qualified through two real local pushes using `$projector-verify`. A known nonempty docs-only delta selects build/spec checks; other or unknown populations select build/verify/release checks. Windows installation automatically applies repository-local `core.longpaths=true`. Final combined gates are recorded below. |
+| C19 | Impact-aware verification with maintained protection | Installed in this checkout and qualified through two real local pushes using `$conceptor-verify`. A known nonempty docs-only delta selects build/spec checks; other or unknown populations select build/verify/release checks. Windows installation automatically applies repository-local `core.longpaths=true`. Final combined gates are recorded below. |
 
 ## Comprehension adaptations
 
@@ -256,7 +256,7 @@ mechanism has been replaced; earlier qualification remains historical evidence.
 - [x] Finish the generation coordination correction found in fresh accepted
   context. Declared repository output writes use the existing per-worktree
   writer lease and a durable prelaunch native input/output intent. Declared
-  `.projector` and `.git` outputs, including case aliases and symlink paths,
+  `.conceptor` and `.git` outputs, including case aliases and symlink paths,
   are refused. Evidence readers and publication-only recovery remain independent.
   Typechecking and 26 focused tests pass, including real lifecycle contention
   and native cancellation after lease loss. The refreshed full and installed
@@ -404,11 +404,11 @@ a whole-working-tree equality assertion. The initial failure and reconciled
 result are retained in `.temp/completion-20260927/local-integration-*`.
 
 Four independent agent runs exercised initial implementation and later revision
-with matched behavioral probes: 32 of 32 checks passed. The Projector condition
+with matched behavioral probes: 32 of 32 checks passed. The Conceptor condition
 retained three conflicting sources, distinguished a rejected proposal, accepted
 meaning through the actual lifecycle, and revised the same requirement from a
 fourth source. Actual rendered context reached both consumers. Child input-token
-totals were 212,014 for ordinary sources and 188,629 for Projector context.
+totals were 212,014 for ordinary sources and 188,629 for Conceptor context.
 Harness context and cache warmth differ, and intake, acceptance and orchestration
 costs were not measured. These results do not prove whole-workflow savings. See
 `.temp/completion-20260927/workload-agent-report.md` and its predeclared criteria.

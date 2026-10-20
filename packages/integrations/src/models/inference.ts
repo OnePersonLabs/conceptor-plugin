@@ -1,4 +1,4 @@
-import { hashFramedDomain, type ContentHash, type StructuredModelRequest, type StructuredModelResponse } from "@projector/core";
+import { hashFramedDomain, type ContentHash, type StructuredModelRequest, type StructuredModelResponse } from "@conceptor/core";
 
 export interface InferencePolicy { readonly maximumAttempts: number; readonly maximumTokens: number; readonly maximumCost: number; readonly timeoutMs: number; readonly retry: readonly ("schema-invalid" | "transient")[]; readonly replay: "allow" | "deny"; readonly resampleId?: string; readonly signal?: AbortSignal }
 export interface ModelCallControl { readonly signal?: AbortSignal; readonly timeoutMs: number }

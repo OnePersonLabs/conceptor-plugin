@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { hashFramedDomain, type CompletionContract, type StateBinding, type ValidatorBinding } from "@projector/core";
+import { hashFramedDomain, type CompletionContract, type StateBinding, type ValidatorBinding } from "@conceptor/core";
 
 import {
   PlanningClaimConflictError,

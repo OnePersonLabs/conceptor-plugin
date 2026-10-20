@@ -1,7 +1,7 @@
 import { constants } from "node:fs";
 import { lstat, open } from "node:fs/promises";
-import { ObservationError, observationLimitValue } from "@projector/core";
-import type { ObservationScope } from "@projector/runtime";
+import { ObservationError, observationLimitValue } from "@conceptor/core";
+import type { ObservationScope } from "@conceptor/runtime";
 
 /** Read a disposable record; the worker authenticates its exact content afterward. */
 export async function readDerivedObservationSource(path: string, label: string, scope: ObservationScope): Promise<string> {

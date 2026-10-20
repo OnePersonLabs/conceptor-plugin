@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import fc from "fast-check";
 
-import { hashFramedDomain, type StateBinding } from "@projector/core";
+import { hashFramedDomain, type StateBinding } from "@conceptor/core";
 
 import {
   BUILT_IN_REPRESENTATION_PROFILES,

@@ -1,5 +1,5 @@
-import { ArchitectureDecisionSchema, AuthorityRecordSchema, ConceptSchema, ProjectionLensSchema, type ArchitectureDecision, type AuthorityRecord, type CanonicalDocumentEnvelope, type ProjectionLens, type DerivedObservationBudget, type Relation } from "@projector/core";
-import { compileProjectionLenses } from "@projector/engine";
+import { ArchitectureDecisionSchema, AuthorityRecordSchema, ConceptSchema, ProjectionLensSchema, type ArchitectureDecision, type AuthorityRecord, type CanonicalDocumentEnvelope, type ProjectionLens, type DerivedObservationBudget, type Relation } from "@conceptor/core";
+import { compileProjectionLenses } from "@conceptor/engine";
 const compare = (left: string, right: string): number => left < right ? -1 : left > right ? 1 : 0;
 export function validateCanonicalRelationEndpoints(relations: readonly Relation[], knownIds: ReadonlySet<string>, options: { populationComplete: boolean; removedIds?: ReadonlySet<string> }): string[] {
   const unresolved: string[] = [];

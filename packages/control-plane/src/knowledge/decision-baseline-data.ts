@@ -1,6 +1,6 @@
-import { hydrateCanonicalDocumentWire, hashSemantic, hashFramedDomain, type ArchitectureDecision, type AuthorityRecord, type CanonicalDocumentEnvelope } from "@projector/core";
-import { assertSupportedCanonicalVersions, parseCanonicalMarkdownDocument, parseTomlDocument } from "@projector/runtime";
-import type { StateBoundChangeResult } from "@projector/engine";
+import { hydrateCanonicalDocumentWire, hashSemantic, hashFramedDomain, type ArchitectureDecision, type AuthorityRecord, type CanonicalDocumentEnvelope } from "@conceptor/core";
+import { assertSupportedCanonicalVersions, parseCanonicalMarkdownDocument, parseTomlDocument } from "@conceptor/runtime";
+import type { StateBoundChangeResult } from "@conceptor/engine";
 import { ChangeLifecycleStore } from "../change-lifecycle/store.js";
 import { captureDecisionTriggerObservations, KnowledgeDecisionBaselineSchema, type KnowledgeDecisionBaseline } from "./decision-baselines.js";
 
@@ -45,7 +45,7 @@ export async function executeDecisionBaselineData(input: DecisionBaselineDataInp
   const store = ChangeLifecycleStore.fromCollectedSources(input.repositoryRoot, input.sources);
   const receipts: DecisionBaselineReceipt[] = [];
   for (const path of Object.keys(input.sources).sort()) {
-    if (!/^\.projector\/runtime\/change-lifecycles\/results\/[a-f0-9]{64}\.json$/u.test(path)) continue;
+    if (!/^\.conceptor\/runtime\/change-lifecycles\/results\/[a-f0-9]{64}\.json$/u.test(path)) continue;
     try {
       const untrusted = JSON.parse(input.sources[path]!) as { attemptId?: unknown };
       if (typeof untrusted.attemptId !== "string") continue;

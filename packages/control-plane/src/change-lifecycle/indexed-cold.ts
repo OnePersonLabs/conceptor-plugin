@@ -1,6 +1,6 @@
-import { analyzeCollectedLocalRepository, inventoryEntryBytes, type CollectedLocalRepositoryInputs, type InventoryResult } from "@projector/analyzers";
-import { buildManifest, manifestKey, type DerivedObservationBudget } from "@projector/core";
-import { SqliteObservationStage, parseCanonicalSnapshotSources, type CanonicalSnapshotSource, type ObservationStageDescriptor, type IndexedObservationDelta } from "@projector/runtime";
+import { analyzeCollectedLocalRepository, inventoryEntryBytes, type CollectedLocalRepositoryInputs, type InventoryResult } from "@conceptor/analyzers";
+import { buildManifest, manifestKey, type DerivedObservationBudget } from "@conceptor/core";
+import { SqliteObservationStage, parseCanonicalSnapshotSources, type CanonicalSnapshotSource, type ObservationStageDescriptor, type IndexedObservationDelta } from "@conceptor/runtime";
 import type { IndexedObservationMetadata } from "../observation/indexed-types.js";
 import type { RepositoryObservationData } from "../observation/tasks.js";
 import { KnowledgeGraph } from "../knowledge/graph.js";

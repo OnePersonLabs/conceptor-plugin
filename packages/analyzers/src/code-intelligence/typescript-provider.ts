@@ -11,7 +11,7 @@ import {
   type CodeProvenance,
   type CodeSnapshot,
   type CodeSymbol,
-} from "@projector/core";
+} from "@conceptor/core";
 import { codeInputHash, verifyCodeInputBinding } from "./input-binding.js";
 
 export interface TypeScriptCodeInput {

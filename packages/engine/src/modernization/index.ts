@@ -13,7 +13,7 @@ import {
   type RepresentationProjectionRef,
   type StateBinding,
   type StateQueryDependency,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import {
   authorityRecordHashIsValid,

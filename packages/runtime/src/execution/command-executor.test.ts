@@ -10,7 +10,7 @@ import type {
   StateBindingValidation,
   StateBindingValidator,
   StateDigest,
-} from "@projector/core";
+} from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { RepositoryPathService } from "../security/index.js";

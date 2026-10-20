@@ -9,7 +9,7 @@ import {
   parseCanonicalJson,
   type CanonicalDocumentEnvelope,
   type ContentHash,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { assertSupportedCanonicalVersions, type CanonicalSnapshot } from "../persistence/index.js";
 import { migrateSqlite } from "./migrations.js";

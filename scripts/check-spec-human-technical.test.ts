@@ -2,14 +2,14 @@ import { mkdir, mkdtemp, rm, writeFile, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { hashFramedDomain, withCanonicalHashes } from "@projector/core";
-import { CanonicalFileRepository } from "@projector/runtime";
+import { hashFramedDomain, withCanonicalHashes } from "@conceptor/core";
+import { CanonicalFileRepository } from "@conceptor/runtime";
 import { checkAuthoritativeSpecification } from "./check-spec-human-technical.mjs";
 const roots: string[] = [];
 afterEach(async () => Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true }))));
 async function fixture(statement = "Preserve the complete conditions.") {
   const root = await mkdtemp(join(tmpdir(), "projector-canonical-style-")); roots.push(root);
-  for (const directory of ["requirements", "scenarios"]) await mkdir(join(root, ".projector/model", directory), { recursive: true });
+  for (const directory of ["requirements", "scenarios"]) await mkdir(join(root, ".conceptor/model", directory), { recursive: true });
   const id = "scenario:style"; const hash = hashFramedDomain("fixture", id);
   const payload = { id, key: "style", title: "Preserve prose", aliases: [], status: "active", sourceClass: "authored", scope: { op: "all", items: [] }, steps: [{ role: "trigger", statement: "Read `obviously` as an exact token." }, { role: "expected-outcome", statement }], evidence: [], discoveryHash: hash, semanticHash: hash };
   const document = withCanonicalHashes({ apiVersion: "projector/v3", schemaVersion: "3.0.0", kind: "behavioral-scenario", id, key: "style", lifecycle: "active", payload });

@@ -3,7 +3,7 @@ import { constants } from "node:fs";
 import { open } from "node:fs/promises";
 import { isAbsolute, join } from "node:path";
 import { StringDecoder } from "node:string_decoder";
-import { ObservationBudget, ObservationError, observationLimitValue } from "@projector/core";
+import { ObservationBudget, ObservationError, observationLimitValue } from "@conceptor/core";
 
 export function observationFailure(error: unknown, stage: string, scope = "."): ObservationError {
   return error instanceof ObservationError ? error : new ObservationError("observation-failed", stage, scope,

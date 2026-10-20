@@ -1,6 +1,6 @@
 # Model and context
 
-This guide explains where accepted meaning lives, how Projector gives records stable identities, and what a retrieved context can establish.
+This guide explains where accepted meaning lives, how Conceptor gives records stable identities, and what a retrieved context can establish.
 
 ## Contents
 
@@ -12,9 +12,9 @@ This guide explains where accepted meaning lives, how Projector gives records st
 
 ## Start from the model index
 
-The target repository's `.projector/README.md` is its human entry point and record index. It links to the actual concepts, requirements, scenarios, decisions, concerns, authority records, relations, and lenses. Read the records that govern the task rather than copying their inventory into another document.
+The target repository's `.conceptor/README.md` is its human entry point and record index. It links to the actual concepts, requirements, scenarios, decisions, concerns, authority records, relations, and lenses. Read the records that govern the task rather than copying their inventory into another document.
 
-Canonical records and configuration are project data and should be reviewed and versioned with the repository. Runtime receipts, retained contexts, and recovery journals live below `.projector/runtime/`; use `projector inspect <ID>` when you need retained execution detail. Preserve unfinished recovery evidence.
+Canonical records and configuration are project data and should be reviewed and versioned with the repository. Runtime receipts, retained contexts, and recovery journals live below `.conceptor/runtime/`; use `conceptor inspect <ID>` when you need retained execution detail. Preserve unfinished recovery evidence.
 
 ## Authoring and identity
 
@@ -37,14 +37,14 @@ flowchart LR
 
 The request, exact records, source queries, and typed relations contribute to selection. The bounded packet reports selected meaning and disclosure; the reader must inspect omissions and unknowns before relying on a conclusion.
 
-The context request states the work outcome. Add `--entity ID` for exact known records and `--target path` for known source locations when useful. Projector uses the request, named entities and targets, source-query results, and typed relationships to select applicable meaning under a context budget.
+The context request states the work outcome. Add `--entity ID` for exact known records and `--target path` for known source locations when useful. Conceptor uses the request, named entities and targets, source-query results, and typed relationships to select applicable meaning under a context budget.
 
 Read the full selected sections. Pay attention to assumptions, rationale, open questions, omitted material, unavailable observations, and source-query disclosure. A retrieval candidate does not prove identity or applicability. If an obligation is omitted or a query remains open, focus the retrieval or inspect the record before relying on the packet.
 
 The human view connects records to their selection reasons, relevance bands and
 uncertainty. It combines repeated references across interpretation branches.
 The compact view shows up to two selection reasons per record and reports any
-additional reasons. Its `projector inspect` route opens the exact retained
+additional reasons. Its `conceptor inspect` route opens the exact retained
 evidence, including the full selection paths. A required expansion names a
 focused context command; that command observes current state and produces a new
 context. `context --full` exposes the full current response within transport
@@ -52,7 +52,7 @@ limits. Neither route changes accepted meaning.
 
 ## Checking a retained context
 
-After implementation and behavior checks, use `projector check <context ID>`. Projector rechecks retained dependencies and query membership. A report may preserve unaffected conclusions while identifying a changed assumption, newly discovered consumer, observed violation, or unavailable evidence.
+After implementation and behavior checks, use `conceptor check <context ID>`. Conceptor rechecks retained dependencies and query membership. A report may preserve unaffected conclusions while identifying a changed assumption, newly discovered consumer, observed violation, or unavailable evidence.
 
 Treat these as distinct findings. A changed hash may reflect a harmless edit. A new consumer may warrant impact analysis without violating an existing requirement. An unavailable source leaves a gap; it is not evidence of absence. A successful operation does not prove completeness or correct behavior.
 
@@ -64,7 +64,7 @@ committed trees, index membership, history and ignore rules. An existing
 Watchman daemon can supply a complete change feed across processes. Configure
 both `PROJECTOR_WATCHMAN_EXECUTABLE` with its absolute executable path and
 `PROJECTOR_WATCHMAN_SOCKET` with the existing daemon's socket or Windows pipe.
-Projector starts bounded clients. It does not install or start the daemon.
+Conceptor starts bounded clients. It does not install or start the daemon.
 
 The first observation performs complete enrollment. Supported subsequent changes
 update addressed source, graph, membership and dependency records. Scoped context
@@ -87,6 +87,6 @@ repository shape or every rebuild.
 
 ## Format boundary
 
-Projector 3 supports one authored artifact format. An older project requires an explicitly checked cutover to this format. The current release does not automatically migrate a chain of older formats. Keep the old data intact until the target format and its meaning have been reviewed; use the format decision linked from the model index for the exact migration boundary.
+Conceptor 3 supports one authored artifact format. An older project requires an explicitly checked cutover to this format. The current release does not automatically migrate a chain of older formats. Keep the old data intact until the target format and its meaning have been reviewed; use the format decision linked from the model index for the exact migration boundary.
 
 Continue with [Concepts](concepts.md), [Changing accepted meaning](changing-accepted-meaning.md), or the [CLI reference](reference/cli.md).

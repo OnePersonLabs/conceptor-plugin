@@ -1,4 +1,4 @@
-import { type CodePartition } from "@projector/core";
+import { type CodePartition } from "@conceptor/core";
 
 /** Preserve composite provider precedence while touching only one source path. */
 export function mergeCodePartition(prior: CodePartition, next: CodePartition): CodePartition {

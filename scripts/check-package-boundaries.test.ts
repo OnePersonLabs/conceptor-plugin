@@ -10,26 +10,26 @@ import {
 describe("workspace dependency direction", () => {
   it("rejects a workspace dependency from core", () => {
     expect(validatePackageDependencies({
-      "@projector/core": ["@projector/runtime"],
-      "@projector/runtime": ["@projector/core"],
-    })).toContain("@projector/core must not depend on @projector/runtime");
+      "@conceptor/core": ["@conceptor/runtime"],
+      "@conceptor/runtime": ["@conceptor/core"],
+    })).toContain("@conceptor/core must not depend on @conceptor/runtime");
   });
 
   it("accepts the declared ports-and-composition-root graph", () => {
     expect(validatePackageDependencies({
-      "@projector/core": [],
-      "@projector/engine": ["@projector/core"],
-      "@projector/analyzers": ["@projector/core"],
-      "@projector/runtime": ["@projector/core"],
-      "@projector/integrations": ["@projector/core", "@projector/engine"],
-      "@projector/control-plane": ["@projector/core", "@projector/engine", "@projector/analyzers", "@projector/runtime"],
-      "@projector/cli": [
-        "@projector/core",
-        "@projector/engine",
-        "@projector/analyzers",
-        "@projector/runtime",
-        "@projector/integrations",
-        "@projector/control-plane",
+      "@conceptor/core": [],
+      "@conceptor/engine": ["@conceptor/core"],
+      "@conceptor/analyzers": ["@conceptor/core"],
+      "@conceptor/runtime": ["@conceptor/core"],
+      "@conceptor/integrations": ["@conceptor/core", "@conceptor/engine"],
+      "@conceptor/control-plane": ["@conceptor/core", "@conceptor/engine", "@conceptor/analyzers", "@conceptor/runtime"],
+      "@conceptor/cli": [
+        "@conceptor/core",
+        "@conceptor/engine",
+        "@conceptor/analyzers",
+        "@conceptor/runtime",
+        "@conceptor/integrations",
+        "@conceptor/control-plane",
       ],
     })).toEqual([]);
   });
@@ -38,10 +38,10 @@ describe("workspace dependency direction", () => {
 describe("TypeScript-aware public composition", () => {
   it("reads imports from syntax, not comments or string fragments", () => {
     expect(extractTypeScriptImports(`
-      // import { fake } from "@projector/runtime";
-      const text = 'from "@projector/engine"';
-      import { RepositoryChangeLifecycleService } from "@projector/control-plane";
-    `)).toEqual(["@projector/control-plane"]);
+      // import { fake } from "@conceptor/runtime";
+      const text = 'from "@conceptor/engine"';
+      import { RepositoryChangeLifecycleService } from "@conceptor/control-plane";
+    `)).toEqual(["@conceptor/control-plane"]);
   });
 
   it("requires the exact curated control-plane facade", () => {

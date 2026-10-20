@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hashFramedDomain, type AdapterContext, type ContentHash } from "@projector/core";
+import { hashFramedDomain, type AdapterContext, type ContentHash } from "@conceptor/core";
 import { BUILT_IN_QUERY_PROGRAM_IDS, InMemoryGraphReader, QueryDependencyRegistry, type QueryMemoEntry } from "./index.js";
 
 describe("registered query memoization", () => {

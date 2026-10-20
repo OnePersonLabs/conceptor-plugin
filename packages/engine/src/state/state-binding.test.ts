@@ -4,7 +4,7 @@ import type {
   StateDigest,
   StateQueryReader,
   StateValueDependencyRef,
-} from "@projector/core";
+} from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { InMemoryGraphReader, QueryDependencyRegistry } from "../query/index.js";

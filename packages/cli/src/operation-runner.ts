@@ -42,7 +42,7 @@ import {
   type ProjectorOperationAction,
   type ProjectorOperationError,
   type ProjectorOperationRequestFor,
-} from "@projector/core";
+} from "@conceptor/core";
 import {
   KnowledgeContextOperationOutputSchema,
   KnowledgeContextInspectOperationOutputSchema,
@@ -91,8 +91,8 @@ import {
   ArchitectureEvaluationOutputSchema,
   RepresentationPendingOutputSchema,
   RepresentationRecoveryOutputSchema,
-} from "@projector/control-plane";
-import { NativeProcessLauncher, OperationalReportSchema, withObservationScope } from "@projector/runtime";
+} from "@conceptor/control-plane";
+import { NativeProcessLauncher, OperationalReportSchema, withObservationScope } from "@conceptor/runtime";
 import { z } from "zod";
 
 import { runReadOnlyOperationalVerification } from "./operational-verification.js";

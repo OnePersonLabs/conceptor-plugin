@@ -1,4 +1,4 @@
-import { hashFramedDomain, type ExecutionCapsule, type StateBinding, type StateDigest } from "@projector/core";
+import { hashFramedDomain, type ExecutionCapsule, type StateBinding, type StateDigest } from "@conceptor/core";
 import { describe, expect, it, vi } from "vitest";
 
 import { createCodexHostAdapter } from "./adapter.js";

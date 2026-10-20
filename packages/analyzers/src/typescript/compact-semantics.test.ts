@@ -1,4 +1,4 @@
-import { DerivedObservationBudget, hashFramedDomain } from "@projector/core";
+import { DerivedObservationBudget, hashFramedDomain } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import type { InventoryEntry } from "../filesystem/inventory.js";

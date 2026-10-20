@@ -27,19 +27,19 @@ await writeFile(join(isolated,"package.json"),JSON.stringify({name:"projector-in
 const installEnvironment=Object.fromEntries(Object.entries(env).filter(([key])=>!/^npm_config_allow[-_]scripts$/iu.test(key)));
 const forward=(fd,chunk)=>{for(let offset=0;offset<chunk.length;)offset+=writeSync(fd,chunk,offset,chunk.length-offset);};
 await executeReleaseCommand(npm.executable,npm.arguments,{cwd:isolated,env:installEnvironment,timeout:null,captureOutput:false,onStdoutChunk:chunk=>forward(1,chunk),onStderrChunk:chunk=>forward(2,chunk)});
-const installed=join(isolated,"node_modules/@onepersonlabs/projector");
+const installed=join(isolated,"node_modules/@onepersonlabs/conceptor");
 const plugin=join(await mkdtemp(join(tmpdir(),"projector-plugin-v3-")),"plugin");
 await buildPluginRuntime(plugin,{releaseRoot:installed});
 await assertDirectoryTreeParity(
  join(plugin,"runtime"),
- join(sourceRoot,"plugins/projector-v3/runtime"),
- "Checked-in plugin runtime differs from the fresh release bundle. Run pnpm plugin:prepare-local and commit plugins/projector-v3/runtime.",
+ join(sourceRoot,"plugins/conceptor-v3/runtime"),
+ "Checked-in plugin runtime differs from the fresh release bundle. Run pnpm plugin:prepare-local and commit plugins/conceptor-v3/runtime.",
 );
 // A caller may use a temporary source index to include an uncommitted bundle.
 // The disposable fixture repositories must each use their own Git index.
 delete env.GIT_INDEX_FILE;
 delete process.env.GIT_INDEX_FILE;
-const packagedRoot=join(plugin,"runtime/projector");
+const packagedRoot=join(plugin,"runtime/conceptor");
 const { createBundledProjectorOperationRunner } = await import(pathToFileURL(join(packagedRoot,"exports/operations.js")).href);
 const { runPublicCommand } = await import(pathToFileURL(join(packagedRoot,"exports/commands.js")).href);
 const { ResidentObservationWorkerPool, withResidentObservationWorkerPool } = await import(pathToFileURL(join(packagedRoot,"exports/control-plane.js")).href);
@@ -52,7 +52,7 @@ let repository=join(isolated,"fresh-project");await mkdir(repository);
 env.PROJECTOR_VERIFICATION_EVIDENCE_STORE=join(isolated,"retained-execution-evidence");
 const run=(executable,args,cwd=repository)=>executeReleaseCommand(executable,args,{cwd,env,timeout:null,maxBuffer:null});
 await run("git",["init","--quiet"]);
-await writeFile(join(repository,".gitignore"),".projector/runtime/\n.projector/state.db*\n");
+await writeFile(join(repository,".gitignore"),".conceptor/runtime/\n.conceptor/state.db*\n");
 await writeFile(join(repository,"README.md"),"# Installed Projector exercise\n");
 await mkdir(join(repository,"src"));
 await writeFile(join(repository,"src/clock.ts"),"export const now = () => 0;\n");
@@ -75,7 +75,7 @@ const operation=async(name,input,{freshProcess=false}={})=>{
  await writeFile(requestPath,JSON.stringify(request));
  const start=performance.now();
  const result=freshProcess
-  ?await run(process.execPath,[join(plugin,"scripts/projector-operation.mjs"),requestPath])
+  ?await run(process.execPath,[join(plugin,"scripts/conceptor-operation.mjs"),requestPath])
   :await executeBundled(request);
  const value=freshProcess?JSON.parse(result.stdout):result;
  transcript.push({operation:name,input,route:freshProcess?"fresh-process":"bundled",elapsedMs:Math.round(performance.now()-start),value});
@@ -86,7 +86,7 @@ const operation=async(name,input,{freshProcess=false}={})=>{
 const binResult=await run(process.execPath,[join(installed,"dist/command-main.mjs"),"init","--json"]);
 const initialized=JSON.parse(binResult.stdout);transcript.push({args:["init"],entry:"npm package bin",value:initialized});
 if(initialized.readiness.status!=="ready")throw new Error("Installed init was not ready");
-if(!(await readFile(join(repository,".projector/README.md"),"utf8")).includes("#"))throw new Error("Installed init omitted the human index");
+if(!(await readFile(join(repository,".conceptor/README.md"),"utf8")).includes("#"))throw new Error("Installed init omitted the human index");
 const context=await command(["context","Document the project's clock boundary"],repository,{freshProcess:true});
 const syntaxContext=await command(["context","Inspect the Python syntax fallback","--target","src/example.py"],repository,{freshProcess:true});
 if(typeof syntaxContext.contentHash!=="string")throw new Error("Checked-in plugin could not index a packaged Tree-sitter grammar");
@@ -158,7 +158,7 @@ if(!bounded.meaning.sections.some(section=>section.text.includes("All domain tim
 // trees so packaging cannot silently omit a moved instruction or schema.
 for(const directory of ["skills","references"]){
  await assertDirectoryTreeParity(
-  join(plugin,directory),join(sourceRoot,"plugins/projector-v3",directory),
+  join(plugin,directory),join(sourceRoot,"plugins/conceptor-v3",directory),
   `Installed ${directory} differ from the canonical plugin source.`,
  );
 }
@@ -237,7 +237,7 @@ try {
 // and executable provider are not inputs to this independent static exercise.
 repository=join(isolated,"integration-project");await mkdir(repository);
 await run("git",["init","--quiet"]);
-await writeFile(join(repository,".gitignore"),".projector/runtime/\n.projector/state.db*\n");
+await writeFile(join(repository,".gitignore"),".conceptor/runtime/\n.conceptor/state.db*\n");
 await mkdir(join(repository,"src"));
 await command(["init"]);
 await writeFile(join(repository,"src","shared.ts"),"export const shared = 0;\n");

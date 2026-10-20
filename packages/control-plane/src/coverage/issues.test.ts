@@ -1,9 +1,9 @@
 import { mkdtemp, rm, mkdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { analyzeLocalRepository } from "@projector/analyzers";
-import { hashFramedDomain, withCanonicalHashes, type CanonicalDocumentEnvelope } from "@projector/core";
-import { CanonicalFileRepository } from "@projector/runtime";
+import { analyzeLocalRepository } from "@conceptor/analyzers";
+import { hashFramedDomain, withCanonicalHashes, type CanonicalDocumentEnvelope } from "@conceptor/core";
+import { CanonicalFileRepository } from "@conceptor/runtime";
 import { describe, expect, it } from "vitest";
 import { completionRepairAlternatives, deriveCompletionQuestions } from "./issues.js";
 import { inspectRepositoryCoverage } from "./service.js";

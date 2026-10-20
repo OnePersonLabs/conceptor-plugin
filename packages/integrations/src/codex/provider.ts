@@ -3,7 +3,7 @@ import { open, mkdtemp, realpath, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { canonicalJson, hashFramedDomain, type ContentHash, type StructuredModelRequest, type StructuredModelResponse } from "@projector/core";
+import { canonicalJson, hashFramedDomain, type ContentHash, type StructuredModelRequest, type StructuredModelResponse } from "@conceptor/core";
 
 import type { AuthenticatedModelRoute, InferencePorts, ModelCallControl } from "../models/inference.js";
 

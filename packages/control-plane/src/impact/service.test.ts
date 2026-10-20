@@ -1,9 +1,9 @@
 import { mkdtemp, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { DerivedObservationBudget, ObservationError, hashFramedDomain, withCanonicalHashes, type AuthorityRecord, type ImpactRule } from "@projector/core";
-import { createRepositoryScriptLens } from "@projector/engine";
-import { CanonicalFileRepository, SqliteObservationStore, readDerivedCacheSource } from "@projector/runtime";
+import { DerivedObservationBudget, ObservationError, hashFramedDomain, withCanonicalHashes, type AuthorityRecord, type ImpactRule } from "@conceptor/core";
+import { createRepositoryScriptLens } from "@conceptor/engine";
+import { CanonicalFileRepository, SqliteObservationStore, readDerivedCacheSource } from "@conceptor/runtime";
 import { afterEach, describe, expect, it } from "vitest";
 import { observeChangeRepository } from "../change-lifecycle/repository-observer.js";
 import { RepositoryKnowledgeService } from "../knowledge/service.js";
@@ -168,7 +168,7 @@ describe("observed derivation impact", () => {
     const { canonical: _canonical, contentHash: _hash, ...incompatible } = current;
     const malformed = { ...incompatible, contentHash: hashFramedDomain(current.version, incompatible) };
     const reference = { version: current.version, contentHash: malformed.contentHash, state: current.state };
-    await overwrite(`.projector/runtime/impact/${reference.contentHash.slice("sha256:v1:".length)}.json`, JSON.stringify(malformed));
+    await overwrite(`.conceptor/runtime/impact/${reference.contentHash.slice("sha256:v1:".length)}.json`, JSON.stringify(malformed));
     const unavailable = await reconcileRetainedImpact(root, reference, current, [], context.id);
     expect(unavailable).toMatchObject({ status: "unavailable", repairRoute: "widen-analysis" });
     expect(unavailable.diagnostics.join(" ")).toContain("canonical");
@@ -178,7 +178,7 @@ describe("observed derivation impact", () => {
     const root = await repository(); const service = await RepositoryKnowledgeService.create(root);
     await service.context({ request: "Value", namedTargets: ["value.ts"], persist: false });
     await predictRepositoryImpact(await snapshot(root), ["value.ts"]);
-    await expect(readdir(join(root, ".projector", "runtime", "impact"))).rejects.toMatchObject({ code: "ENOENT" });
+    await expect(readdir(join(root, ".conceptor", "runtime", "impact"))).rejects.toMatchObject({ code: "ENOENT" });
   });
 
   it("keeps dynamic importers on the possible frontier without fabricating exact inputs", async () => {

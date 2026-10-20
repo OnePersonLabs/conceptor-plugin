@@ -36,7 +36,7 @@ import {
   type Relation,
   type LineageRecord,
   type Tombstone,
-} from "@projector/core";
+} from "@conceptor/core";
 import {
   BUILT_IN_REPRESENTATION_PROFILES,
   RepresentationCompiler,
@@ -52,8 +52,8 @@ import {
   type CompiledSemanticChange,
   type CompiledSemanticChangePlan,
   type BuiltInRepresentationProfileKey,
-} from "@projector/engine";
-import { CanonicalFileRepository, RepositoryPathService, canonicalApiVersion, canonicalSchemaVersion, withObservationScope, type ExactTextPatchInput, type CanonicalSourceLocator } from "@projector/runtime";
+} from "@conceptor/engine";
+import { CanonicalFileRepository, RepositoryPathService, canonicalApiVersion, canonicalSchemaVersion, withObservationScope, type ExactTextPatchInput, type CanonicalSourceLocator } from "@conceptor/runtime";
 
 import { observeChangeRepository, type IndependentValidatorObservation } from "./repository-observer.js";
 import { CHANGE_QUERY_PROGRAM_IDS, createChangeQueryRegistry, exactIdentityCandidates } from "./query-programs.js";
@@ -1055,7 +1055,7 @@ async function compileObservedRepositoryChange(
       unitIds: knownAffectedUnitIds,
       semanticOwnerIds: identityResolutions.map(({ targetId }) => targetId),
       writeSelectors: boundary,
-      forbiddenWriteSelectors: unique([".git/**", ".projector/runtime/**", ...(architectureDeferral?.forbiddenWritePaths ?? [])]),
+      forbiddenWriteSelectors: unique([".git/**", ".conceptor/runtime/**", ...(architectureDeferral?.forbiddenWritePaths ?? [])]),
       dependencies: [] as string[],
       validatorIds,
     }],

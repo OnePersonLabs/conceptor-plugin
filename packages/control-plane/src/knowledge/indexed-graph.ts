@@ -3,9 +3,9 @@ import {
   type AdapterContext, type CanonicalDocumentEnvelope, type ContentHash, type DerivedObservationBudget,
   type ProjectionUnit, type RelevanceBand, type RelevanceReason,
   type StateQueryDependency, type StateValueDependencyRef,
-} from "@projector/core";
-import { QueryDependencyRegistry, type ContextSource, type RelevanceDiscoveryEdge, type RelevanceDiscoveryPort } from "@projector/engine";
-import type { SqliteObservationStore } from "@projector/runtime";
+} from "@conceptor/core";
+import { QueryDependencyRegistry, type ContextSource, type RelevanceDiscoveryEdge, type RelevanceDiscoveryPort } from "@conceptor/engine";
+import type { SqliteObservationStore } from "@conceptor/runtime";
 import type { IndexedObservationDescriptor } from "../observation/indexed-types.js";
 import type { KnowledgeContextGraph } from "./context-graph.js";
 import { candidateFor, KNOWLEDGE_QUERY_PROGRAMS, mergeCandidates, scoreLexical, tokens, type BoundQueryResult, type SemanticEntity } from "./graph.js";

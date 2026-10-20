@@ -2,8 +2,8 @@ import { mkdtemp, mkdir, readFile, rename, rm, writeFile } from "node:fs/promise
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { hashFramedDomain, type RepresentationProjectionRef } from "@projector/core";
-import { RepresentationCompiler, createStateBinding, type CanonicalRepresentationSource } from "@projector/engine";
+import { hashFramedDomain, type RepresentationProjectionRef } from "@conceptor/core";
+import { RepresentationCompiler, createStateBinding, type CanonicalRepresentationSource } from "@conceptor/engine";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { RepositoryRepresentationArtifactStore } from "./artifact-store.js";
@@ -52,7 +52,7 @@ function reference(projection: Awaited<ReturnType<RepresentationCompiler["compil
 describe("RepositoryRepresentationArtifactStore", () => {
   it("recovers and reads authenticated content larger than the former artifact limit", async () => {
     const root = await mkdtemp(join(tmpdir(), "projector-representation-")); roots.push(root);
-    await mkdir(join(root, ".projector"));
+    await mkdir(join(root, ".conceptor"));
     const content = "large representation\n" + "x".repeat(8 * 1024 * 1024);
     const contentHash = hashFramedDomain("representation-artifact", content);
     const interrupted = await RepositoryRepresentationArtifactStore.create(root, {
@@ -66,7 +66,7 @@ describe("RepositoryRepresentationArtifactStore", () => {
 
   it("accepts concurrent exact content publication without overwriting either writer", async () => {
     const root = await mkdtemp(join(tmpdir(), "projector-representation-")); roots.push(root);
-    await mkdir(join(root, ".projector"));
+    await mkdir(join(root, ".conceptor"));
     const content = "concurrent exact content";
     const contentHash = hashFramedDomain("representation-artifact", content);
     let release!: () => void;
@@ -84,7 +84,7 @@ describe("RepositoryRepresentationArtifactStore", () => {
   });
   it("inspects an interrupted production publication without recovery and explicitly recovers exact bytes", async () => {
     const root = await mkdtemp(join(tmpdir(), "projector-representation-")); roots.push(root);
-    await mkdir(join(root, ".projector"));
+    await mkdir(join(root, ".conceptor"));
     const content = "exact durable representation\n";
     const contentHash = hashFramedDomain("representation-artifact", content);
     const store = await RepositoryRepresentationArtifactStore.create(root, {
@@ -101,7 +101,7 @@ describe("RepositoryRepresentationArtifactStore", () => {
 
   it("retains a change association until capture acknowledges a published projection", async () => {
     const root = await mkdtemp(join(tmpdir(), "projector-representation-")); roots.push(root);
-    await mkdir(join(root, ".projector"));
+    await mkdir(join(root, ".conceptor"));
     const store = await RepositoryRepresentationArtifactStore.create(root);
     const compiler = new RepresentationCompiler({ artifacts: store });
     const { projection } = await compiler.compile({ source: source(), binding: createStateBinding({ compiledAgainst: state(), valueDependencies: [], queryDependencies: [] }), profileKey: "human-technical@1" });
@@ -117,13 +117,13 @@ describe("RepositoryRepresentationArtifactStore", () => {
 
   it("recovers finalizing content and reports staging without a manifest as recovery-required", async () => {
     const root = await mkdtemp(join(tmpdir(), "projector-representation-")); roots.push(root);
-    await mkdir(join(root, ".projector"));
+    await mkdir(join(root, ".conceptor"));
     const content = "recover finalizing bytes";
     const contentHash = hashFramedDomain("representation-artifact", content);
     const store = await RepositoryRepresentationArtifactStore.create(root, { afterStage: () => { throw new Error("crash"); } });
     await expect(store.put(contentHash, content)).rejects.toThrow("crash");
     const [publication] = await store.pending();
-    const journalRoot = join(root, ".projector/runtime/representation-publication");
+    const journalRoot = join(root, ".conceptor/runtime/representation-publication");
     await rename(join(journalRoot, "published", publication!.publicationId), join(journalRoot, "finalizing", publication!.publicationId));
     const incompleteId = "a".repeat(64);
     await mkdir(join(journalRoot, "staging", incompleteId, "blobs"), { recursive: true });
@@ -139,12 +139,12 @@ describe("RepositoryRepresentationArtifactStore", () => {
 
   it("preserves conflicting final bytes and reports recovery-required", async () => {
     const root = await mkdtemp(join(tmpdir(), "projector-representation-")); roots.push(root);
-    await mkdir(join(root, ".projector"));
+    await mkdir(join(root, ".conceptor"));
     const content = "authenticated original";
     const contentHash = hashFramedDomain("representation-artifact", content);
     const store = await RepositoryRepresentationArtifactStore.create(root, { afterStage: () => { throw new Error("crash"); } });
     await expect(store.put(contentHash, content)).rejects.toThrow("crash");
-    const contentRoot = join(root, ".projector/runtime/representations/content");
+    const contentRoot = join(root, ".conceptor/runtime/representations/content");
     await mkdir(contentRoot, { recursive: true });
     const finalPath = join(contentRoot, `${contentHash.slice("sha256:v1:".length)}.txt`);
     await writeFile(finalPath, "partial historical write");
@@ -154,7 +154,7 @@ describe("RepositoryRepresentationArtifactStore", () => {
   });
   it("reopens exact rendered bytes and compiler fidelity evidence after process-local state is gone", async () => {
     const root = await mkdtemp(join(tmpdir(), "projector-representation-")); roots.push(root);
-    await mkdir(join(root, ".projector"));
+    await mkdir(join(root, ".conceptor"));
     const store = await RepositoryRepresentationArtifactStore.create(root);
     const compiler = new RepresentationCompiler({ artifacts: store });
     const { projection } = await compiler.compile({ source: source(), binding: createStateBinding({ compiledAgainst: state(), valueDependencies: [], queryDependencies: [] }), profileKey: "human-technical@1" });
@@ -170,24 +170,24 @@ describe("RepositoryRepresentationArtifactStore", () => {
 
   it("refuses content changed after publication", async () => {
     const root = await mkdtemp(join(tmpdir(), "projector-representation-")); roots.push(root);
-    await mkdir(join(root, ".projector"));
+    await mkdir(join(root, ".conceptor"));
     const store = await RepositoryRepresentationArtifactStore.create(root);
     const compiler = new RepresentationCompiler({ artifacts: store });
     const { projection } = await compiler.compile({ source: source(), binding: createStateBinding({ compiledAgainst: state(), valueDependencies: [], queryDependencies: [] }), profileKey: "human-technical@1" });
     await store.publish(projection);
-    await writeFile(join(root, ".projector/runtime/representations/content", `${projection.contentHash.slice("sha256:v1:".length)}.txt`), "tampered");
+    await writeFile(join(root, ".conceptor/runtime/representations/content", `${projection.contentHash.slice("sha256:v1:".length)}.txt`), "tampered");
 
     await expect(store.read(reference(projection))).rejects.toThrow(/content.*invalid/iu);
   });
 
   it("refuses a projection record whose authenticated body changed", async () => {
     const root = await mkdtemp(join(tmpdir(), "projector-representation-")); roots.push(root);
-    await mkdir(join(root, ".projector"));
+    await mkdir(join(root, ".conceptor"));
     const store = await RepositoryRepresentationArtifactStore.create(root);
     const compiler = new RepresentationCompiler({ artifacts: store });
     const { projection } = await compiler.compile({ source: source(), binding: createStateBinding({ compiledAgainst: state(), valueDependencies: [], queryDependencies: [] }), profileKey: "human-technical@1" });
     await store.publish(projection);
-    const recordPath = join(root, ".projector/runtime/representations/projections", `${hashFramedDomain("representation-projection-path", projection.id).slice("sha256:v1:".length)}.json`);
+    const recordPath = join(root, ".conceptor/runtime/representations/projections", `${hashFramedDomain("representation-projection-path", projection.id).slice("sha256:v1:".length)}.json`);
     const record = JSON.parse(await readFile(recordPath, "utf8")) as { projection: { profileVersion: string } };
     record.projection.profileVersion = `${record.projection.profileVersion}-tampered`;
     await writeFile(recordPath, JSON.stringify(record));

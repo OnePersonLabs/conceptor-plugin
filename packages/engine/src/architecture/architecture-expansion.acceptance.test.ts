@@ -13,7 +13,7 @@ import {
   type Requirement,
   type SelectorExpr,
   type StateQueryDependency,
-} from "@projector/core";
+} from "@conceptor/core";
 import { describe, expect, it, vi } from "vitest";
 
 import {

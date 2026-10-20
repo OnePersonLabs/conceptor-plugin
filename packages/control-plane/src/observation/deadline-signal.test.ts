@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { withObservationScope } from "@projector/runtime";
+import { withObservationScope } from "@conceptor/runtime";
 import { observationHostSignal } from "./deadline-signal.js";
 
 test("unlimited host work has no timer and still receives caller cancellation", async () => {

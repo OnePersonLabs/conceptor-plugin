@@ -1,6 +1,6 @@
 # Getting started
 
-This guide takes a repository from plugin installation through one authorized change. Projector needs Node 24 or later on the host `PATH`.
+This guide takes a repository from plugin installation through one authorized change. Conceptor needs Node 24 or later on the host `PATH`.
 
 ## Contents
 
@@ -13,26 +13,26 @@ This guide takes a repository from plugin installation through one authorized ch
 
 ## Install the plugin
 
-Install **Projector V3** (`projector-v3@projector-v3`) from this repository's Codex marketplace. For a local checkout:
+Install **Conceptor V3** (`conceptor-v3@conceptor-v3`) from this repository's Codex marketplace. For a local checkout:
 
 ```text
 codex plugin marketplace add <checkout-path>
-codex plugin add projector-v3@projector-v3
+codex plugin add conceptor-v3@conceptor-v3
 ```
 
 The installed plugin includes its compiled runtime. You do not need to build this repository to use it. Installing the plugin does not activate a project.
 
 ## Initialize a repository
 
-Open the target repository in Codex and say: “Use `$projector` to initialize this repository.” This creates or checks `.projector/config.toml`, the readable model index, and the model structure. Initialization does not invent requirements from code.
+Open the target repository in Codex and say: “Use `$conceptor` to initialize this repository.” This creates or checks `.conceptor/config.toml`, the readable model index, and the model structure. Initialization does not invent requirements from code.
 
-For a new app, start with the behavior you intend to build. For an existing app, identify current behavior, decisions, and boundaries to inspect. An observed implementation is evidence for proposed meaning; it does not become accepted intent merely because it exists. If Projector reports an older unsupported format, keep the old files intact and inspect the cutover before writing new model data.
+For a new app, start with the behavior you intend to build. For an existing app, identify current behavior, decisions, and boundaries to inspect. An observed implementation is evidence for proposed meaning; it does not become accepted intent merely because it exists. If Conceptor reports an older unsupported format, keep the old files intact and inspect the cutover before writing new model data.
 
 ## Plan the first change
 
-In Codex Plan mode, describe an outcome and invoke `$projector` in chat. For example:
+In Codex Plan mode, describe an outcome and invoke `$conceptor` in chat. For example:
 
-> Use `$projector` to plan using a clip more than once in an arrangement. Each use needs its own transpose value, and save/reload must preserve the shared clip reference.
+> Use `$conceptor` to plan using a clip more than once in an arrangement. Each use needs its own transpose value, and save/reload must preserve the shared clip reference.
 
 Codex should show the actual candidate concepts, requirements, scenarios, relationships, stable IDs, proposed paths, reasons, and implementation consequences in readable form. Revise the plan in conversation. A question about the design is a request for explanation, not authorization. Plan mode does not capture or accept model changes, write canonical files, or implement code.
 
@@ -40,18 +40,18 @@ If the repository already has a model, Codex retrieves the relevant records and 
 
 ## Authorize execution
 
-When the proposal matches the intended outcome, authorize Codex to implement it. Execution must be outside native Plan mode. That authorization covers model acceptance, implementation and verification together; `$projector` carries them through without another implementation prompt or skill invocation. The model lifecycle checks the exact proposed contents and current dependencies and retains recovery evidence.
+When the proposal matches the intended outcome, authorize Codex to implement it. Execution must be outside native Plan mode. That authorization covers model acceptance, implementation and verification together; `$conceptor` carries them through without another implementation prompt or skill invocation. The model lifecycle checks the exact proposed contents and current dependencies and retains recovery evidence.
 
 If implementation reveals a material gap in intended meaning, Codex must show the proposed revision and resolve it before depending on that new meaning. A behavior-preserving code fix can keep the model unchanged.
 
 ## Inspect the result
 
-Review the linked `.projector/` records, code diff, behavior checks, Projector context findings, and unresolved evidence. A passing check establishes only the cases it exercised. `$projector-verify` can inspect the actual implementation against the concept, requirement, and scenario, including counterexamples such as two uses of one clip sharing one clip and save/reload preserving their separate transpose values.
+Review the linked `.conceptor/` records, code diff, behavior checks, Conceptor context findings, and unresolved evidence. A passing check establishes only the cases it exercised. `$conceptor-verify` can inspect the actual implementation against the concept, requirement, and scenario, including counterexamples such as two uses of one clip sharing one clip and save/reload preserving their separate transpose values.
 
-For source changes made outside this Projector task, use `$projector-reconcile`. For a large, branching set of source documents or chats, use `$projector-assimilate` to prepare a separate working synthesis before taking mature intent into Projector.
+For source changes made outside this Conceptor task, use `$conceptor-reconcile`. For a large, branching set of source documents or chats, use `$conceptor-assimilate` to prepare a separate working synthesis before taking mature intent into Conceptor.
 
 ## Use a terminal
 
-Skill names such as `$projector` are entered in Codex chat. The bundled terminal entry point is `node <plugin>/scripts/projector.mjs`; the bare `projector` command requires the separately packaged CLI on `PATH`. For example, `node <plugin>/scripts/projector.mjs init` initializes a repository and `node <plugin>/scripts/projector.mjs context "reuse clips in clip uses"` retrieves a context. The CLI exposes lower-level operations for integrations and exact inspection; it does not replace the conversational Plan mode review and authorization. See the [CLI reference](reference/cli.md).
+Skill names such as `$conceptor` are entered in Codex chat. The bundled terminal entry point is `node <plugin>/scripts/conceptor.mjs`; the bare `conceptor` command requires the separately packaged CLI on `PATH`. For example, `node <plugin>/scripts/conceptor.mjs init` initializes a repository and `node <plugin>/scripts/conceptor.mjs context "reuse clips in clip uses"` retrieves a context. The CLI exposes lower-level operations for integrations and exact inspection; it does not replace the conversational Plan mode review and authorization. See the [CLI reference](reference/cli.md).
 
 Continue with [Workflows](workflows.md) or the [worked example](examples/clip-use.md).

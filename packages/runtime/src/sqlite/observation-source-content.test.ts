@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { spawn } from "node:child_process";
 import { afterEach, expect, it } from "vitest";
-import { hashFramedDomain, ObservationBudget } from "@projector/core";
+import { hashFramedDomain, ObservationBudget } from "@conceptor/core";
 import { SqliteObservationStore } from "./observation-store.js";
 import { SqliteObservationSourceCapture } from "./observation-source-content.js";
 import { collectUnusedSourceVersions, sourceLifetimePath } from "./observation-source-lifetime.js";

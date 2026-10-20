@@ -7,12 +7,12 @@ import {
   parseProjectorConfig,
   projectorConfigApiVersion,
   type ProjectorConfig,
-} from "@projector/core";
+} from "@conceptor/core";
 import { parse as parseToml } from "smol-toml";
 
 import { RepositoryPathService } from "../security/repository-path.js";
 
-export const PROJECTOR_CONFIG_PATH = ".projector/config.toml" as const;
+export const PROJECTOR_CONFIG_PATH = ".conceptor/config.toml" as const;
 const MAXIMUM_CONFIG_BYTES = 16 * 1024;
 const PROJECTOR_LOCAL_IGNORE_RULES = ["/state.db", "/state.db-wal", "/state.db-shm", "/state.db-journal", "/runtime/", "/telemetry/", "/watch/"];
 
@@ -93,12 +93,12 @@ export async function initializeProjectLocalIgnore(repositoryRoot: string): Prom
 }
 
 async function initializeProjectIgnore(paths: RepositoryPathService): Promise<void> {
-  const target = (await paths.resolveWrite(".projector/.gitignore")).realTarget;
+  const target = (await paths.resolveWrite(".conceptor/.gitignore")).realTarget;
   let existing = "";
   try {
     const handle = await open(target, constants.O_RDONLY | constants.O_NOFOLLOW);
     try {
-      if (!(await handle.stat()).isFile()) throw new Error(".projector/.gitignore must be a regular file");
+      if (!(await handle.stat()).isFile()) throw new Error(".conceptor/.gitignore must be a regular file");
       existing = await handle.readFile("utf8");
     } finally { await handle.close(); }
   } catch (error) { if (!isMissing(error)) throw error; }
@@ -113,7 +113,7 @@ async function initializeProjectIgnore(paths: RepositoryPathService): Promise<vo
   try {
     const handle = await open(temporary, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY, 0o600);
     try { await handle.writeFile(next, "utf8"); await handle.sync(); } finally { await handle.close(); }
-    await paths.resolveWrite(".projector/.gitignore");
+    await paths.resolveWrite(".conceptor/.gitignore");
     await rename(temporary, target);
     await syncDirectory(dirname(target));
   } finally { await rm(temporary, { force: true }); }

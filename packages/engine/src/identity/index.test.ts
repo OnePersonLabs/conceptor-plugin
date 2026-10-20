@@ -5,8 +5,8 @@ import type {
   SemanticIdentityCandidate,
   StateBinding,
   StateDigest,
-} from "@projector/core";
-import { hashFramedDomain, withCanonicalHashes } from "@projector/core";
+} from "@conceptor/core";
+import { hashFramedDomain, withCanonicalHashes } from "@conceptor/core";
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 

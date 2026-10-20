@@ -5,9 +5,9 @@ import { z } from "zod";
 import {
   CodeTestRunRequestSchema, CodeTestRunResultSchema, CodeRuntimeEvidenceSchema,
   hashFramedDomain,
-} from "@projector/core";
-import { codeInputHash, type InventoryEntry } from "@projector/analyzers";
-import { NativeProcessLauncher, RepositoryPathService, SqliteCodeStore, resolveDerivedCachePath } from "@projector/runtime";
+} from "@conceptor/core";
+import { codeInputHash, type InventoryEntry } from "@conceptor/analyzers";
+import { NativeProcessLauncher, RepositoryPathService, SqliteCodeStore, resolveDerivedCachePath } from "@conceptor/runtime";
 import { observeIndexedRepository } from "../change-lifecycle/indexed-observer.js";
 import { executeCodeOperation } from "./service.js";
 
@@ -93,7 +93,7 @@ export async function executeCodeTestReplay(repositoryRoot: string, raw: unknown
   if (!beforeHashes.has(input.testFile)) throw new Error(`Replay testFile is outside the observed checkout: ${input.testFile}`);
 
   const runId = `code_test_${randomUUID()}`;
-  const artifactDirectory = await resolveDerivedCachePath(root, `.projector/runtime/code/test-replay/${runId}`);
+  const artifactDirectory = await resolveDerivedCachePath(root, `.conceptor/runtime/code/test-replay/${runId}`);
   await mkdir(artifactDirectory, { recursive: true });
   const resultPath = join(artifactDirectory, "results.json");
   const coveragePath = join(artifactDirectory, "coverage", "coverage-final.json");

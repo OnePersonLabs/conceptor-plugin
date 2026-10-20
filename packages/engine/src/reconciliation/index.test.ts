@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { ContentHash } from "@projector/core";
+import type { ContentHash } from "@conceptor/core";
 
 import {
   MANDATORY_VERTICAL_SLICE_STEPS,

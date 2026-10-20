@@ -12,7 +12,7 @@ import {
   type PackageIdentity,
   type ProjectReadiness,
   type ProjectorOperation,
-} from "@projector/core";
+} from "@conceptor/core";
 import {
   OperationAccessError,
   recoverAbandonedProjectOperationAccess,
@@ -22,12 +22,12 @@ import {
   parseTomlDocument,
   stringifyTomlDocument,
   withProjectOperationAccess as withRuntimeOperationAccess,
-} from "@projector/runtime";
+} from "@conceptor/runtime";
 import { z } from "zod";
 
 import { maintainDerivedCache } from "../knowledge/cache-maintenance.js";
 
-const preparedConfigPath = join(".projector", "config.toml");
+const preparedConfigPath = join(".conceptor", "config.toml");
 
 export interface ReadinessInspectionInput {
   readonly operation: ProjectorOperation;
@@ -57,7 +57,7 @@ export async function initializePreparedProject(
   if (initial.status !== "inactive") return { readiness: initial, created: false };
 
   const paths = await RepositoryPathService.create(repositoryRoot);
-  const projectorDirectory = (await paths.resolveWrite(".projector")).realTarget;
+  const projectorDirectory = (await paths.resolveWrite(".conceptor")).realTarget;
   try {
     await mkdir(projectorDirectory);
   } catch (error) {
@@ -97,14 +97,14 @@ export async function inspectProjectReadiness(
     return readiness(input.package, "unavailable", `Projector repository root is unavailable: ${message(error)}`);
   }
   const prepared = await readRepositoryMetadata(paths, preparedConfigPath.replaceAll("\\", "/"));
-  const legacy = await readRepositoryMetadata(paths, ".projector/config.json");
-  const pending = await readRepositoryMetadata(paths, ".projector/pending-project-data-migration.json");
+  const legacy = await readRepositoryMetadata(paths, ".conceptor/config.json");
+  const pending = await readRepositoryMetadata(paths, ".conceptor/pending-project-data-migration.json");
   throwIfAborted(input.signal);
   for (const marker of [legacy, pending]) if (marker.status === "unsafe") return readiness(input.package, "unavailable", marker.reason);
   // Detect historical ownership without interpreting or continuing an old format.
   if (pending.status === "present") return ProjectReadinessSchema.parse({
     status: "recovery-required", package: input.package, reason: "A pre-cutover operation has unfinished evidence.",
-    recovery: { code: "project-data-cutover-required", location: ".projector/pending-project-data-migration.json", action: "Inspect the retained operation with its matching pre-cutover runtime before a checked cutover. Preserve its evidence." },
+    recovery: { code: "project-data-cutover-required", location: ".conceptor/pending-project-data-migration.json", action: "Inspect the retained operation with its matching pre-cutover runtime before a checked cutover. Preserve its evidence." },
   });
   if (legacy.status === "present") return readiness(input.package, "unavailable", "Unsupported legacy or mixed Projector configuration remains untouched; use a checked format cutover.");
   if (prepared.status === "missing") return readiness(input.package, "inactive", "Projector is not active in this repository");
@@ -209,7 +209,7 @@ async function readRepositoryMetadata(paths: RepositoryPathService, relativePath
 
 async function publishPreparedIndex(paths: RepositoryPathService): Promise<void> {
   const contents = "# Project meaning\n\nRead concepts and requirements first. Scenarios describe observable checks; decisions and rationale explain consequential choices. Add records only when they preserve meaning needed by later work.\n\n- [Concepts](model/concepts/)\n- [Requirements](model/requirements/)\n- [Scenarios](model/scenarios/)\n- [Concerns](concerns/)\n- [Decisions](decisions/)\n- [Rationale](authorities/)\n- [Typed relationships](model/relations/)\n\nThese directories appear as records are accepted. Keep useful navigation here. Stable identities live inside records independently of filenames. Runtime receipts and recovery evidence stay under `runtime/`; use `projector inspect` when needed.\n";
-  await publishPreparedFile(paths, ".projector/README.md", contents, true);
+  await publishPreparedFile(paths, ".conceptor/README.md", contents, true);
 }
 
 async function publishPreparedConfig(paths: RepositoryPathService, packageIdentity: PackageIdentity): Promise<void> {

@@ -10,11 +10,11 @@ import {
   type ContentHash,
   type StateBinding,
   type StateDigest,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import type { RepositoryPathService } from "../security/index.js";
 
-const runtimeDirectory = ".projector/runtime";
+const runtimeDirectory = ".conceptor/runtime";
 const activeLeaseName = "writer-lease.lock";
 
 export type LeaseConflictCode = "lease-corrupt" | "lease-held" | "lease-lost";
@@ -199,7 +199,7 @@ export class WriterLeaseManager {
     if (owner.writePaths.length === 0 || owner.writePaths.length > 10000 || new Set(owner.writePaths).size !== owner.writePaths.length) throw new TypeError("Generation lease requires unique declared write paths");
     for (const path of owner.writePaths) {
       const reserved = path.toLowerCase();
-      if (this.paths.canonicalize(path) !== path || path === "." || reserved === ".git" || reserved.startsWith(".git/") || reserved === ".projector" || reserved.startsWith(".projector/")) throw new TypeError(`Invalid generation write scope: ${path}`);
+      if (this.paths.canonicalize(path) !== path || path === "." || reserved === ".git" || reserved.startsWith(".git/") || reserved === ".conceptor" || reserved.startsWith(".conceptor/")) throw new TypeError(`Invalid generation write scope: ${path}`);
     }
     const record = await this.acquireRecord(base => ({ ...base, ...owner, writePaths: [...owner.writePaths], version: 3, ownerKind: "generation" }));
     if (record.version !== 3) throw new Error("Internal generation writer lease kind mismatch");
@@ -405,7 +405,7 @@ function isLeaseRecord(value: unknown): value is ActiveWriterLeaseRecord {
   if (candidate.version === 3) return candidate.ownerKind === "generation" &&
     typeof candidate.generationId === "string" && /^generated_[0-9a-f-]{36}$/u.test(candidate.generationId) && candidate.sessionId === candidate.generationId &&
     ContentHashSchema.safeParse(candidate.requestHash).success && Array.isArray(candidate.writePaths) && candidate.writePaths.length > 0 && candidate.writePaths.length <= 10000 &&
-    new Set(candidate.writePaths).size === candidate.writePaths.length && candidate.writePaths.every(path => typeof path === "string" && PortableRelativePathSchema.safeParse(path).success && path !== "." && ![".git", ".projector"].some(reserved => path.toLowerCase() === reserved || path.toLowerCase().startsWith(`${reserved}/`)));
+    new Set(candidate.writePaths).size === candidate.writePaths.length && candidate.writePaths.every(path => typeof path === "string" && PortableRelativePathSchema.safeParse(path).success && path !== "." && ![".git", ".conceptor"].some(reserved => path.toLowerCase() === reserved || path.toLowerCase().startsWith(`${reserved}/`)));
   return false;
 }
 

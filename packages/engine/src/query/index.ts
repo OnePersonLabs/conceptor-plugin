@@ -17,7 +17,7 @@ import {
   type StateQueryReader,
   type StateQueryResultFingerprint,
   type StateQuerySpec,
-} from "@projector/core";
+} from "@conceptor/core";
 
 type SemanticIdentityKind = "concept" | "requirement" | "scenario";
 type QueryResult = Record<string, unknown>;

@@ -1,7 +1,7 @@
-import type { StateBinding } from "@projector/core";
-import type { StateBindingValidation } from "@projector/core";
-import { currentBuiltInRepresentationProfile, DependencyScopedStateBindingValidator } from "@projector/engine";
-import { RepositoryPathService, withObservationScope } from "@projector/runtime";
+import type { StateBinding } from "@conceptor/core";
+import type { StateBindingValidation } from "@conceptor/core";
+import { currentBuiltInRepresentationProfile, DependencyScopedStateBindingValidator } from "@conceptor/engine";
+import { RepositoryPathService, withObservationScope } from "@conceptor/runtime";
 
 import type { CompiledRepositoryChange } from "./compiler.js";
 import { repositoryImpactProofHash } from "../impact/service.js";
@@ -50,7 +50,7 @@ export async function validateCompiledRepositoryChangeCurrentness(input: {
           return withObservationScope(input.signal === undefined ? {} : { signal: input.signal }, async (scope) => {
             const { independentValidator: _validator, ...data } = observation;
             const snapshot = await runObservationTask("build-impact", { observation: data }, scope);
-            const prediction = await runObservationTask("predict-impact", { snapshot, editedPaths: input.compiled.exactPatchInput.edits.filter(({ path }) => !path.startsWith(".projector/")).map(({ path }) => path), canonicalChanges: input.compiled.canonicalWrites }, scope);
+            const prediction = await runObservationTask("predict-impact", { snapshot, editedPaths: input.compiled.exactPatchInput.edits.filter(({ path }) => !path.startsWith(".conceptor/")).map(({ path }) => path), canonicalChanges: input.compiled.canonicalWrites }, scope);
             return repositoryImpactProofHash(snapshot, prediction);
           });
         }

@@ -18,7 +18,7 @@ import {
   DerivedObservationBudget,
   observationLimitValue,
   type ObservationLimits,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { parseTomlDocument, stringifyTomlDocument } from "./toml-codec.js";
 import { canonicalEditorSchemaRelativePath } from "./project-schema-bundle.js";
@@ -143,7 +143,7 @@ export async function collectCanonicalSnapshotSources(
   budget = new ObservationBudget(),
   signal?: AbortSignal,
 ): Promise<CanonicalSnapshotSource[]> {
-  const canonicalRoot = join(repositoryRoot, ".projector");
+  const canonicalRoot = join(repositoryRoot, ".conceptor");
   const sources: CanonicalSnapshotSource[] = [];
   for (const path of await canonicalSourceFiles(canonicalRoot, budget, signal)) {
     signal?.throwIfAborted();
@@ -337,7 +337,7 @@ export class CanonicalFileRepository {
   readonly canonicalRoot: string;
 
   constructor(readonly repositoryRoot: string) {
-    this.canonicalRoot = join(repositoryRoot, ".projector");
+    this.canonicalRoot = join(repositoryRoot, ".conceptor");
   }
 
   private pathForNew(kind: SupportedCanonicalKind, id: string, slug: string): string {

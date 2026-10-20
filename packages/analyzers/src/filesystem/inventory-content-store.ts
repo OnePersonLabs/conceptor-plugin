@@ -4,7 +4,7 @@ import { open } from "node:fs/promises";
 import { isAbsolute, join, toNamespacedPath } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { StringDecoder } from "node:string_decoder";
-import { ObservationBudget, ObservationError, hashFramedCanonicalJsonChunks, hashFramedDomain, type ContentHash, type SourceContentCaptureDescriptor } from "@projector/core";
+import { ObservationBudget, ObservationError, hashFramedCanonicalJsonChunks, hashFramedDomain, type ContentHash, type SourceContentCaptureDescriptor } from "@conceptor/core";
 import type { InventoryEntry, InventoryResult } from "./inventory.js";
 
 export interface LegacyInventoryContentDescriptor {

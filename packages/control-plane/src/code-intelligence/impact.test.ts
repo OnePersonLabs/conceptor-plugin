@@ -4,8 +4,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { expect, it, vi } from "vitest";
-import { CodeImpactResultSchema, CodeIndexRunSchema, type CodeSnapshot } from "@projector/core";
-import { SqliteCodeStore, withObservationScope } from "@projector/runtime";
+import { CodeImpactResultSchema, CodeIndexRunSchema, type CodeSnapshot } from "@conceptor/core";
+import { SqliteCodeStore, withObservationScope } from "@conceptor/runtime";
 import { executeCodeOperation, shutdownCodeIndexRuns } from "./service.js";
 import { executeCodeWorker } from "./worker-service.js";
 

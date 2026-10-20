@@ -3,7 +3,7 @@ import { constants } from "node:fs";
 import { open } from "node:fs/promises";
 import { isAbsolute, toNamespacedPath } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { ObservationBudget, ObservationError, hashFramedDomain, type ContentHash, type SourceContentCaptureDescriptor, type SourceContentEntry } from "@projector/core";
+import { ObservationBudget, ObservationError, hashFramedDomain, type ContentHash, type SourceContentCaptureDescriptor, type SourceContentEntry } from "@conceptor/core";
 import { beginSqliteWrite } from "./write-admission.js";
 import { collectUnusedSourceVersions, SourceLifetimeReader } from "./observation-source-lifetime.js";
 

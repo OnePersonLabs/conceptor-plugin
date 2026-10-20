@@ -1,6 +1,6 @@
 # Documentation guide
 
-This guide sets the writing and structure for Projector's user-facing documentation. It is for contributors who add or revise README and `docs/` content.
+This guide sets the writing and structure for Conceptor's user-facing documentation. It is for contributors who add or revise README and `docs/` content.
 
 ## Contents
 
@@ -22,7 +22,7 @@ This guide sets the writing and structure for Projector's user-facing documentat
 - Concepts explain the model and why it exists.
 - Reference pages define exact commands, inputs, outputs, and constraints.
 - FAQ and troubleshooting resolve common questions and failures.
-- Development material targets Projector contributors.
+- Development material targets Conceptor contributors.
 
 Do not duplicate full procedures across pages. Link to the page that owns the complete explanation.
 
@@ -36,7 +36,7 @@ Give each Mermaid diagram one job and keep the node labels readable. Quote every
 
 ## Keep terms precise
 
-Call `$projector`, `$projector-verify`, `$projector-reconcile`, and `$projector-assimilate` skill invocations. Call `projector context`, `projector check`, and related terminal forms CLI operations. Keep accepted meaning, implementation evidence, retrieved context, and assimilation synthesis distinct.
+Call `$conceptor`, `$conceptor-verify`, `$conceptor-reconcile`, and `$conceptor-assimilate` skill invocations. Call `conceptor context`, `conceptor check`, and related terminal forms CLI operations. Keep accepted meaning, implementation evidence, retrieved context, and assimilation synthesis distinct.
 
 ## Write in the right voice
 
@@ -44,11 +44,11 @@ Use direct, consistent prose for setup steps, operational procedures, CLI refere
 
 ## Orient readers and link onward
 
-Give the README and each substantial guide a manual Contents list. Add one to every guide with six or more main sections. At the end of each guide, link to the next useful reading. Include a brief, factual Related projects note in the README and documentation home so readers can find Projector 4 and Kerf. Keep the note short and secondary to Projector 3; do not turn it into a comparison or duplicate their documentation.
+Give the README and each substantial guide a manual Contents list. Add one to every guide with six or more main sections. At the end of each guide, link to the next useful reading. Include a brief, factual Related projects note in the README and documentation home so readers can find Conceptor 4 and Kerf. Keep the note short and secondary to Conceptor 3; do not turn it into a comparison or duplicate their documentation.
 
 ## Check claims and links
 
-Before publishing a doc change, check all relative links, headings, and fragments. Verify command options against `packages/cli/src/public-command.ts` and invocation names against the skill frontmatter. Verify model claims against `.projector/README.md`, schemas, and current source. Avoid claims that a check establishes more than its evidence.
+Before publishing a doc change, check all relative links, headings, and fragments. Verify command options against `packages/cli/src/public-command.ts` and invocation names against the skill frontmatter. Verify model claims against `.conceptor/README.md`, schemas, and current source. Avoid claims that a check establishes more than its evidence.
 
 The prose checks are advisory. Read every finding in context and correct only issues that improve accuracy or clarity. Keep Mermaid labels quoted and explain every README diagram directly after the code block.
 

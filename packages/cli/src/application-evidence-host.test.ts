@@ -1,7 +1,7 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { once } from "node:events";
 import { describe, expect, it } from "vitest";
-import { applicationEvidenceDependencies, ApplicationEvidenceAssessmentSchema, hashApplicationEvidenceAssessment, type ApplicationEvidenceAssessmentRequest } from "@projector/core";
+import { applicationEvidenceDependencies, ApplicationEvidenceAssessmentSchema, hashApplicationEvidenceAssessment, type ApplicationEvidenceAssessmentRequest } from "@conceptor/core";
 import { createConfiguredApplicationEvidencePort } from "./application-evidence-host.js";
 
 const hash = `sha256:v1:${"a".repeat(64)}` as const;

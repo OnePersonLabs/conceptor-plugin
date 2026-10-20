@@ -1,4 +1,4 @@
-import { withObservationScope } from "@projector/runtime";
+import { withObservationScope } from "@conceptor/runtime";
 import { test } from "vitest";
 
 /** Complete workflows get a generous outer guard; owned work is cancelled and awaited first. */

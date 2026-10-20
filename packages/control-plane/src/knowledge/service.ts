@@ -13,14 +13,14 @@ import {
   type StateQueryDependency,
   type StateValueDependencyRef,
   type DerivedObservationBudget,
-} from "@projector/core";
+} from "@conceptor/core";
 import {
   DependencyScopedStateBindingValidator,
   compileContext,
   compileRelevanceClosure,
   createStateBinding,
-} from "@projector/engine";
-import { currentObservationScope, withObservationScope, withDerivedCacheAdmission, type DerivedCacheWrite } from "@projector/runtime";
+} from "@conceptor/engine";
+import { currentObservationScope, withObservationScope, withDerivedCacheAdmission, type DerivedCacheWrite } from "@conceptor/runtime";
 
 import { observeChangeRepository, observeRepositoryState } from "../change-lifecycle/repository-observer.js";
 import type { ChangeRepositoryObservation } from "../change-lifecycle/repository-observer.js";

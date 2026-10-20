@@ -7,7 +7,7 @@ import {
   type Rule,
   type RuleConflict,
   type SelectorExpr,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { authorityRank } from "../authority/index.js";
 import {

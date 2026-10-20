@@ -8,7 +8,7 @@ import {
   type PlanCheckpoint,
   type StateBinding,
   type ValidatorBinding,
-} from "@projector/core";
+} from "@conceptor/core";
 
 export * from "./change-plan.js";
 export * from "./generated-output-repair.js";

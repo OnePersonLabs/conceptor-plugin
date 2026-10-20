@@ -2,7 +2,7 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import { hashFramedDomain } from "@projector/core";
+import { hashFramedDomain } from "@conceptor/core";
 
 import { RepositoryPathService } from "../security/repository-path.js";
 import { WatchCoordinator, runWatchLifecycle, type AuthenticatedWatchCheckpoint, type WatchCheckpointStore } from "./watch.js";
@@ -27,7 +27,7 @@ describe("operational watch and trust boundary", () => {
   });
 
   it("keeps text/json/markdown/SARIF on one authenticated DTO and fails closed on corrupt JSONL replay", async () => {
-    const report = createOperationalReport({ runId: "run:1", command: "ci", exitProof: { ...proof, blockingInvalidity: true }, evidence, policy: { preset: "govern" }, stateDigest: hashFramedDomain("state", "1"), unavailableFields: ["modelCalls"], findings: [{ code: "governance", title: "Invalid governance", path: ".projector/a.json", severity: "error", evidenceIds: ["e:1"] }] });
+    const report = createOperationalReport({ runId: "run:1", command: "ci", exitProof: { ...proof, blockingInvalidity: true }, evidence, policy: { preset: "govern" }, stateDigest: hashFramedDomain("state", "1"), unavailableFields: ["modelCalls"], findings: [{ code: "governance", title: "Invalid governance", path: ".conceptor/a.json", severity: "error", evidenceIds: ["e:1"] }] });
     for (const format of ["text", "json", "md", "sarif"] as const) expect(renderOperationalReport(report, format)).toContain("Invalid governance");
     const root = await mkdtemp(join(tmpdir(), "projector-telemetry-")); try { const paths = await RepositoryPathService.create(root); const first = await JsonlTelemetryStore.create(paths, "runs.jsonl"); const second = await JsonlTelemetryStore.create(paths, "runs.jsonl"); await Promise.all([first.append(report), second.append(createOperationalReport({ ...report, runId: "run:2", findings: report.findings.map(({ id: omitted, ...finding }) => { void omitted; return finding; }) }))]); const replay = await first.replay(); expect(replay.map(({ sequence }) => sequence)).toEqual([1, 2]); expect(replay[0]?.report.evidence).toHaveProperty("toolchainDigest"); await writeFile(join(root, "runs.jsonl"), `${await readFile(join(root, "runs.jsonl"), "utf8")}{bad\n`); await expect(first.replay()).rejects.toThrow(/corrupt|JSONL/iu); } finally { await rm(root, { recursive: true, force: true }); }
   });

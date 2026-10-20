@@ -1,7 +1,7 @@
-import { readObservationFile } from "@projector/analyzers";
-import { canonicalJson, hashFramedDomain, normalizeRepositoryRelativePath, ObservationError, type ValidatorBinding } from "@projector/core";
-import type { ExternalGovernanceValidatorFinding } from "@projector/engine";
-import { NativeProcessLauncher, RepositoryPathService, withObservationScope, type ProcessLauncher } from "@projector/runtime";
+import { readObservationFile } from "@conceptor/analyzers";
+import { canonicalJson, hashFramedDomain, normalizeRepositoryRelativePath, ObservationError, type ValidatorBinding } from "@conceptor/core";
+import type { ExternalGovernanceValidatorFinding } from "@conceptor/engine";
+import { NativeProcessLauncher, RepositoryPathService, withObservationScope, type ProcessLauncher } from "@conceptor/runtime";
 import { z } from "zod";
 
 import type { ChangeRepositoryObservation } from "../change-lifecycle/repository-observer.js";

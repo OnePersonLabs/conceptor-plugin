@@ -8,8 +8,8 @@ import { buildPluginRuntime } from "./build-plugin-runtime.mjs";
 
 const repositoryRoot = fileURLToPath(new URL("..", import.meta.url));
 const pluginParent = join(repositoryRoot, ".build/local-marketplace/plugins");
-const pluginRoot = join(pluginParent, "projector-v3");
-const shippingRoot = join(repositoryRoot, "plugins/projector-v3");
+const pluginRoot = join(pluginParent, "conceptor-v3");
+const shippingRoot = join(repositoryRoot, "plugins/conceptor-v3");
 
 async function existingDirectory(path) {
   try {
@@ -59,7 +59,7 @@ export async function publishLocalBundle(staged, destination) {
 
 export async function prepareLocalMarketplace() {
   await assertOwnedParent();
-  if (await realpath(shippingRoot) !== join(await realpath(repositoryRoot), "plugins/projector-v3")) throw new Error("shipping plugin path escapes the repository");
+  if (await realpath(shippingRoot) !== join(await realpath(repositoryRoot), "plugins/conceptor-v3")) throw new Error("shipping plugin path escapes the repository");
   const staged = join(pluginParent, `.projector-next-${randomUUID()}`);
   const stagedRuntime = join(pluginParent, `.projector-runtime-next-${randomUUID()}`);
   try {

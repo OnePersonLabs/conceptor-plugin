@@ -1,4 +1,4 @@
-import { canonicalJson, hashFramedDomain, type CompletionContract, type ContentHash, type ExecutionCapsule, type ExecutionPlan, type RepresentationProjectionRef, type SemanticChange, type StateBinding, type WorkPacket } from "@projector/core";
+import { canonicalJson, hashFramedDomain, type CompletionContract, type ContentHash, type ExecutionCapsule, type ExecutionPlan, type RepresentationProjectionRef, type SemanticChange, type StateBinding, type WorkPacket } from "@conceptor/core";
 
 import { createExecutionCapsule, createExecutionPlan } from "./index.js";
 

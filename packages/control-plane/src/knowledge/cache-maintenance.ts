@@ -1,5 +1,5 @@
 import { basename } from "node:path";
-import { SqliteCodeStore, checkDerivedCacheBudget, tryWithProjectExclusiveAccess, withDerivedCacheAdmission, withObservationScope, type DerivedCacheBudget, type DerivedCacheEntry } from "@projector/runtime";
+import { SqliteCodeStore, checkDerivedCacheBudget, tryWithProjectExclusiveAccess, withDerivedCacheAdmission, withObservationScope, type DerivedCacheBudget, type DerivedCacheEntry } from "@conceptor/runtime";
 import { readRepositoryImpactSnapshot, type RepositoryImpactReference } from "../impact/service.js";
 import { readProtectedKnowledgeContextIds } from "./cache-protection.js";
 import { KnowledgeContextStore } from "./store.js";
@@ -48,7 +48,7 @@ export async function maintainDerivedCache(root: string, options: DerivedCacheMa
         if (entry !== undefined) { retained.delete(path); retainedBytes -= entry.bytes; }
       };
       for (const id of protectedIds) {
-        const path = `.projector/runtime/knowledge/contexts/${id.slice("knowledge_context_".length)}.json`;
+        const path = `.conceptor/runtime/knowledge/contexts/${id.slice("knowledge_context_".length)}.json`;
         const entry = entries.get(path);
         if (entry === undefined) throw new Error(`Protected context ${id} is missing; recover or refresh its lifecycle before cache maintenance`);
         protectedPaths.add(path);
@@ -65,7 +65,7 @@ export async function maintainDerivedCache(root: string, options: DerivedCacheMa
         const id = `knowledge_context_${basename(entry.relativePath, ".json")}`;
         const context = await store.read(id, false);
         if (context.impactBaseline !== undefined) {
-          const dependency = `.projector/runtime/impact/${context.impactBaseline.contentHash.slice("sha256:v1:".length)}.json`;
+          const dependency = `.conceptor/runtime/impact/${context.impactBaseline.contentHash.slice("sha256:v1:".length)}.json`;
           const snapshot = entries.get(dependency);
           if (snapshot === undefined) throw new Error(`Retained context ${id} is missing its impact dependency; refresh it before cache maintenance`);
           const prior = references.get(dependency);

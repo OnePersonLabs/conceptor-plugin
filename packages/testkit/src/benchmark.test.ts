@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { access } from "node:fs/promises";
-import { hashFramedDomain } from "@projector/core";
+import { hashFramedDomain } from "@conceptor/core";
 import { BENCHMARK_GATE_REGISTRY, REQUIRED_BENCHMARK_GATES, benchmarkGatePassed, createBenchmarkCaseCorpus, createBenchmarkCaseObservation, deriveBenchmarkCorpusMeasurement, validateBenchmarkMetrics, verifyBenchmarkTestReport, type BenchmarkCaseEvaluator, type BenchmarkMetricResult } from "./benchmark.js";
 
 const digest = hashFramedDomain("benchmark-test", "fixture");

@@ -1,6 +1,6 @@
-import { observationGit } from "@projector/analyzers";
-import { hashFramedDomain, DerivedObservationBudget, type ContentHash } from "@projector/core";
-import { type ObservationScope, type CanonicalSnapshotSource } from "@projector/runtime";
+import { observationGit } from "@conceptor/analyzers";
+import { hashFramedDomain, DerivedObservationBudget, type ContentHash } from "@conceptor/core";
+import { type ObservationScope, type CanonicalSnapshotSource } from "@conceptor/runtime";
 import { collectImmutableCanonicalSources } from "../integration/git-integration.js";
 
 export interface ClosedCanonicalInputs { targetObject: string; targetTree: string; sources: CanonicalSnapshotSource[]; files: Record<string, ContentHash>; members: Array<{ id: string }>; issues: string[] }

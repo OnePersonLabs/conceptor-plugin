@@ -5,8 +5,8 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 
 import { describe, expect, it, vi } from "vitest";
-import { hashFramedDomain, withCanonicalHashes } from "@projector/core";
-import { CanonicalFileRepository, withObservationScope } from "@projector/runtime";
+import { hashFramedDomain, withCanonicalHashes } from "@conceptor/core";
+import { CanonicalFileRepository, withObservationScope } from "@conceptor/runtime";
 import * as observationTasks from "../observation/task-runner.js";
 
 import { observeChangeRepository, observeRepositoryState } from "./repository-observer.js";
@@ -88,11 +88,11 @@ describe("change repository observer", () => {
     const root = await repository();
     try {
       const before = await observeChangeRepository(root);
-      await mkdir(join(root, ".projector", "runtime", "change-lifecycles"), { recursive: true });
-      await writeFile(join(root, ".projector", "runtime", "change-lifecycles", "noise.json"), "{\"attempt\":1}\n");
+      await mkdir(join(root, ".conceptor", "runtime", "change-lifecycles"), { recursive: true });
+      await writeFile(join(root, ".conceptor", "runtime", "change-lifecycles", "noise.json"), "{\"attempt\":1}\n");
       const operationalNoise = await observeChangeRepository(root);
       expect(operationalNoise.state).toEqual(before.state);
-      expect(operationalNoise.analysis.files.some(({ path }) => path.startsWith(".projector/runtime/"))).toBe(false);
+      expect(operationalNoise.analysis.files.some(({ path }) => path.startsWith(".conceptor/runtime/"))).toBe(false);
 
       await writeFile(join(root, "src", "greeting.mjs"), "export const greet = () => 'hi';\n");
       const changed = await observeChangeRepository(root);

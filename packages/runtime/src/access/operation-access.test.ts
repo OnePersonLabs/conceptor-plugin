@@ -21,21 +21,21 @@ describe("withProjectOperationAccess", () => {
     const root = await readyProject();
     await withProjectOperationAccess(root, { operation: "reader", mode: "shared" }, async () => {
       expect(await tryWithProjectExclusiveAccess(root, "maintenance", async () => "unexpected")).toEqual({ acquired: false });
-      expect(await readdir(join(root, ".projector/runtime/operation-access/requests"))).toEqual([]);
+      expect(await readdir(join(root, ".conceptor/runtime/operation-access/requests"))).toEqual([]);
     });
     expect(await tryWithProjectExclusiveAccess(root, "maintenance", async (access) => {
       await access.assertOwned();
       return "collected";
     })).toEqual({ acquired: true, value: "collected" });
-    expect(await readdir(join(root, ".projector/runtime/operation-access/holders"))).toEqual([]);
+    expect(await readdir(join(root, ".conceptor/runtime/operation-access/holders"))).toEqual([]);
   });
   it("identifies the exact machine-owned files for a held claim", async () => {
     const root = await readyProject();
     await withProjectOperationAccess(root, { operation: "migration", mode: "exclusive" }, async (access) => {
       expect(access.ownedRelativePaths).toHaveLength(2);
-      expect(access.ownedRelativePaths).toContain(".projector/runtime/operation-access/next-ticket");
+      expect(access.ownedRelativePaths).toContain(".conceptor/runtime/operation-access/next-ticket");
       const holder = access.ownedRelativePaths.find((path) => path.includes("/holders/"));
-      expect(holder).toMatch(/^\.projector\/runtime\/operation-access\/holders\/[0-9a-f-]+\.json$/u);
+      expect(holder).toMatch(/^\.conceptor\/runtime\/operation-access\/holders\/[0-9a-f-]+\.json$/u);
       expect(await readFile(join(root, ...holder!.split("/")), "utf8")).toContain('"mode":"exclusive"');
     });
   });
@@ -83,7 +83,7 @@ describe("withProjectOperationAccess", () => {
 
   it("fails closed when a persisted access claim is corrupt", async () => {
     const root = await readyProject();
-    const holders = join(root, ".projector", "runtime", "operation-access", "holders");
+    const holders = join(root, ".conceptor", "runtime", "operation-access", "holders");
     await mkdir(holders, { recursive: true });
     await writeFile(join(holders, "not-a-valid-claim.json"), "{broken");
 
@@ -94,7 +94,7 @@ describe("withProjectOperationAccess", () => {
 
   it("fails closed when persisted claims have an ambiguous ticket order", async () => {
     const root = await readyProject();
-    const access = join(root, ".projector", "runtime", "operation-access");
+    const access = join(root, ".conceptor", "runtime", "operation-access");
     await mkdir(join(access, "requests"), { recursive: true });
     await mkdir(join(access, "holders"), { recursive: true });
     await writeFile(join(access, "next-ticket"), "2\n");
@@ -118,7 +118,7 @@ describe("withProjectOperationAccess", () => {
 
   it("reports an abandoned holder for recovery instead of waiting forever", async () => {
     const root = await readyProject();
-    const access = join(root, ".projector", "runtime", "operation-access");
+    const access = join(root, ".conceptor", "runtime", "operation-access");
     await mkdir(join(access, "requests"), { recursive: true });
     await mkdir(join(access, "holders"), { recursive: true });
     await writeFile(join(access, "next-ticket"), "1\n");
@@ -137,7 +137,7 @@ describe("withProjectOperationAccess", () => {
     const root = await readyProject();
 
     await expect(withProjectOperationAccess(root, { operation: "inspect", mode: "shared" }, async ({ signal }) => {
-      const holders = join(root, ".projector", "runtime", "operation-access", "holders");
+      const holders = join(root, ".conceptor", "runtime", "operation-access", "holders");
       const [name] = await readdir(holders);
       await writeFile(join(holders, name!), "{broken");
       await new Promise<void>((resolve) => signal.addEventListener("abort", () => resolve(), { once: true }));
@@ -173,7 +173,7 @@ describe("withProjectOperationAccess", () => {
         async () => undefined,
       );
       await waitForRequestCount(root, 1);
-      const requests = join(root, ".projector", "runtime", "operation-access", "requests");
+      const requests = join(root, ".conceptor", "runtime", "operation-access", "requests");
       const [name] = await readdir(requests);
       const claimPath = join(requests, name!);
       const initial = JSON.parse(await readFile(claimPath, "utf8")) as { heartbeatAt: string };
@@ -200,7 +200,7 @@ describe("withProjectOperationAccess", () => {
 
   it("heartbeats a held claim and stops the heartbeat before release", async () => {
     const root = await readyProject();
-    const holders = join(root, ".projector", "runtime", "operation-access", "holders");
+    const holders = join(root, ".conceptor", "runtime", "operation-access", "holders");
     let claimPath = "";
 
     await withProjectOperationAccess(root, { operation: "long-inspection", mode: "shared" }, async () => {
@@ -227,7 +227,7 @@ describe("withProjectOperationAccess", () => {
         expect(await tryWithProjectExclusiveAccess(root, "maintenance", async () => "unexpected"))
           .toEqual({ acquired: false });
         await access.assertOwned();
-        const holders = join(root, ".projector", "runtime", "operation-access", "holders");
+        const holders = join(root, ".conceptor", "runtime", "operation-access", "holders");
         const [name] = await readdir(holders);
         const refreshed = JSON.parse(await readFile(join(holders, name!), "utf8")) as { heartbeatAt: string };
         expect(new Date(refreshed.heartbeatAt).getTime()).toBeGreaterThanOrEqual(start + 31_000);
@@ -240,7 +240,7 @@ describe("withProjectOperationAccess", () => {
   it("removes only expired claims from processes that have exited", async () => {
     const root = await readyProject();
     await withProjectOperationAccess(root, { operation: "initialize-access", mode: "shared" }, async () => undefined);
-    const access = join(root, ".projector", "runtime", "operation-access");
+    const access = join(root, ".conceptor", "runtime", "operation-access");
     const requestId = "00000000-0000-4000-8000-000000000001";
     const exited = spawn(process.execPath, ["--eval", ""]);
     const exitedProcessId = exited.pid!;
@@ -262,7 +262,7 @@ describe("withProjectOperationAccess", () => {
   it("recovers an abandoned mutex and interrupted heartbeat for a dead holder", async () => {
     const root = await readyProject();
     await withProjectOperationAccess(root, { operation: "initialize-access", mode: "shared" }, async () => undefined);
-    const access = join(root, ".projector", "runtime", "operation-access");
+    const access = join(root, ".conceptor", "runtime", "operation-access");
     const requestId = "00000000-0000-4000-8000-000000000003";
     const exited = spawn(process.execPath, ["--eval", ""]);
     const exitedProcessId = exited.pid!;
@@ -289,7 +289,7 @@ describe("withProjectOperationAccess", () => {
   it("preserves an abandoned mutex and interrupted heartbeat when the holder process is alive", async () => {
     const root = await readyProject();
     await withProjectOperationAccess(root, { operation: "initialize-access", mode: "shared" }, async () => undefined);
-    const access = join(root, ".projector", "runtime", "operation-access");
+    const access = join(root, ".conceptor", "runtime", "operation-access");
     const requestId = "00000000-0000-4000-8000-000000000004";
     const claimPath = join(access, "holders", `${requestId}.json`);
     await writeClaim(claimPath, { requestId, ticket: 2, operation: "slow-reconcile", mode: "shared" }, "2000-01-01T00:00:00.000Z", process.pid);
@@ -310,7 +310,7 @@ describe("withProjectOperationAccess", () => {
   it("refuses to guess ownership of an abandoned mutex without an interrupted heartbeat", async () => {
     const root = await readyProject();
     await withProjectOperationAccess(root, { operation: "initialize-access", mode: "shared" }, async () => undefined);
-    const mutex = join(root, ".projector", "runtime", "operation-access", "mutex");
+    const mutex = join(root, ".conceptor", "runtime", "operation-access", "mutex");
     await mkdir(mutex);
     await utimes(mutex, new Date("2000-01-01T00:00:00.000Z"), new Date("2000-01-01T00:00:00.000Z"));
 
@@ -321,7 +321,7 @@ describe("withProjectOperationAccess", () => {
   it("refuses to remove an expired claim while its recorded process is alive", async () => {
     const root = await readyProject();
     await withProjectOperationAccess(root, { operation: "initialize-access", mode: "shared" }, async () => undefined);
-    const access = join(root, ".projector", "runtime", "operation-access");
+    const access = join(root, ".conceptor", "runtime", "operation-access");
     const requestId = "00000000-0000-4000-8000-000000000002";
     const claimPath = join(access, "holders", `${requestId}.json`);
     await writeClaim(claimPath, {
@@ -342,13 +342,13 @@ describe("withProjectOperationAccess", () => {
     await expect(
       withProjectOperationAccess(root, { operation: "inspect", mode: "shared" }, async () => undefined),
     ).rejects.toBeInstanceOf(OperationAccessError);
-    await expect(stat(join(root, ".projector"))).rejects.toMatchObject({ code: "ENOENT" });
+    await expect(stat(join(root, ".conceptor"))).rejects.toMatchObject({ code: "ENOENT" });
   });
 });
 
 async function readyProject(): Promise<string> {
   const root = await mkdtemp(join(tmpdir(), "projector-operation-access-"));
-  await mkdir(join(root, ".projector"));
+  await mkdir(join(root, ".conceptor"));
   return root;
 }
 
@@ -419,7 +419,7 @@ async function waitForHeartbeatAfter(path: string, initial: string): Promise<voi
 
 async function requestCount(root: string): Promise<number> {
   const { readdir } = await import("node:fs/promises");
-  const path = join(root, ".projector", "runtime", "operation-access", "requests");
+  const path = join(root, ".conceptor", "runtime", "operation-access", "requests");
   try { return (await readdir(path)).length; }
   catch (error) {
     if (error instanceof Error && "code" in error && error.code === "ENOENT") return 0;

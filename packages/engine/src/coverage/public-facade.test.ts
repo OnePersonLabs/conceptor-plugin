@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import * as coverage from "@projector/engine/coverage";
+import * as coverage from "@conceptor/engine/coverage";
 
 describe("coverage public facade", () => {
   it("exports the built composition surface", () => {

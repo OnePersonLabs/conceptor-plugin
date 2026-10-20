@@ -1,7 +1,7 @@
 import { mkdir, mkdtemp, open, rename, rm } from "node:fs/promises";
 import { join } from "node:path";
-import { canonicalJson, type ContentHash } from "@projector/core";
-import type { DurableArtifactSetStore } from "@projector/runtime";
+import { canonicalJson, type ContentHash } from "@conceptor/core";
+import type { DurableArtifactSetStore } from "@conceptor/runtime";
 
 /** Copies complete immutable evidence. Temporary delivery bytes carry no recovery or approval authority. */
 export async function retainImmutableRecord<T extends { contentHash: ContentHash }>(store: DurableArtifactSetStore<T>, artifactSetId: string, record: T) {

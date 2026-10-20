@@ -1,4 +1,4 @@
-import { authorizeRepositoryPath, canonicalJson, compileWriteAuthorization, hashFramedDomain, type ContentHash, type ExecutionCapsule, type ExecutionPlan, type RiskClass, type StateDigest, type WorkPacket } from "@projector/core";
+import { authorizeRepositoryPath, canonicalJson, compileWriteAuthorization, hashFramedDomain, type ContentHash, type ExecutionCapsule, type ExecutionPlan, type RiskClass, type StateDigest, type WorkPacket } from "@conceptor/core";
 
 const compare = (left: string, right: string): number => left < right ? -1 : left > right ? 1 : 0;
 const unique = (values: readonly string[]): string[] => [...new Set(values)].sort(compare);

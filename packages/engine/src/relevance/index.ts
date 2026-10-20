@@ -15,7 +15,7 @@ import {
   type StateDigest,
   type StateQueryDependency,
   type StateValueDependencyRef,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { createStateBinding } from "../state/index.js";
 

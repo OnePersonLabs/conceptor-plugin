@@ -10,10 +10,10 @@ import {
   type ChangeProposal,
   type ContentHash,
   type ExecutionCapsule,
-} from "@projector/core";
-import { executionCapsuleHash, type BuiltInRepresentationProfileKey } from "@projector/engine";
-import { publishPreparedStateBoundChangeSuccess, type StateBoundChangeResult } from "@projector/engine";
-import { FileTransactionJournal, GovernedWorktreeRuntime, RepositoryPathService, WriterLeaseManager, withObservationScope } from "@projector/runtime";
+} from "@conceptor/core";
+import { executionCapsuleHash, type BuiltInRepresentationProfileKey } from "@conceptor/engine";
+import { publishPreparedStateBoundChangeSuccess, type StateBoundChangeResult } from "@conceptor/engine";
+import { FileTransactionJournal, GovernedWorktreeRuntime, RepositoryPathService, WriterLeaseManager, withObservationScope } from "@conceptor/runtime";
 
 import { compileRepositoryChange, type CompiledRepositoryChange } from "./compiler.js";
 import { executeCompiledRepositoryChange } from "./executor.js";

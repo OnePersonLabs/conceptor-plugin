@@ -1,5 +1,5 @@
 # Preserve authenticated release artifacts and deterministic generated inventories.
-.projector/**/*.toml text eol=lf
+.conceptor/**/*.toml text eol=lf
 release/**/*.json text eol=lf
 release/**/*.mjs text eol=lf
 release/**/*.md text eol=lf
@@ -9,4 +9,4 @@ release/project-data-migrations/artifacts/legacy-unversioned-to-baseline.mjs -te
 release/project-data-migrations/artifacts/legacy-unversioned-baseline-validation.mjs -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
 
 # The prepared plugin carries exact third-party runtime bytes for standalone use.
-plugins/projector-v3/runtime/projector/node_modules/** binary
+plugins/conceptor-v3/runtime/conceptor/node_modules/** binary

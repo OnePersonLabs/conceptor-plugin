@@ -11,7 +11,7 @@ import {
   type SemanticChange,
   type StateBinding,
   type ValidationResult,
-} from "@projector/core";
+} from "@conceptor/core";
 import { createStateBinding } from "../state/index.js";
 
 const compare = (left: string, right: string): number => left < right ? -1 : left > right ? 1 : 0;

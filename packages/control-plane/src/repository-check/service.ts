@@ -4,15 +4,15 @@ import { lstat, mkdir, open, realpath, rename, rm } from "node:fs/promises";
 import { dirname } from "node:path";
 import { promisify } from "node:util";
 
-import { CodeImpactResultSchema, ContentHashSchema, DEFAULT_OBSERVATION_LIMITS, ProjectorOperationInputSchemas, canonicalJson, hashFramedDomain, observationLimitValue } from "@projector/core";
-import { RepositoryPathService, SqliteCodeStore, currentObservationScope, withObservationScope } from "@projector/runtime";
+import { CodeImpactResultSchema, ContentHashSchema, DEFAULT_OBSERVATION_LIMITS, ProjectorOperationInputSchemas, canonicalJson, hashFramedDomain, observationLimitValue } from "@conceptor/core";
+import { RepositoryPathService, SqliteCodeStore, currentObservationScope, withObservationScope } from "@conceptor/runtime";
 import { z } from "zod";
 import { observeIndexedRepository } from "../change-lifecycle/indexed-observer.js";
 import { runObservationTask } from "../observation/task-runner.js";
 
 const gitExec = promisify(execFile);
-const cachePath = ".projector/runtime/repository-check/state.json";
-const lockPath = ".projector/runtime/repository-check/check.lock";
+const cachePath = ".conceptor/runtime/repository-check/state.json";
+const lockPath = ".conceptor/runtime/repository-check/check.lock";
 const semanticBaselineOwner = "repository-check:baseline";
 const pathSchema = z.string().min(1).max(4096);
 const headSchema = z.string().regex(/^[a-f0-9]{40,64}$/u).nullable();
@@ -54,7 +54,7 @@ export interface RepositoryCheckOptions {
 }
 
 function included(path: string): boolean {
-  return path !== ".projector/runtime" && !path.startsWith(".projector/runtime/");
+  return path !== ".conceptor/runtime" && !path.startsWith(".conceptor/runtime/");
 }
 function isCode(error: unknown, code: string): boolean {
   return error instanceof Error && "code" in error && error.code === code;
@@ -194,7 +194,7 @@ export async function checkRepository(repositoryRoot: string, rawInput: Input = 
         } finally { observation.close(); }
       });
       semantic = { generation: indexed.generation, affectedPaths: indexed.impact?.affectedPaths ?? [], possiblePaths: indexed.impact?.possiblePaths ?? [], unknowns: [...(baselineMissing ? ["Prior semantic baseline is unavailable; file-level semantic impact before this check is unknown"] : []), ...(indexed.impact?.unknowns ?? [])], truncated: indexed.impact?.truncated ?? false };
-      const pathspec = ["--", ".", ":(exclude).projector/runtime", ":(exclude).projector/runtime/**"];
+      const pathspec = ["--", ".", ":(exclude).conceptor/runtime", ":(exclude).conceptor/runtime/**"];
       const stagedDiff = () => git(["diff", "--cached", "--raw", "--no-abbrev", "--no-renames", "--no-ext-diff", "-z", ...pathspec]);
       const enumerate = async () => {
         const [dirty, indexed, untracked] = await Promise.all([

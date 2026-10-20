@@ -39,9 +39,9 @@ vi.mock("node:child_process",async importOriginal=>{
 import {observeIndexedRepository} from "./indexed-observer.js";
 import {observeChangeRepository,observeRepositoryState} from "./repository-observer.js";
 import {RepositoryKnowledgeService} from "../knowledge/service.js";
-import { DerivedObservationBudget, hashFramedDomain, withCanonicalHashes, type AdapterContext, type AuthorityRecord } from "@projector/core";
-import { createRepositoryScriptLens } from "@projector/engine";
-import { CanonicalFileRepository, SqliteObservationStore } from "@projector/runtime";
+import { DerivedObservationBudget, hashFramedDomain, withCanonicalHashes, type AdapterContext, type AuthorityRecord } from "@conceptor/core";
+import { createRepositoryScriptLens } from "@conceptor/engine";
+import { CanonicalFileRepository, SqliteObservationStore } from "@conceptor/runtime";
 import { KnowledgeGraph, KNOWLEDGE_QUERY_PROGRAMS } from "../knowledge/graph.js";
 import { IndexedKnowledgeGraph } from "../knowledge/indexed-graph.js";
 import { IndexedGovernance } from "../knowledge/indexed-governance.js";
@@ -145,7 +145,7 @@ it("keeps the completed no-Watchman generation after a canceled byte scan",async
   await writeFile(join(root,"src","a.mjs"),"export const a = 4;\n");
   const controller=new AbortController();
   readHook.onRead=path=>{if(path.replaceAll("\\","/").endsWith("/src/a.mjs"))controller.abort(new Error("Canceled scan"));};
-  const {withObservationScope,SqliteObservationStore}=await import("@projector/runtime");
+  const {withObservationScope,SqliteObservationStore}=await import("@conceptor/runtime");
   await expect(withObservationScope({signal:controller.signal},()=>observeIndexedRepository(root))).rejects.toThrow("Canceled scan");
   readHook.onRead=undefined;
   const store=await SqliteObservationStore.open(root);
@@ -269,7 +269,7 @@ it("performs explicit rediscovery after cursor loss and cannot advance a cancele
   const rebuilt=await observeIndexedRepository(root);expect(rebuilt.mode).toBe("rebuild");expect(rebuilt.descriptor.generation).toBeGreaterThan(generation);rebuilt.close();
 });
 it.each([false,true])("preserves the completed baseline when a new directory exceeds admission (child=%s)",async(withFile)=>{
-  const root=await fixture();const {withObservationScope,SqliteObservationStore}=await import("@projector/runtime");
+  const root=await fixture();const {withObservationScope,SqliteObservationStore}=await import("@conceptor/runtime");
   const observed=await withObservationScope({limits:{maxDirectories:2}},()=>observeIndexedRepository(root));const generation=observed.descriptor.generation;observed.close();
   await mkdir(join(root,"src/deep"));if(withFile){await writeFile(join(root,"src/deep/b.mjs"),"export const b = 1;\n");changed(root,"src/deep/b.mjs");}
   const events=feed.events.get(resolve(root))??[];events.push({name:"src/deep",exists:true,type:"d"});feed.events.set(resolve(root),events);

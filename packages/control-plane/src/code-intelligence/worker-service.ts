@@ -32,7 +32,7 @@ import {
   type CodeContextSummary,
   type ContentHash,
   type CodeEdge,
-} from "@projector/core";
+} from "@conceptor/core";
 import {
   TypeScriptCodeProvider,
   discoverTypeScriptProjects,
@@ -42,14 +42,14 @@ import {
   importSemanticDb,
   isBundledRuntimeDependencyPath,
   type InventoryEntry,
-} from "@projector/analyzers";
+} from "@conceptor/analyzers";
 import {
   SqliteCodeStore,
   SqliteCodeEvidenceStore,
   SqliteObservationStore,
   RepositoryPathService,
   resolveDerivedCachePath,
-} from "@projector/runtime";
+} from "@conceptor/runtime";
 import type { IndexedObservationDescriptor } from "../observation/indexed-types.js";
 import { mapV8Coverage } from "./v8-coverage.js";
 
@@ -1059,7 +1059,7 @@ async function executeMeasuredCodeWorker(
     if (request.operation === "code.export") {
       const input = CodeExportRequestSchema.parse(request.input);
       const artifactPath = input.artifactName === undefined ? undefined
-        : await resolveDerivedCachePath(request.repositoryRoot, `.projector/runtime/code/exports/${input.artifactName}`);
+        : await resolveDerivedCachePath(request.repositoryRoot, `.conceptor/runtime/code/exports/${input.artifactName}`);
       return store.withReadSnapshot(() => artifactPath === undefined
         ? exportGraph(store, input)
         : exportGraphArtifact(store, input, artifactPath));

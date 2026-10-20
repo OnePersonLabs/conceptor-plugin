@@ -4,9 +4,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { afterEach, expect, test } from "vitest";
-import { CanonicalFileRepository, canonicalApiVersion, canonicalSchemaVersion } from "@projector/runtime";
-import { withCanonicalHashes } from "@projector/core";
-import { createRepositoryScriptLens } from "@projector/engine";
+import { CanonicalFileRepository, canonicalApiVersion, canonicalSchemaVersion } from "@conceptor/runtime";
+import { withCanonicalHashes } from "@conceptor/core";
+import { createRepositoryScriptLens } from "@conceptor/engine";
 import { assessGitIntegration } from "./git-integration.js";
 
 const execute = promisify(execFile), roots: string[] = [];
@@ -216,7 +216,7 @@ test("accepts content-equivalent squashed results and rejects invalid canonical 
   const squash = await git(f.root, "commit-tree", calculated.resultTree, "-p", f.base, "-m", "squash");
   const report = await assessGitIntegration(f.root, { target: f.target, incoming: f.incoming, result: squash });
   expect(report.contributions.every(c => c.status === "preserved")).toBe(true); expect(report.resultCommit).toBe(squash);
-  await writeFile(join(f.root, ".projector/model/concepts/broken.md"), "not canonical metadata"); const broken = await commit(f.root);
+  await writeFile(join(f.root, ".conceptor/model/concepts/broken.md"), "not canonical metadata"); const broken = await commit(f.root);
   expect((await assessGitIntegration(f.root, { target: f.target, incoming: f.incoming, result: broken })).canonicalValidation.status).toBe("failed");
 });
 test("refuses an included repository merge driver without executing it", async () => {
@@ -243,12 +243,12 @@ test("reports altered code and novel result-only edits", async () => {
 });
 test("accounts for authored config and unchanged-hash relationship records", async () => {
   const f = await fixture(); await git(f.root, "checkout", "-q", f.incoming);
-  await writeFile(join(f.root, ".projector/config.toml"), 'apiVersion = "projector.config/v3"\nenabled = true\nprojectorVersion = "3.0.0"\n');
+  await writeFile(join(f.root, ".conceptor/config.toml"), 'apiVersion = "projector.config/v3"\nenabled = true\nprojectorVersion = "3.0.0"\n');
   const hash = `sha256:v1:${"0".repeat(64)}`;
   const relation = withCanonicalHashes({ apiVersion: canonicalApiVersion, schemaVersion: canonicalSchemaVersion, kind: "relation", id: "relation:link", key: "relation:relation:link", lifecycle: "active", payload: { id: "relation:link", fromId: "concept:base", toId: "concept:incoming", type: "depends-on", sourceClass: "authored", confidence: 1, evidence: [], active: true, semanticHash: hash } });
   await new CanonicalFileRepository(f.root).write(relation); const incoming = await commit(f.root);
   const report = await assessGitIntegration(f.root, { target: f.target, incoming, result: f.target });
-  expect(report.codeContributions).toContainEqual({ side: "incoming", path: ".projector/config.toml", change: "added", status: "lost" });
+  expect(report.codeContributions).toContainEqual({ side: "incoming", path: ".conceptor/config.toml", change: "added", status: "lost" });
   expect(report.contributions).toContainEqual(expect.objectContaining({ entityId: "relation:link", side: "incoming", status: "lost" }));
 });
 test("reports a retained relation to a demonstrably removed canonical identity as invalid", async () => {

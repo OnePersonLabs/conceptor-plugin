@@ -1,4 +1,4 @@
-import { AnalyzerFailureSchema, ContentHashSchema, StateDigestSchema, CodeContextSummarySchema } from "@projector/core";
+import { AnalyzerFailureSchema, ContentHashSchema, StateDigestSchema, CodeContextSummarySchema } from "@conceptor/core";
 import { z } from "zod";
 import {
   KNOWLEDGE_API_VERSION, KnowledgeContextResultSchema, KnowledgeReconciliationResultSchema,

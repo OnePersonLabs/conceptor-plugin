@@ -8,7 +8,7 @@ import {
   type ContentHash,
   type RelevanceClosure,
   type SelectorExpr,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { normalizeSelector } from "../governance/selectors.js";
 

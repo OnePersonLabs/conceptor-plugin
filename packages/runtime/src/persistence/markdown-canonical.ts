@@ -4,7 +4,7 @@ import {
   toCanonicalDocumentWire,
   type CanonicalDocumentEnvelope,
   type CanonicalDocumentWire,
-} from "@projector/core";
+} from "@conceptor/core";
 import { fromMarkdown } from "mdast-util-from-markdown";
 
 import { parseTomlDocument, stringifyTomlDocument } from "./toml-codec.js";

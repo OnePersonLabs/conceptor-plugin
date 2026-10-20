@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 
-import { validateOperationalReport, withObservationScope } from "@projector/runtime";
+import { validateOperationalReport, withObservationScope } from "@conceptor/runtime";
 import { afterEach, describe, expect, test } from "vitest";
 
 import { runReadOnlyOperationalVerification } from "./operational-verification.js";
@@ -85,7 +85,7 @@ describe("read-only operational verification", () => {
   test("reports malformed canonical input as blocking without mutating it", async () => {
     const root = await mkdtemp(join(tmpdir(), "projector-operation-verify-invalid-"));
     roots.push(root);
-    const canonicalDirectory = join(root, ".projector", "model");
+    const canonicalDirectory = join(root, ".conceptor", "model");
     await mkdir(canonicalDirectory, { recursive: true });
     const malformed = join(canonicalDirectory, "invalid.toml");
     await writeFile(malformed, "not = [valid\n");

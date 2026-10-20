@@ -23,7 +23,7 @@ const evidence = (id: string, path = "src/value.ts") => ({
 test("migrates existing observations once and pages addressed ranges without losing duplicates", async () => {
   const root = await mkdtemp(join(tmpdir(), "projector-evidence-store-")); roots.push(root);
   process.env.PROJECTOR_CACHE_DIRECTORY = join(root, "cache");
-  const legacyPath = await resolveDerivedCachePath(root, ".projector/runtime/code/evidence.json");
+  const legacyPath = await resolveDerivedCachePath(root, ".conceptor/runtime/code/evidence.json");
   await mkdir(dirname(legacyPath), { recursive: true });
   const legacy = { evidence: [evidence("a"), evidence("b", "src/other.ts")], bridges: [] };
   await writeFile(legacyPath, JSON.stringify(legacy));

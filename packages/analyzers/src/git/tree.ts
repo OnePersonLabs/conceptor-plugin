@@ -1,4 +1,4 @@
-import { DerivedObservationBudget, ObservationBudget, hashFramedDomain } from "@projector/core";
+import { DerivedObservationBudget, ObservationBudget, hashFramedDomain } from "@conceptor/core";
 import { analyzeCollectedLocalRepository, type LocalRepositoryAnalysis } from "../local-repository.js";
 import { type InventoryEntry, type InventoryResult } from "../filesystem/inventory.js";
 import { checkObservation, observationGitBytes, observationGit } from "../filesystem/observation-io.js";
@@ -13,7 +13,7 @@ export async function analyzeGitTree(root: string, tree: string, budget: Observa
     const match = /^(\d+) (\w+) ([a-f0-9]+)\t([\s\S]+)$/.exec(record);
     if (!match) throw new Error("Malformed immutable Git tree entry");
     const path = match[4]!;
-    if (path === ".projector" || path.startsWith(".projector/") || path.startsWith(".git/") || path.startsWith(".worktrees/")) continue;
+    if (path === ".conceptor" || path.startsWith(".conceptor/") || path.startsWith(".git/") || path.startsWith(".worktrees/")) continue;
     budget.consume("maxFiles", 1, "git-tree-analysis", path);
     derived.reserve(256 + record.length * 2, "git-tree-analysis", path);
     objects.push({ path, oid: match[3]!, mode: match[1]!, type: match[2]! });
@@ -51,6 +51,6 @@ export async function analyzeGitTree(root: string, tree: string, budget: Observa
     }
     if (offset !== bytes.length) throw new Error("Unexpected immutable blob trailing bytes");
   }
-  const inventoryResult: InventoryResult = { entries, failures, rootAvailability: "available", observationDescriptor: { schemaVersion: "projector.observation/v1", observerVersion: "3.0.0", scope: ".", enumerationMethod: "git-immutable-tree", limits: budget.limits, ignoreSources: [], excludedPaths: [".projector", ".git", ".worktrees"], globalGitConfig: "disabled" }, enumeration: { method: "git-immutable-tree", assumptions: ["All ordinary tracked blobs in the immutable tree are enumerated; checkout ignore rules are irrelevant"], blindSpots: ["Submodule contents", "runtime dependency resolution"] } };
+  const inventoryResult: InventoryResult = { entries, failures, rootAvailability: "available", observationDescriptor: { schemaVersion: "projector.observation/v1", observerVersion: "3.0.0", scope: ".", enumerationMethod: "git-immutable-tree", limits: budget.limits, ignoreSources: [], excludedPaths: [".conceptor", ".git", ".worktrees"], globalGitConfig: "disabled" }, enumeration: { method: "git-immutable-tree", assumptions: ["All ordinary tracked blobs in the immutable tree are enumerated; checkout ignore rules are irrelevant"], blindSpots: ["Submodule contents", "runtime dependency resolution"] } };
   return analyzeCollectedLocalRepository({ options: { repositoryRoot: root, observationRevision: tree }, inventoryResult, gitFacts: { availability: "available", revision: tree, identities: objects.map(object => ({ sourceClass: "observed", path: object.path, tracked: true, availability: "available", introductionHistory: "unavailable", objectId: object.oid })), moves: [], failures: [] } }, derived);
 }

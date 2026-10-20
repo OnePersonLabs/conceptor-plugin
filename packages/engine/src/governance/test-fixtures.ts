@@ -5,7 +5,7 @@ import {
   type ProjectionUnit,
   type Rule,
   type SelectorExpr,
-} from "@projector/core";
+} from "@conceptor/core";
 
 const hash = (label: string) => hashFramedDomain("task-7-test-fixture", label);
 

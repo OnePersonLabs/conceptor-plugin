@@ -1,4 +1,4 @@
-import { hashSemantic, type ArchitectureDecision, type AuthorityRecord, type SelectorExpr } from "@projector/core";
+import { hashSemantic, type ArchitectureDecision, type AuthorityRecord, type SelectorExpr } from "@conceptor/core";
 import { describe, expect, it, vi } from "vitest";
 
 import { acceptArchitectureDecisions, convergeDecisionGroup, type SemanticGovernanceTransactionPort } from "./governance.js";

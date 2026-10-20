@@ -1,10 +1,10 @@
 import { createHash, randomUUID } from "node:crypto";
 import { lstat, mkdir, opendir, realpath } from "node:fs/promises";
 import { isAbsolute, join, relative, resolve, sep } from "node:path";
-import { canonicalJson, hashFramedDomain, DerivedObservationBudget, ObservationBudget, BuiltinVerificationRequestSchema, BuiltinVerificationEvidenceSchema, RelationSchema, type BuiltinVerificationRequest, type BuiltinVerificationEvidence, type StateBinding, type Relation } from "@projector/core";
-import { observationGit } from "@projector/analyzers";
-import { createStateBinding, DependencyScopedStateBindingValidator, InMemoryGraphReader, QueryDependencyRegistry } from "@projector/engine";
-import { DurableArtifactSetStore, currentObservationScope, parseCanonicalSnapshotSources, withObservationScope, type ObservationScope } from "@projector/runtime";
+import { canonicalJson, hashFramedDomain, DerivedObservationBudget, ObservationBudget, BuiltinVerificationRequestSchema, BuiltinVerificationEvidenceSchema, RelationSchema, type BuiltinVerificationRequest, type BuiltinVerificationEvidence, type StateBinding, type Relation } from "@conceptor/core";
+import { observationGit } from "@conceptor/analyzers";
+import { createStateBinding, DependencyScopedStateBindingValidator, InMemoryGraphReader, QueryDependencyRegistry } from "@conceptor/engine";
+import { DurableArtifactSetStore, currentObservationScope, parseCanonicalSnapshotSources, withObservationScope, type ObservationScope } from "@conceptor/runtime";
 import { validateCanonicalRelationEndpoints, validateStaticCanonicalGovernance } from "../knowledge/canonical-governance.js";
 import { collectClosedCanonicalInputs, type ClosedCanonicalInputs } from "./builtin-inputs.js";
 import { captureBuiltinProducer, resolveHostGitExecutable } from "./builtin-producer.js";
@@ -55,7 +55,7 @@ export class BuiltinVerificationService {
       { kind: "adapter" as const, id: "builtin-host-trust-policy", versionHash: trustPolicyHash, role: "current host-selected check trust" },
     ];
     const queries = new QueryDependencyRegistry(new InMemoryGraphReader(), false);
-    queries.register({ id: "projector.canonical-source-population", version: "1", kind: "surface-enumeration", normalizeInput: () => ({ scope: ".projector", selection: builtinCanonicalCheck }), evaluate: () => ({ results: inputs.members, observability: "closed", assumptions: ["Complete successful immutable Git tree enumeration under configured host-trusted Git transport"], unavailableLanes: [], dependencyKeys: ["canonical-source-population", "canonical-config-presence"] }) });
+    queries.register({ id: "projector.canonical-source-population", version: "1", kind: "surface-enumeration", normalizeInput: () => ({ scope: ".conceptor", selection: builtinCanonicalCheck }), evaluate: () => ({ results: inputs.members, observability: "closed", assumptions: ["Complete successful immutable Git tree enumeration under configured host-trusted Git transport"], unavailableLanes: [], dependencyKeys: ["canonical-source-population", "canonical-config-presence"] }) });
     const query = queries.createSpec({ id: "builtin-canonical-source-population", programId: "projector.canonical-source-population", input: {} });
     const context = { repositoryRoot: this.root, stateDigest: state, config: {}, signal: scope.signal };
     const binding = createStateBinding({ compiledAgainst: state, valueDependencies: values, queryDependencies: [{ query, priorResult: await queries.evaluate(query, context), role: "Complete canonical population including previously empty and absent config" }] });

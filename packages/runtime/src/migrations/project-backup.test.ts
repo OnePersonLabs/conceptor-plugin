@@ -26,7 +26,7 @@ async function fixture(): Promise<{ repositoryRoot: string; codexDataRoot: strin
   roots.push(root);
   const repositoryRoot = join(root, "repository");
   const codexDataRoot = join(root, "codex-data");
-  await mkdir(join(repositoryRoot, ".projector", "runtime", "journal"), { recursive: true });
+  await mkdir(join(repositoryRoot, ".conceptor", "runtime", "journal"), { recursive: true });
   await mkdir(codexDataRoot);
   return { repositoryRoot, codexDataRoot };
 }
@@ -58,7 +58,7 @@ describe("project migration backup archive", () => {
       ["runtime/state.db-shm", Buffer.from("shm-bytes")],
     ]);
     for (const [relativePath, bytes] of files) {
-      const target = join(repositoryRoot, ".projector", ...relativePath.split("/"));
+      const target = join(repositoryRoot, ".conceptor", ...relativePath.split("/"));
       await mkdir(join(target, ".."), { recursive: true });
       await writeFile(target, bytes);
     }
@@ -84,12 +84,12 @@ describe("project migration backup archive", () => {
     expect(result.archiveHash).toBe(hashProjectBackupArchive(archiveBytes));
     expect(syncDirectory).toHaveBeenNthCalledWith(1, codexDataRoot);
     expect(syncDirectory).toHaveBeenNthCalledWith(2, codexDataRoot);
-    for (const [path, bytes] of files) expect(decoded.files.get(`.projector/${path}`)).toEqual(bytes);
+    for (const [path, bytes] of files) expect(decoded.files.get(`.conceptor/${path}`)).toEqual(bytes);
   });
 
   test("preserves a complete recoverable temp archive when interrupted before namespace publication", async () => {
     const { repositoryRoot, codexDataRoot } = await fixture();
-    await writeFile(join(repositoryRoot, ".projector", "config.toml"), "source\n");
+    await writeFile(join(repositoryRoot, ".conceptor", "config.toml"), "source\n");
     const tempPath = join(codexDataRoot, ".projector-backup-before.temp-001.tmp");
     await expect(createProjectBackup(
       { repositoryRoot, codexDataRoot },
@@ -100,7 +100,7 @@ describe("project migration backup archive", () => {
       },
     )).rejects.toMatchObject({ name: "ProjectBackupError", recoveryPath: tempPath });
     const stagedBytes = await readFile(tempPath);
-    expect(decodeArchive(stagedBytes).files.get(".projector/config.toml")?.toString()).toBe("source\n");
+    expect(decodeArchive(stagedBytes).files.get(".conceptor/config.toml")?.toString()).toBe("source\n");
     await expect(createProjectBackup(
       { repositoryRoot, codexDataRoot },
       { createBackupId: () => "before", createTemporaryId: () => "temp-001" },
@@ -111,7 +111,7 @@ describe("project migration backup archive", () => {
 
   test("recovers an exact published archive interrupted before the required second flush", async () => {
     const { repositoryRoot, codexDataRoot } = await fixture();
-    await writeFile(join(repositoryRoot, ".projector", "config.toml"), "source\n");
+    await writeFile(join(repositoryRoot, ".conceptor", "config.toml"), "source\n");
     const published = join(codexDataRoot, "projector-backup-after.pba");
     await expect(createProjectBackup(
       { repositoryRoot, codexDataRoot },
@@ -128,12 +128,12 @@ describe("project migration backup archive", () => {
     );
     expect(recovered.backupPath).toBe(published);
     expect(flush).toHaveBeenCalledOnce();
-    expect(decodeArchive(await readFile(published)).files.get(".projector/config.toml")?.toString()).toBe("source\n");
+    expect(decodeArchive(await readFile(published)).files.get(".conceptor/config.toml")?.toString()).toBe("source\n");
   });
 
   test("propagates a published-file flush failure and retains the exact recovery archive", async () => {
     const { repositoryRoot, codexDataRoot } = await fixture();
-    await writeFile(join(repositoryRoot, ".projector", "config.toml"), "source\n");
+    await writeFile(join(repositoryRoot, ".conceptor", "config.toml"), "source\n");
     const failure = Object.assign(new Error("device flush failed"), { code: "EIO" });
     const published = join(codexDataRoot, "projector-backup-flush.pba");
     await expect(createProjectBackup(
@@ -144,12 +144,12 @@ describe("project migration backup archive", () => {
         syncPublished: async () => { throw failure; },
       },
     )).rejects.toMatchObject({ name: "ProjectBackupError", recoveryPath: published, cause: failure });
-    expect(decodeArchive(await readFile(published)).files.get(".projector/config.toml")?.toString()).toBe("source\n");
+    expect(decodeArchive(await readFile(published)).files.get(".conceptor/config.toml")?.toString()).toBe("source\n");
   });
 
   test("rejects source changes and published tampering without reporting success", async () => {
     const first = await fixture();
-    const source = join(first.repositoryRoot, ".projector", "config.toml");
+    const source = join(first.repositoryRoot, ".conceptor", "config.toml");
     await writeFile(source, "before\n");
     await expect(createProjectBackup(
       first,
@@ -162,7 +162,7 @@ describe("project migration backup archive", () => {
     await expect(readFile(join(first.codexDataRoot, "projector-backup-changing.pba"))).rejects.toMatchObject({ code: "ENOENT" });
 
     const second = await fixture();
-    await writeFile(join(second.repositoryRoot, ".projector", "config.toml"), "trusted\n");
+    await writeFile(join(second.repositoryRoot, ".conceptor", "config.toml"), "trusted\n");
     await expect(createProjectBackup(
       second,
       {
@@ -175,8 +175,8 @@ describe("project migration backup archive", () => {
 
   test("backs up durable history while its authenticated access and writer heartbeats change", async () => {
     const input = await fixture();
-    await writeFile(join(input.repositoryRoot, ".projector", "config.toml"), "source\n");
-    const journalPath = join(input.repositoryRoot, ".projector", "runtime", "journal", "receipt.json");
+    await writeFile(join(input.repositoryRoot, ".conceptor", "config.toml"), "source\n");
+    const journalPath = join(input.repositoryRoot, ".conceptor", "runtime", "journal", "receipt.json");
     await writeFile(journalPath, "durable receipt\n");
     const paths = await RepositoryPathService.create(input.repositoryRoot);
     const leases = new WriterLeaseManager(paths, { staleAfterMs: 10_000 });
@@ -214,24 +214,24 @@ describe("project migration backup archive", () => {
     );
 
     expect(result.manifest.files.map((file) => file.path)).toEqual([
-      ".projector/config.toml",
-      ".projector/runtime/journal/receipt.json",
+      ".conceptor/config.toml",
+      ".conceptor/runtime/journal/receipt.json",
     ]);
     expect(decodeArchive(await readFile(result.backupPath)).files.get(
-      ".projector/runtime/journal/receipt.json",
+      ".conceptor/runtime/journal/receipt.json",
     )?.toString()).toBe("durable receipt\n");
   });
 
   test("rejects unrecognized claimed exclusions and still detects unrelated runtime mutation", async () => {
     const first = await fixture();
-    await writeFile(join(first.repositoryRoot, ".projector", "config.toml"), "source\n");
+    await writeFile(join(first.repositoryRoot, ".conceptor", "config.toml"), "source\n");
     await expect(createProjectBackup({
       ...first,
       coordination: {
         operationAccess: {
           ownedRelativePaths: [
-            ".projector/runtime/operation-access/next-ticket",
-            ".projector/runtime/journal/receipt.json",
+            ".conceptor/runtime/operation-access/next-ticket",
+            ".conceptor/runtime/journal/receipt.json",
           ],
           assertOwned: async () => undefined,
         },
@@ -241,8 +241,8 @@ describe("project migration backup archive", () => {
     expect(await readdir(first.codexDataRoot)).toEqual([]);
 
     const second = await fixture();
-    await writeFile(join(second.repositoryRoot, ".projector", "config.toml"), "source\n");
-    const evidence = join(second.repositoryRoot, ".projector", "runtime", "journal", "receipt.json");
+    await writeFile(join(second.repositoryRoot, ".conceptor", "config.toml"), "source\n");
+    const evidence = join(second.repositoryRoot, ".conceptor", "runtime", "journal", "receipt.json");
     await writeFile(evidence, "before\n");
     await expect(createProjectBackup(
       second,
@@ -250,7 +250,7 @@ describe("project migration backup archive", () => {
         createBackupId: () => "runtime-changing",
         createTemporaryId: () => "runtime-changing-temp",
         afterFileCopied: async (path) => {
-          if (path === ".projector/config.toml") await writeFile(evidence, "after\n");
+          if (path === ".conceptor/config.toml") await writeFile(evidence, "after\n");
         },
       },
     )).rejects.toThrow(/source changed/i);
@@ -260,7 +260,7 @@ describe("project migration backup archive", () => {
     const linked = await fixture();
     const outside = join(linked.repositoryRoot, "outside.txt");
     await writeFile(outside, "outside");
-    await symlink(outside, join(linked.repositoryRoot, ".projector", "linked.txt"), "file");
+    await symlink(outside, join(linked.repositoryRoot, ".conceptor", "linked.txt"), "file");
     await expect(createProjectBackup(linked, { createBackupId: () => "linked" })).rejects.toThrow(/symbolic link/i);
     expect(await readdir(linked.codexDataRoot)).toEqual([]);
     const linkedDataRoot = join(linked.codexDataRoot, "..", "linked-codex-data");
@@ -272,7 +272,7 @@ describe("project migration backup archive", () => {
     expect(await readdir(linked.codexDataRoot)).toEqual([]);
 
     const collision = await fixture();
-    await writeFile(join(collision.repositoryRoot, ".projector", "config.toml"), "source\n");
+    await writeFile(join(collision.repositoryRoot, ".conceptor", "config.toml"), "source\n");
     const destination = join(collision.codexDataRoot, "projector-backup-collision.pba");
     await writeFile(destination, "foreign bytes");
     await expect(createProjectBackup(collision, { createBackupId: () => "collision" }))
@@ -282,7 +282,7 @@ describe("project migration backup archive", () => {
 
   test("authenticates a recorded backup reference without mutating the archive", async () => {
     const input = await fixture();
-    await writeFile(join(input.repositoryRoot, ".projector", "config.toml"), "source\n");
+    await writeFile(join(input.repositoryRoot, ".conceptor", "config.toml"), "source\n");
     const created = await createProjectBackup(input, {
       createBackupId: () => "verify-001",
       createTemporaryId: () => "temp-001",
@@ -304,7 +304,7 @@ describe("project migration backup archive", () => {
 
   test("rejects missing, tampered, and mismatched recorded backup evidence", async () => {
     const input = await fixture();
-    await writeFile(join(input.repositoryRoot, ".projector", "config.toml"), "source\n");
+    await writeFile(join(input.repositoryRoot, ".conceptor", "config.toml"), "source\n");
     const created = await createProjectBackup(input, {
       createBackupId: () => "verify-002",
       createTemporaryId: () => "temp-001",

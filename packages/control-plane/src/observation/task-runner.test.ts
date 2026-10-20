@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { resolveObservationLimits } from "@projector/core";
-import { withObservationScope } from "@projector/runtime";
+import { resolveObservationLimits } from "@conceptor/core";
+import { withObservationScope } from "@conceptor/runtime";
 import { runObservationTask } from "./task-runner.js";
 import { ResidentObservationWorkerPool, withResidentObservationWorkerPool } from "./resident-pool.js";
 

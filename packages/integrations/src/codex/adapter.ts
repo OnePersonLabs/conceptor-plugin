@@ -1,4 +1,4 @@
-import { hashFramedDomain, type AdapterContext, type ContentHash, type ExecutionCapsule, type RepresentationProjectionRef, type StateBinding, type StateBindingValidator, type StateDigest } from "@projector/core";
+import { hashFramedDomain, type AdapterContext, type ContentHash, type ExecutionCapsule, type RepresentationProjectionRef, type StateBinding, type StateBindingValidator, type StateDigest } from "@conceptor/core";
 
 import { authenticateRepresentationBinding } from "../sessions/index.js";
 

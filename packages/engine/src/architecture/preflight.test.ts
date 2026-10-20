@@ -1,4 +1,4 @@
-import { hashSemantic, type ArchitectureConcern, type ArchitectureDecision, type AuthorityRecord, type ContentHash, type DecisionValidityAssessment, type RelevanceClosure, type SelectorExpr } from "@projector/core";
+import { hashSemantic, type ArchitectureConcern, type ArchitectureDecision, type AuthorityRecord, type ContentHash, type DecisionValidityAssessment, type RelevanceClosure, type SelectorExpr } from "@conceptor/core";
 import { describe, expect, it, vi } from "vitest";
 
 import { auditArchitectureDecisions, explainArchitectureDecision, runArchitecturePreflight } from "./preflight.js";

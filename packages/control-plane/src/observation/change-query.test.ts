@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { resolveObservationLimits } from "@projector/core";
+import { resolveObservationLimits } from "@conceptor/core";
 import { runObservationTask } from "./task-runner.js";
 
 it("cancels a running reverse-import computation and drains its worker", async () => {

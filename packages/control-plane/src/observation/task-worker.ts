@@ -3,7 +3,7 @@ import { hydrateCapturedInventory } from "./source-inventory.js";
 import { assertBoundedObservationData } from "./data-bound.js";
 import type { ObservationTask, ObservationTaskFailure } from "./tasks.js";
 import type { KnowledgeComputeHost, KnowledgeHostRequest } from "./knowledge-host.js";
-import { hashFramedDomain, ObservationError, ObservationBudget, DerivedObservationBudget, observationLimitValue } from "@projector/core";
+import { hashFramedDomain, ObservationError, ObservationBudget, DerivedObservationBudget, observationLimitValue } from "@conceptor/core";
 import type { IndexedObservationDescriptor, IndexedObservationMetadata } from "./indexed-types.js";
 
 function assertIndexedDescriptor(descriptor: IndexedObservationDescriptor, head: { generation: number; contract: string; metadata: unknown } | undefined): asserts head is { generation: number; contract: string; metadata: IndexedObservationMetadata } {
@@ -68,7 +68,7 @@ async function execute(task: ObservationTask, derivedBudget: DerivedObservationB
     case "code-operation": return start((await import("../code-intelligence/worker-service.js")).executeCodeWorker, task.input, deadline, maxDerivedBytes, endSemanticLease);
     case "indexed-knowledge-context":
     case "indexed-knowledge-reconcile": {
-      const { SqliteObservationStore } = await import("@projector/runtime");
+      const { SqliteObservationStore } = await import("@conceptor/runtime");
       const { IndexedKnowledgeGraph } = await import("../knowledge/indexed-graph.js");
       const { IndexedGovernance } = await import("../knowledge/indexed-governance.js");
       const { RepositoryKnowledgeService } = await import("../knowledge/service.js");
@@ -84,7 +84,7 @@ async function execute(task: ObservationTask, derivedBudget: DerivedObservationB
           semantic = await IndexedSemanticGraph.open(descriptor);
           const decisionHost = { now: () => task.input.now, readDecisionBaseline: host.baseline, ...(task.input.acceptedDecisionBaselines === undefined ? {} : { acceptedDecisionBaselines: task.input.acceptedDecisionBaselines }) };
           const graph = new IndexedKnowledgeGraph(descriptor, store, (registry) => new IndexedGovernance(descriptor, store, registry, decisionHost, derivedBudget), derivedBudget, semantic);
-          const failures = store.getAt<import("@projector/core").AnalyzerFailure[]>(descriptor.generation, "knowledge-global", "failures");
+          const failures = store.getAt<import("@conceptor/core").AnalyzerFailure[]>(descriptor.generation, "knowledge-global", "failures");
           if (failures === undefined) throw new Error("Indexed analyzer failure population is missing; rebuild the complete observation");
           const observation = { repositoryRoot: descriptor.repositoryRoot, state: descriptor.metadata.state, analysis: { ...descriptor.metadata.analysisHeader, failures } };
           const result = task.type === "indexed-knowledge-context"
@@ -102,8 +102,8 @@ async function execute(task: ObservationTask, derivedBudget: DerivedObservationB
       });
     }
     case "indexed-graph-query": {
-      const { SqliteObservationStore } = await import("@projector/runtime");
-      const { QueryDependencyRegistry } = await import("@projector/engine");
+      const { SqliteObservationStore } = await import("@conceptor/runtime");
+      const { QueryDependencyRegistry } = await import("@conceptor/engine");
       const { IndexedGraphReader } = await import("../knowledge/indexed-graph-reader.js");
       const { IndexedQueryMemo } = await import("../knowledge/indexed-query.js");
       return start(async () => {
@@ -130,7 +130,7 @@ async function execute(task: ObservationTask, derivedBudget: DerivedObservationB
     }
     case "cache-protection": return start((await import("../knowledge/cache-protection.js")).authenticateCacheProtectionSources, task.input);
     case "analyze-collected": {
-      const { analyzeCollectedLocalRepository } = await import("@projector/analyzers");
+      const { analyzeCollectedLocalRepository } = await import("@conceptor/analyzers");
       return start(() => {
         const hydrated = hydrateCapturedInventory(task.input.collected.inventoryResult);
         try {
@@ -141,7 +141,7 @@ async function execute(task: ObservationTask, derivedBudget: DerivedObservationB
       });
     }
     case "analyze-javascript": {
-      const { analyzeJavaScript } = await import("@projector/analyzers");
+      const { analyzeJavaScript } = await import("@conceptor/analyzers");
       return start(() => {
         const hydrated = hydrateCapturedInventory(task.input.inventory);
         try { return analyzeJavaScript(hydrated.inventory.entries, derivedBudget); }
@@ -149,7 +149,7 @@ async function execute(task: ObservationTask, derivedBudget: DerivedObservationB
       });
     }
     case "analyze-incremental": {
-      const { analyzeCollectedLocalRepository } = await import("@projector/analyzers");
+      const { analyzeCollectedLocalRepository } = await import("@conceptor/analyzers");
       return start(() => {
         const hydrated = hydrateCapturedInventory(task.input.collected.inventoryResult);
         try {
@@ -190,10 +190,10 @@ async function execute(task: ObservationTask, derivedBudget: DerivedObservationB
     case "decision-baseline-data": return start((await import("../knowledge/decision-baseline-data.js")).executeDecisionBaselineData, task.input);
     case "knowledge-context": return start((await import("../knowledge/service.js")).RepositoryKnowledgeService.computeContext, task.input.request, task.input.observation, { now: () => task.input.now, readDecisionBaseline: host.baseline, ...(task.input.acceptedDecisionBaselines === undefined ? {} : { acceptedDecisionBaselines: task.input.acceptedDecisionBaselines }) }, host, derivedBudget);
     case "knowledge-reconcile": return start((await import("../knowledge/service.js")).RepositoryKnowledgeService.computeReconciliation, task.input.retained, task.input.observation, { now: () => task.input.now, readDecisionBaseline: host.baseline, ...(task.input.acceptedDecisionBaselines === undefined ? {} : { acceptedDecisionBaselines: task.input.acceptedDecisionBaselines }) }, host, derivedBudget);
-    case "canonical": return start((await import("@projector/runtime")).parseCanonicalSnapshotSources, task.input.sources, derivedBudget);
+    case "canonical": return start((await import("@conceptor/runtime")).parseCanonicalSnapshotSources, task.input.sources, derivedBudget);
     case "observe": {
-      const { analyzeCollectedLocalRepository } = await import("@projector/analyzers");
-      const { parseCanonicalSnapshotSources } = await import("@projector/runtime");
+      const { analyzeCollectedLocalRepository } = await import("@conceptor/analyzers");
+      const { parseCanonicalSnapshotSources } = await import("@conceptor/runtime");
       const { realizeChangeRepositoryData } = await import("../change-lifecycle/repository-observer.js");
       return start(() => {
         const hydrated = hydrateCapturedInventory(task.input.collected.inventoryResult);

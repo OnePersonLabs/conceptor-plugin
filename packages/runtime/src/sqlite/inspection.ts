@@ -11,7 +11,7 @@ import {
   parseCanonicalJson,
   type CanonicalDocumentEnvelope,
   type ContentHash,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { NativeProcessLauncher, type ProcessLauncher } from "../execution/index.js";
 import { assertSupportedCanonicalVersions } from "../persistence/index.js";

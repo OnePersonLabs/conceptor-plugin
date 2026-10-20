@@ -12,11 +12,11 @@ import {
   type ContentHash,
   type RepresentationProjection,
   type RepresentationProjectionRef,
-} from "@projector/core";
-import { ArtifactSetIncompleteError, DurableArtifactSetStore, RepositoryPathService } from "@projector/runtime";
+} from "@conceptor/core";
+import { ArtifactSetIncompleteError, DurableArtifactSetStore, RepositoryPathService } from "@conceptor/runtime";
 
-const root = ".projector/runtime/representations";
-const publicationRoot = ".projector/runtime/representation-publication";
+const root = ".conceptor/runtime/representations";
+const publicationRoot = ".conceptor/runtime/representation-publication";
 const publicationSchema = z.object({
   path: z.string(), sha256: z.string().regex(/^[a-f0-9]{64}$/u),
   semanticChangeId: z.string().optional(), projectionId: z.string().optional(),
@@ -36,7 +36,7 @@ export interface RepresentationRecoveryOutcome extends Omit<RepresentationPublic
 function validatePublication(bytes: Uint8Array) {
   const source = Buffer.from(bytes).toString("utf8");
   const manifest = publicationSchema.parse(JSON.parse(source));
-  if (canonicalJson(manifest) !== source || !/^\.projector\/runtime\/representations\/(content\/[a-f0-9]{64}\.txt|projections\/[a-f0-9]{64}\.json)$/u.test(manifest.path)) {
+  if (canonicalJson(manifest) !== source || !/^\.conceptor\/runtime\/representations\/(content\/[a-f0-9]{64}\.txt|projections\/[a-f0-9]{64}\.json)$/u.test(manifest.path)) {
     throw new Error("representation publication manifest is invalid");
   }
   return { manifest, blobs: [{ path: "artifact", sha256: manifest.sha256 }] };
@@ -308,7 +308,7 @@ export async function validateRetainedRepresentationArtifacts(input: {
     if (Buffer.byteLength(source) !== file.length || createHash("sha256").update(source).digest("hex") !== file.sha256) {
       throw new Error(`retained representation artifact changed during validation: ${file.path}`);
     }
-    const contentMatch = /^\.projector\/runtime\/representations\/content\/([a-f0-9]{64})\.txt$/u.exec(file.path);
+    const contentMatch = /^\.conceptor\/runtime\/representations\/content\/([a-f0-9]{64})\.txt$/u.exec(file.path);
     if (contentMatch !== null) {
       const contentHash = `sha256:v1:${contentMatch[1]}` as ContentHash;
       if (hashFramedDomain("representation-artifact", source) !== contentHash) {
@@ -317,7 +317,7 @@ export async function validateRetainedRepresentationArtifacts(input: {
       contents.set(contentHash, source);
       continue;
     }
-    if (!/^\.projector\/runtime\/representations\/projections\/[a-f0-9]{64}\.json$/u.test(file.path)) {
+    if (!/^\.conceptor\/runtime\/representations\/projections\/[a-f0-9]{64}\.json$/u.test(file.path)) {
       throw new Error(`unsupported retained representation artifact path: ${file.path}`);
     }
     let value: unknown;

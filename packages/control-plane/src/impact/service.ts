@@ -2,20 +2,20 @@ import {
   DerivationRecordSchema, ImpactRuleSchema, RelationSchema, ObservationDescriptorSchema, ObservationError, DerivedObservationBudget, canonicalJson, hashFramedDomain,
   type ContentHash, type DerivationInput, type DerivationRecord, type ImpactRule,
   type InvalidationEvent, type PlanningSurprise, type Relation, type StateDigest, type ObservationDescriptor,
-} from "@projector/core";
+} from "@conceptor/core";
 import {
   DerivationIndex, ImpactRuleRegistry, InvalidationEngine, SemanticSignatureProfileRegistry,
   createStateBinding, projectionUnitSelectorSubject,
   type InvalidationRunResult, type SelectorSubject,
-} from "@projector/engine";
-import { RepositoryPathService, SqliteCodeStore, readDerivedCacheSource, touchDerivedCacheEntry, withDerivedCacheAdmission, withObservationScope, currentObservationScope, type DerivedCacheSession, type DerivedCacheWrite } from "@projector/runtime";
+} from "@conceptor/engine";
+import { RepositoryPathService, SqliteCodeStore, readDerivedCacheSource, touchDerivedCacheEntry, withDerivedCacheAdmission, withObservationScope, currentObservationScope, type DerivedCacheSession, type DerivedCacheWrite } from "@conceptor/runtime";
 import { z } from "zod";
 import type { ChangeRepositoryObservation } from "../change-lifecycle/repository-observer.js";
 import { KnowledgeGraph } from "../knowledge/graph.js";
 import { readDerivedObservationSource } from "../observation/read-derived.js";
 import { runObservationTask } from "../observation/task-runner.js";
-import { CodeImpactResultSchema, type CodeImpactResult } from "@projector/core";
-import { verifyCodeInputBinding } from "@projector/analyzers";
+import { CodeImpactResultSchema, type CodeImpactResult } from "@conceptor/core";
+import { verifyCodeInputBinding } from "@conceptor/analyzers";
 import { executeCodeWorker } from "../code-intelligence/worker-service.js";
 
 const version = "repository-impact@3" as const;
@@ -237,7 +237,7 @@ export function authenticateRepositoryImpactSnapshot(value: unknown): Repository
 
 const snapshotPath = (reference: RepositoryImpactReference): string => {
   RepositoryImpactReferenceSchema.parse(reference);
-  return `.projector/runtime/impact/${reference.contentHash.slice("sha256:v1:".length)}.json`;
+  return `.conceptor/runtime/impact/${reference.contentHash.slice("sha256:v1:".length)}.json`;
 };
 
 export async function readRepositoryImpactSnapshot(repositoryRoot: string, reference: RepositoryImpactReference, touch = true): Promise<RepositoryImpactSnapshot> {

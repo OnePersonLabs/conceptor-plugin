@@ -14,9 +14,9 @@ import {
   CodeTestsResultSchema,
   CodeImpactResultSchema,
   CodeExportResultSchema,
-} from "@projector/core";
-import { codeInputHash } from "@projector/analyzers";
-import { SqliteCodeStore, withObservationScope } from "@projector/runtime";
+} from "@conceptor/core";
+import { codeInputHash } from "@conceptor/analyzers";
+import { SqliteCodeStore, withObservationScope } from "@conceptor/runtime";
 import { executeCodeOperation, shutdownCodeIndexRuns } from "./service.js";
 
 const run = promisify(execFile);

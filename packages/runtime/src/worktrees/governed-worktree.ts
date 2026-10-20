@@ -1,4 +1,4 @@
-import type { StateDigest } from "@projector/core";
+import type { StateDigest } from "@conceptor/core";
 
 import type {
   BeginTransactionInput,

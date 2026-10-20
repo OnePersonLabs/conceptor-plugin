@@ -7,7 +7,7 @@ import {
   CanonicalDocumentWireSchemasByKind,
   type CanonicalKind,
   exportContractJsonSchemas,
-} from "@projector/core";
+} from "@conceptor/core";
 import { z } from "zod";
 
 import { RepositoryPathService } from "../security/repository-path.js";
@@ -24,7 +24,7 @@ export function createProjectorEditorSchemaBundle(): readonly ProjectorEditorSch
   const schemas = exportContractJsonSchemas();
   const selected = [
     ...Object.entries(CanonicalDocumentWireSchemasByKind).map(([kind, schema]) => [
-      `.projector/schemas/canonical-${kind}-v3.schema.json`,
+      `.conceptor/schemas/canonical-${kind}-v3.schema.json`,
       tomlEncodingSchema(z.toJSONSchema(schema, {
         target: "draft-2020-12",
         reused: "ref",
@@ -32,7 +32,7 @@ export function createProjectorEditorSchemaBundle(): readonly ProjectorEditorSch
         io: "input",
       })),
     ] as const),
-    [".projector/schemas/projector-config-v3.schema.json", taploDraft4Schema(schemas.PreparedProjectorConfig)],
+    [".conceptor/schemas/projector-config-v3.schema.json", taploDraft4Schema(schemas.PreparedProjectorConfig)],
   ] as const;
   editorSchemaBundle = Object.freeze(selected.map(([relativePath, schema]) => {
     if (schema === undefined) throw new Error(`Core contract registry does not export the schema for ${relativePath}`);
@@ -43,7 +43,7 @@ export function createProjectorEditorSchemaBundle(): readonly ProjectorEditorSch
 
 export async function installProjectorEditorSchemaBundle(repositoryRoot: string): Promise<void> {
   const paths = await RepositoryPathService.create(repositoryRoot);
-  await ensureDurableDirectoryPath(paths.root, [".projector", "schemas"]);
+  await ensureDurableDirectoryPath(paths.root, [".conceptor", "schemas"]);
   const prepared = await Promise.all(createProjectorEditorSchemaBundle().map(async (item) => {
     const target = (await paths.resolveWrite(item.relativePath)).realTarget;
     let existing: string | undefined;
@@ -230,7 +230,7 @@ function assertTaploDraft4Schema(value: unknown, location = "#"): void {
 }
 
 export function canonicalEditorSchemaRelativePath(kind: CanonicalKind): string {
-  return `.projector/schemas/canonical-${kind}-v3.schema.json`;
+  return `.conceptor/schemas/canonical-${kind}-v3.schema.json`;
 }
 
 function replacePatternWithAllOf(schema: Record<string, unknown>, constraints: readonly Record<string, unknown>[]): void {

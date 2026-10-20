@@ -1,4 +1,4 @@
-import { hashFramedDomain, type AnalyzerCapabilities, type ContentHash } from "@projector/core";
+import { hashFramedDomain, type AnalyzerCapabilities, type ContentHash } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { compileAuthenticatedAnalyzerTopology } from "./index.js";

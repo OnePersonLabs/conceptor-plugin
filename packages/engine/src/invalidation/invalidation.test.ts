@@ -7,8 +7,8 @@ import type {
   SemanticSignature,
   StateBinding,
   ValidationResult,
-} from "@projector/core";
-import { DerivedObservationBudget } from "@projector/core";
+} from "@conceptor/core";
+import { DerivedObservationBudget } from "@conceptor/core";
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 

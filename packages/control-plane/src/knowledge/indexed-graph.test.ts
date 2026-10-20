@@ -2,9 +2,9 @@ import { execFileSync } from "node:child_process";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { DerivedObservationBudget, hashFramedDomain, withCanonicalHashes, type AdapterContext, type ArchitectureDecision, type AuthorityRecord, type Concept } from "@projector/core";
-import { createRepositoryScriptLens } from "@projector/engine";
-import { CanonicalFileRepository, withObservationScope } from "@projector/runtime";
+import { DerivedObservationBudget, hashFramedDomain, withCanonicalHashes, type AdapterContext, type ArchitectureDecision, type AuthorityRecord, type Concept } from "@conceptor/core";
+import { createRepositoryScriptLens } from "@conceptor/engine";
+import { CanonicalFileRepository, withObservationScope } from "@conceptor/runtime";
 import { expect, it, vi } from "vitest";
 import { observeIndexedRepository } from "../change-lifecycle/indexed-observer.js";
 import { KnowledgeGraph, KNOWLEDGE_QUERY_PROGRAMS } from "./graph.js";
@@ -66,8 +66,8 @@ it("preserves eager identity, addressed sources and query results through indexe
           const query = eager.registry.createSpec({ id: "oracle", programId, input });
           expect(await indexed.registry.evaluateObserved(query, context)).toEqual(await eager.registry.evaluateObserved(query, context));
         }
-        const eagerDependencies: import("@projector/core").StateQueryDependency[] = [];
-        const indexedDependencies: import("@projector/core").StateQueryDependency[] = [];
+        const eagerDependencies: import("@conceptor/core").StateQueryDependency[] = [];
+        const indexedDependencies: import("@conceptor/core").StateQueryDependency[] = [];
         expect(await indexed.discovery(context, indexedDependencies).discover(unitId, 0, context)).toEqual(await eager.discovery(context, eagerDependencies).discover(unitId, 0, context));
         expect(indexedDependencies).toEqual(eagerDependencies);
         const selected = new Set([unitId, lens.id, decision.id]);

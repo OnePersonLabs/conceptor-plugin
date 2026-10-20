@@ -1,8 +1,8 @@
 import { readFile, realpath } from "node:fs/promises";
 import { join } from "node:path";
 
-import { canonicalJson, hashFramedDomain, type ExecutionCapsule, type ExecutionPlan, type RepresentationProjectionRef } from "@projector/core";
-import { createStateBinding, executionCapsuleHash, executionPlanHash, type ExecutionApproval } from "@projector/engine";
+import { canonicalJson, hashFramedDomain, type ExecutionCapsule, type ExecutionPlan, type RepresentationProjectionRef } from "@conceptor/core";
+import { createStateBinding, executionCapsuleHash, executionPlanHash, type ExecutionApproval } from "@conceptor/engine";
 
 export interface StoredHostSession {
   readonly kind: "task17-host-session";
@@ -48,7 +48,7 @@ export function authenticateRepresentationBinding(input: Pick<StoredHostSession,
 export async function loadAuthenticatedRepositorySession(request: { readonly host?: "codex" | "claude"; readonly sessionSelector: string; readonly repositoryRoot: string }): Promise<AuthenticatedRepositorySession> {
   const match = /^session:([a-f0-9]{64})$/u.exec(request.sessionSelector);
   if (match?.[1] === undefined) throw new Error("repository session requires an immutable session selector");
-  const path = join(request.repositoryRoot, ".projector", "task17-sessions", `session-${match[1]}.json`);
+  const path = join(request.repositoryRoot, ".conceptor", "task17-sessions", `session-${match[1]}.json`);
   const stored = JSON.parse(await readFile(path, "utf8")) as StoredHostSession;
   const { contentHash, ...body } = stored;
   if (stored.kind !== "task17-host-session" || contentHash !== hashFramedDomain("task17-host-session", body) || contentHash.slice("sha256:v1:".length) !== match[1]) throw new Error("repository session selector is unauthenticated");

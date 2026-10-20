@@ -1,6 +1,6 @@
 # Changing accepted meaning
 
-Use `$projector` when the intended behavior, concept boundary, requirement, scenario, architecture, or rationale changes. A code repair can leave accepted meaning intact.
+Use `$conceptor` when the intended behavior, concept boundary, requirement, scenario, architecture, or rationale changes. A code repair can leave accepted meaning intact.
 
 ## Contents
 
@@ -12,7 +12,7 @@ Use `$projector` when the intended behavior, concept boundary, requirement, scen
 
 ## Plan in conversation
 
-In native Codex Plan mode, `$projector` retrieves relevant accepted meaning, checks existing identities, and presents proposed changes as readable contents. For each changed artifact, inspect its stable ID, proposed path, changed text, relationship to other records, reason, and expected effect on implementation and checks. For a new boundary, the plan should explain what the new record owns and excludes. For an existing boundary, it should explain why the same identity still owns the change.
+In native Codex Plan mode, `$conceptor` retrieves relevant accepted meaning, checks existing identities, and presents proposed changes as readable contents. For each changed artifact, inspect its stable ID, proposed path, changed text, relationship to other records, reason, and expected effect on implementation and checks. For a new boundary, the plan should explain what the new record owns and excludes. For an existing boundary, it should explain why the same identity still owns the change.
 
 Plan mode remains a conversation. It does not write canonical artifacts, capture or accept a model transaction, or implement code. A question about a candidate is not authorization. The [clip use example](examples/clip-use.md) shows what the user sees before execution and links complete schema-valid proposals.
 
@@ -22,9 +22,9 @@ Correct the proposed contents before authorizing execution. The plan should pres
 
 ## Authorize execution
 
-When the plan describes the desired result, leave native Codex Plan mode and direct Codex to implement it. `$projector` handles model acceptance through the controlled lifecycle, then implements and verifies the scope. The internal lifecycle checks the exact proposal and current dependencies; an old review does not silently authorize changed contents. The terminal `accept` capture/apply operations remain available for integrations and inspection in the [CLI reference](reference/cli.md), but are not a second user-facing workflow step.
+When the plan describes the desired result, leave native Codex Plan mode and direct Codex to implement it. `$conceptor` handles model acceptance through the controlled lifecycle, then implements and verifies the scope. The internal lifecycle checks the exact proposal and current dependencies; an old review does not silently authorize changed contents. The terminal `accept` capture/apply operations remain available for integrations and inspection in the [CLI reference](reference/cli.md), but are not a second user-facing workflow step.
 
-Implementation and verification have distinct evidence. Accepted records state intended meaning. Relevant application checks exercise actual behavior. `$projector-verify` inspects actual code against the concepts, requirements, and scenarios, tries counterexamples, and reports unavailable evidence. Neither acceptance nor a hash is proof that the software works.
+Implementation and verification have distinct evidence. Accepted records state intended meaning. Relevant application checks exercise actual behavior. `$conceptor-verify` inspects actual code against the concepts, requirements, and scenarios, tries counterexamples, and reports unavailable evidence. Neither acceptance nor a hash is proof that the software works.
 
 ## Keep identity and future commitments
 
@@ -34,6 +34,6 @@ In the worked example, `requirement:independent-transposition-per-use` first gov
 
 ## Handle an interrupted operation
 
-If a controlled write stops, inspect its actual approval ID and retained lifecycle state before retrying. `projector resume <approval ID>` inspects state. `projector recover <approval ID>` explicitly repairs a recognized interrupted transaction under the applicable authorization; it does not reapply the proposal. Preserve ambiguous evidence for investigation.
+If a controlled write stops, inspect its actual approval ID and retained lifecycle state before retrying. `conceptor resume <approval ID>` inspects state. `conceptor recover <approval ID>` explicitly repairs a recognized interrupted transaction under the applicable authorization; it does not reapply the proposal. Preserve ambiguous evidence for investigation.
 
 Continue with [Workflows](workflows.md), [Review, reconcile, and recover](review-reconcile-recover.md), or the [CLI reference](reference/cli.md).

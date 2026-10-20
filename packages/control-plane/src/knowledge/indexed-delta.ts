@@ -1,5 +1,5 @@
-import { DerivedObservationBudget, hashFramedDomain, type ContentHash, type ProjectionUnit } from "@projector/core";
-import type { IndexedObservationDelta, SqliteObservationStore } from "@projector/runtime";
+import { DerivedObservationBudget, hashFramedDomain, type ContentHash, type ProjectionUnit } from "@conceptor/core";
+import type { IndexedObservationDelta, SqliteObservationStore } from "@conceptor/runtime";
 import type { IndexedObservationDescriptor } from "../observation/indexed-types.js";
 import type { RepositoryObservationData } from "../observation/tasks.js";
 import { KnowledgeGraph } from "./graph.js";

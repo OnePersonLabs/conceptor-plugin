@@ -4,14 +4,14 @@ import {
   type ContentHash,
   type ExecutionCapsule,
   type RepresentationProjectionRef,
-} from "@projector/core";
+} from "@conceptor/core";
 import {
   BUILT_IN_REPRESENTATION_PROFILES,
   currentBuiltInRepresentationProfile,
   executionCapsuleHash,
   planUpgradeInvalidation,
   reconcileRepresentationProfileUpgrade,
-} from "@projector/engine";
+} from "@conceptor/engine";
 import { z } from "zod";
 
 import { RepositoryChangeLifecycleService } from "../change-lifecycle/service.js";

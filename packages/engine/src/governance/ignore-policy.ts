@@ -1,4 +1,4 @@
-import { canonicalJson, hashFramedDomain, type IgnorePolicy, type ProjectionUnit, type SelectorExpr } from "@projector/core";
+import { canonicalJson, hashFramedDomain, type IgnorePolicy, type ProjectionUnit, type SelectorExpr } from "@conceptor/core";
 import { evaluateSelector, matchesCanonicalGlob, normalizeSelector, projectionUnitSelectorSubject } from "./selectors.js";
 
 export type IgnoreConcern = keyof IgnorePolicy;

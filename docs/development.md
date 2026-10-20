@@ -1,6 +1,6 @@
 # Development
 
-This guide is for contributors changing Projector itself. Repository-wide implementation conventions live in the root `AGENTS.md`; workflow instructions live beside their owning skill under `plugins/projector-v3/skills/`.
+This guide is for contributors changing Conceptor itself. Repository-wide implementation conventions live in the root `AGENTS.md`; workflow instructions live beside their owning skill under `plugins/conceptor-v3/skills/`.
 
 ## Requirements
 
@@ -22,7 +22,7 @@ Use `pnpm verify` for the full repository check after a broad change. Use `pnpm 
 
 Core owns contracts and schemas. The control plane composes domain services; runtime owns persistence and native interactions; the CLI exposes the public operation runner. The bundled plugin routes skill invocations to supported operations. Check package ownership before adding a cross-layer dependency.
 
-Canonical records under `.projector/` are the source of accepted meaning. Runtime receipts and journals are evidence and must not be turned into a second authored source. Keep proposal schemas generated from their owner and use the repository's existing checks when changing contracts.
+Canonical records under `.conceptor/` are the source of accepted meaning. Runtime receipts and journals are evidence and must not be turned into a second authored source. Keep proposal schemas generated from their owner and use the repository's existing checks when changing contracts.
 
 ## Documentation changes
 

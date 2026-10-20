@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { hashFramedDomain, hashSemantic, type ArchitectureConcern, type Evidence } from "@projector/core";
+import { hashFramedDomain, hashSemantic, type ArchitectureConcern, type Evidence } from "@conceptor/core";
 import { evaluateArchitectureOptions } from "./service.js";
 
 const payload = { id: "concern:test", key: "test", title: "Storage", question: "Which storage?", scope: { op: "atom", field: "path", matcher: "glob", value: "src/**" }, sourceClass: "authored", status: "active", materiality: "blocking-now", activationReasons: [], relatedConceptIds: [], relatedRequirementIds: [], decisionIds: [], evidence: [] };

@@ -1,4 +1,4 @@
-import { DerivedObservationBudget, ObservationError, type ProjectionLens, type SelectorExpr } from "@projector/core";
+import { DerivedObservationBudget, ObservationError, type ProjectionLens, type SelectorExpr } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { authorityRecord, projectionUnit, tagSelector } from "./test-fixtures.js";

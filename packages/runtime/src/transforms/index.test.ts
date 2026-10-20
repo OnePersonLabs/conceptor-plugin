@@ -7,7 +7,7 @@ import {
   type Transform,
   type TransformContext,
   type TransformResult,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import {
   MoveReferenceTransform,

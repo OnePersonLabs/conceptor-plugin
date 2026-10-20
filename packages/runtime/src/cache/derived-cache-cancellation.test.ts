@@ -9,9 +9,9 @@ it("rolls back the complete cache batch when cancellation arrives after its fina
   const root = await mkdtemp(join(tmpdir(), "projector-cache-cancellation-"));
   const cache = await mkdtemp(join(tmpdir(), "projector-cache-cancellation-owner-"));
   vi.stubEnv("PROJECTOR_CACHE_DIRECTORY", cache);
-  const existing = `.projector/runtime/knowledge/contexts/${"a".repeat(32)}.json`;
-  const finalContext = `.projector/runtime/knowledge/contexts/${"c".repeat(32)}.json`;
-  const impact = `.projector/runtime/impact/${"b".repeat(64)}.json`;
+  const existing = `.conceptor/runtime/knowledge/contexts/${"a".repeat(32)}.json`;
+  const finalContext = `.conceptor/runtime/knowledge/contexts/${"c".repeat(32)}.json`;
+  const impact = `.conceptor/runtime/impact/${"b".repeat(64)}.json`;
   try {
     await withDerivedCacheAdmission(root, session => session.publish(existing, "existing authenticated bytes"));
     const controller = new AbortController();

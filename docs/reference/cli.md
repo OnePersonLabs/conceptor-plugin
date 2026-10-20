@@ -1,8 +1,8 @@
 # CLI reference
 
-The separately packaged CLI distribution exposes the bare `projector` command when installed on the host `PATH`. Installing the Projector plugin does not add this command to `PATH`. Plugin skills invoke the bundled CLI as `node <plugin>/scripts/projector.mjs`; for terminal use, prefix an operation with that script path when the standalone CLI is not installed. Both entry points expose the same public operations and arguments. Use Node 24 or later. Run `projector --help` or `node <plugin>/scripts/projector.mjs --help` for help.
+The separately packaged CLI distribution exposes the bare `conceptor` command when installed on the host `PATH`. Installing the Conceptor plugin does not add this command to `PATH`. Plugin skills invoke the bundled CLI as `node <plugin>/scripts/conceptor.mjs`; for terminal use, prefix an operation with that script path when the standalone CLI is not installed. Both entry points expose the same public operations and arguments. Use Node 24 or later. Run `conceptor --help` or `node <plugin>/scripts/conceptor.mjs --help` for help.
 
-These are lower-level terminal and integration operations. The ordinary Codex workflow invokes `$projector` in chat: Plan mode discusses readable proposed artifacts without capture or mutation, and authorized execution handles model acceptance, implementation, and verification. Users do not have to orchestrate `accept` capture/apply by hand.
+These are lower-level terminal and integration operations. The ordinary Codex workflow invokes `$conceptor` in chat: Plan mode discusses readable proposed artifacts without capture or mutation, and authorized execution handles model acceptance, implementation, and verification. Users do not have to orchestrate `accept` capture/apply by hand.
 
 ## Contents
 
@@ -13,20 +13,20 @@ These are lower-level terminal and integration operations. The ordinary Codex wo
 ## Operations
 
 ```text
-projector init
-projector context "task" [--entity ID] [--target path] [--budget characters] [--full]
-projector check [CONTEXT]
-projector integration --target REF --incoming REF [--base REF] [--result REF]
-projector audit [--scope PATH] [--context CONTEXT] [--question-offset N] [--json]
-projector accept proposal.json [--context CONTEXT] [--request "reason"]
-projector accept --apply CHANGE --hash HASH
-projector resume CONTEXT|CHANGE|APPROVAL
-projector inspect ID [--cursor CURSOR] [--limit N] [--full]
-projector recover APPROVAL | --access
-projector verify check.json
-projector verify --inspect [EVENT] | --recover
-projector generate generation.json
-projector generate --inspect producers.json | --recover producers.json
+conceptor init
+conceptor context "task" [--entity ID] [--target path] [--budget characters] [--full]
+conceptor check [CONTEXT]
+conceptor integration --target REF --incoming REF [--base REF] [--result REF]
+conceptor audit [--scope PATH] [--context CONTEXT] [--question-offset N] [--json]
+conceptor accept proposal.json [--context CONTEXT] [--request "reason"]
+conceptor accept --apply CHANGE --hash HASH
+conceptor resume CONTEXT|CHANGE|APPROVAL
+conceptor inspect ID [--cursor CURSOR] [--limit N] [--full]
+conceptor recover APPROVAL | --access
+conceptor verify check.json
+conceptor verify --inspect [EVENT] | --recover
+conceptor generate generation.json
+conceptor generate --inspect producers.json | --recover producers.json
 ```
 
 Global options are `--root PATH` for another repository, `--json` for exact machine results, `--timeout-ms N` for an explicit positive integer observation timeout in milliseconds, and `--help`. There is no implicit elapsed-time deadline. An explicit timeout preserves other resource limits, currentness checks and mutation authority. Investigate a timeout proportionately; do not make meeting a chosen deadline an open-ended optimization task. A flag only applies to operations that accept it. Unknown and duplicate options fail.
@@ -35,7 +35,7 @@ Global options are `--root PATH` for another repository, `--json` for exact mach
 
 ### `init`
 
-Takes no positional argument. Activates or validates Projector in the selected repository. Installation alone does not activate a project.
+Takes no positional argument. Activates or validates Conceptor in the selected repository. Installation alone does not activate a project.
 
 ### `context`
 
@@ -116,13 +116,13 @@ coverage. This declaration does not prove hermeticity or discover every
 dynamic read, or detect transient changes that occur and disappear during
 execution. Include relevant source, tests, fixtures, configuration and tool
 inputs. Declare relevant existing directory populations even when empty. Input
-paths must be canonical and cannot include `.projector/runtime`. Root file
+paths must be canonical and cannot include `.conceptor/runtime`. Root file
 populations use `{ "directory": ".", "recursive": false }`. Recursive `.` or
-`.projector` populations are refused because they include runtime evidence
+`.conceptor` populations are refused because they include runtime evidence
 created by the operation; declare narrower source directories instead. Selected
 environment values are hashed rather than stored. On Windows, the launcher also
 passes and hashes available `SystemRoot`, `WINDIR`, `PATH`, `PATHEXT`, `TEMP`
-and `TMP` values. Projector does not confine this native process. Configured host
+and `TMP` values. Conceptor does not confine this native process. Configured host
 permissions apply.
 `verify --inspect [EVENT]` reads historical records, optionally filtered by
 event ID, without running them again. `verify --recover` finalizes recoverable
@@ -134,7 +134,7 @@ dependencies, hermetic execution, portable reuse, or correctness. Assessment
 always reports `reusable: false`, including when declared inputs still match.
 The optional host environment variable `PROJECTOR_VERIFICATION_EVIDENCE_STORE`
 selects an absolute host path for retaining complete immutable records. Local
-publication journals remain under `.projector/runtime`. A configured host store
+publication journals remain under `.conceptor/runtime`. A configured host store
 allows historical records to be inspected after the source checkout is gone.
 
 `verify --builtin --target REF` runs the shipped
@@ -168,7 +168,7 @@ strict JSON object requires `producerId`, `executable`, `sourcePath`, `args`,
 include `completeInputs`. Unknown fields are rejected. `sourcePath` and all
 repository paths are canonical repository-relative paths. Each output contains
 `path` and `ownership` (`retained` or `disposable`); output paths must be unique
-and separate from inputs. Outputs cannot target `.projector` or `.git`, including
+and separate from inputs. Outputs cannot target `.conceptor` or `.git`, including
 case aliases.
 The entrypoint is included in the observed inputs.
 Include all relevant runtime, source, configuration and population dependencies.
@@ -203,7 +203,7 @@ historical records when their producer or inputs are unavailable. It returns
 outputs and identifies disposable outputs eligible for removal; it never
 deletes them. The optional
 host evidence store also retains complete immutable generation records;
-publication journals remain local under `.projector/runtime`.
+publication journals remain local under `.conceptor/runtime`.
 
 ### `evaluate`
 
@@ -235,6 +235,6 @@ the complete tradeoff matrix and evidence.
 | `--access` | Select operation-access recovery with `recover`. |
 | `--representations` | Inspect pending representation publications or explicitly recover them. |
 
-For the machine integration request envelope, operation schemas, and lifecycle details, read the [operation contract](../../plugins/projector-v3/references/operation-contract.md).
+For the machine integration request envelope, operation schemas, and lifecycle details, read the [operation contract](../../plugins/conceptor-v3/references/operation-contract.md).
 
 Continue with [Getting started](../getting-started.md) or [Review, reconcile, and recover](../review-reconcile-recover.md).

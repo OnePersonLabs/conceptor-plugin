@@ -1,14 +1,14 @@
 {
-  "name": "projector-v3",
+  "name": "conceptor-v3",
   "interface": {
-    "displayName": "Projector V3"
+    "displayName": "Conceptor V3"
   },
   "plugins": [
     {
-      "name": "projector-v3",
+      "name": "conceptor-v3",
       "source": {
         "source": "local",
-        "path": "./plugins/projector-v3"
+        "path": "./plugins/conceptor-v3"
       },
       "policy": {
         "installation": "AVAILABLE",

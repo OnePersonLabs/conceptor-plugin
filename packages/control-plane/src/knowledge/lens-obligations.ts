@@ -1,5 +1,5 @@
-import { hashFramedDomain, type ContentHash, type ProjectionLens, type ProjectionUnit } from "@projector/core";
-import { compileEffectiveRuleBundle, evaluateSelector, projectionUnitSelectorSubject, type ProjectionUnitSelectorFacts } from "@projector/engine";
+import { hashFramedDomain, type ContentHash, type ProjectionLens, type ProjectionUnit } from "@conceptor/core";
+import { compileEffectiveRuleBundle, evaluateSelector, projectionUnitSelectorSubject, type ProjectionUnitSelectorFacts } from "@conceptor/engine";
 import type { KnowledgeLensObligation } from "./types.js";
 
 const unique = (values: readonly string[]): string[] => [...new Set(values)].sort();

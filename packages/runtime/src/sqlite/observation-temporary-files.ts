@@ -10,7 +10,7 @@ export function removeAbandonedObservationTemporaryFiles(indexPath: string): num
   const directories = [`${databasePath}.temporary`];
   // Older producers wrote these same disposable names in the observation owner.
   // Do not apply that recovery rule to arbitrary directories used by library callers.
-  if (normalize(databasePath).replaceAll("\\", "/").endsWith("/.projector/runtime/observations/index.sqlite")) {
+  if (normalize(databasePath).replaceAll("\\", "/").endsWith("/.conceptor/runtime/observations/index.sqlite")) {
     directories.push(dirname(databasePath), join(dirname(databasePath), "captures"));
   }
   let removed = 0;

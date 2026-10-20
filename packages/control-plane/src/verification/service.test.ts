@@ -56,7 +56,7 @@ test("inputs altered by the command remain inputs-changed evidence", async () =>
 });
 test("recovery publishes retained evidence without re-execution and never resumes shared journals", async () => {
   const { root, request } = await fixture(); const service = await VerificationService.create(root); const evidence = await service.execute(request);
-  const pendingId = `${evidence.id}_pending`; const directory = join(root, ".projector/runtime/verification/finalizing", pendingId);
+  const pendingId = `${evidence.id}_pending`; const directory = join(root, ".conceptor/runtime/verification/finalizing", pendingId);
   await mkdir(directory); await writeFile(join(directory, "manifest.bin"), JSON.stringify(evidence));
   await writeFile(join(root, "check.cjs"), "throw Error('must not execute')");
   expect((await service.inspect()).pendingPublications).toEqual([{ artifactSetId: pendingId, state: "finalizing", recoverable: true }]);
@@ -65,7 +65,7 @@ test("recovery publishes retained evidence without re-execution and never resume
 });
 test("corrupted retained bytes fail explicitly", async () => {
   const { root, request } = await fixture(); const service = await VerificationService.create(root); const event = await service.execute(request);
-  const file = join(root, ".projector/runtime/verification/published", `${event.id}_completed`, "manifest.bin");
+  const file = join(root, ".conceptor/runtime/verification/published", `${event.id}_completed`, "manifest.bin");
   const value = JSON.parse(await readFile(file, "utf8")); value.stdout = "forged"; await writeFile(file, JSON.stringify(value));
   await expect(service.inspect()).rejects.toThrow(/integrity|integrity-failed/u);
 });
@@ -111,7 +111,7 @@ test("native timeout retains interrupted terminal evidence", async () => {
 test("selected event lookup ignores unrelated corruption and refuses unsafe identifiers", async () => {
   const { root, request } = await fixture(); const service = await VerificationService.create(root);
   const event = await service.execute(request);
-  await mkdir(join(root, ".projector/runtime/verification/published", "unrelated-corrupt"));
+  await mkdir(join(root, ".conceptor/runtime/verification/published", "unrelated-corrupt"));
   expect((await service.inspect([event.id])).records[0]?.contentHash).toBe(event.contentHash);
   await expect(service.inspect()).rejects.toThrow();
   await expect(service.inspect(["../outside"])).rejects.toThrow(/Invalid verification event/u);
@@ -131,7 +131,7 @@ test("recursive runtime ancestors are refused before execution instead of observ
   const { root, request } = await fixture();
   await writeFile(join(root, "check.cjs"), "require('node:fs').writeFileSync('executed.txt','executed')");
   const service = await VerificationService.create(root);
-  for (const directory of [".", ".projector", ".PROJECTOR"]) {
+  for (const directory of [".", ".conceptor", ".PROJECTOR"]) {
     await expect(service.execute({ ...request, populations: [{ directory, recursive: true }] })).rejects.toThrow(/runtime evidence/u);
   }
   await expect(service.execute({ ...request, inputPaths: [".PROJECTOR/runtime/receipt.json"] })).rejects.toThrow(/runtime evidence/u);

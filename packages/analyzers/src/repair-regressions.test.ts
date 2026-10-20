@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { hashFramedDomain } from "@projector/core";
+import { hashFramedDomain } from "@conceptor/core";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { analyzeDocuments } from "./formats/documents.js";

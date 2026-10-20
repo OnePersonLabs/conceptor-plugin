@@ -23,7 +23,7 @@ import {
   type ExecutionCapsule,
   type ExecutionPlan,
   type StateBinding,
-} from "@projector/core";
+} from "@conceptor/core";
 import { z } from "zod";
 import {
   authenticatePreparedStateBoundChangeSuccess,
@@ -33,11 +33,11 @@ import {
   type ExecutionApproval,
   type PreparedStateBoundChangeSuccess,
   type StateBoundChangeResult,
-} from "@projector/engine";
-import { FileTransactionJournal, RepositoryPathService, fileTransactionJournalRelativePath, parseFileTransactionJournalSource, type DurableTransactionRecord } from "@projector/runtime";
+} from "@conceptor/engine";
+import { FileTransactionJournal, RepositoryPathService, fileTransactionJournalRelativePath, parseFileTransactionJournalSource, type DurableTransactionRecord } from "@conceptor/runtime";
 
 const apiVersion = "projector.change-lifecycle/v1" as const;
-const storeRoot = ".projector/runtime/change-lifecycles";
+const storeRoot = ".conceptor/runtime/change-lifecycles";
 
 export interface LifecycleCaptureInput {
   readonly request: string;

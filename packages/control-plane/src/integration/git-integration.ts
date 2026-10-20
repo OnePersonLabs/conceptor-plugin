@@ -1,7 +1,7 @@
-import { observationGit, observationGitBytes, readObservationFile, checkObservation } from "@projector/analyzers";
+import { observationGit, observationGitBytes, readObservationFile, checkObservation } from "@conceptor/analyzers";
 import { lstat } from "node:fs/promises";
-import { DerivedObservationBudget, GitIntegrationRequestSchema, GitIntegrationAssessmentSchema, RelationSchema, hashFramedDomain, toCanonicalDocumentWire, type Relation, type CanonicalDocumentEnvelope, type GitIntegrationRequest, type GitIntegrationAssessment, type ObservationLimits } from "@projector/core";
-import { classifyCanonicalSource, parseCanonicalSnapshotSources, withObservationScope, type ObservationScope, type CanonicalSnapshot, type CanonicalSnapshotSource } from "@projector/runtime";
+import { DerivedObservationBudget, GitIntegrationRequestSchema, GitIntegrationAssessmentSchema, RelationSchema, hashFramedDomain, toCanonicalDocumentWire, type Relation, type CanonicalDocumentEnvelope, type GitIntegrationRequest, type GitIntegrationAssessment, type ObservationLimits } from "@conceptor/core";
+import { classifyCanonicalSource, parseCanonicalSnapshotSources, withObservationScope, type ObservationScope, type CanonicalSnapshot, type CanonicalSnapshotSource } from "@conceptor/runtime";
 import { validateStaticCanonicalGovernance, validateCanonicalRelationEndpoints } from "../knowledge/canonical-governance.js";
 import { validateArchitectureProducts } from "../change-lifecycle/architecture-products.js";
 import { reconcileIntegrationResult } from "./result-reconciliation.js";
@@ -22,7 +22,7 @@ async function resolve(root: string, scope: ObservationScope, ref: string, kind:
   return (await git(root, scope, ["rev-parse", "--verify", "--end-of-options", `${ref}^{${kind}}`])).trim();
 }
 async function entries(root: string, scope: ObservationScope, tree: string, derived: DerivedObservationBudget, executable?: string): Promise<Map<string, Entry>> {
-  const raw = await observationGitBytes(root, ["--no-replace-objects", "ls-tree", "-r", "-z", tree, "--", ".projector"], scope.budget, { signal: scope.signal, stage: "git-integration-tree", ...(executable ? { executable } : {}) });
+  const raw = await observationGitBytes(root, ["--no-replace-objects", "ls-tree", "-r", "-z", tree, "--", ".conceptor"], scope.budget, { signal: scope.signal, stage: "git-integration-tree", ...(executable ? { executable } : {}) });
   const result = new Map<string, Entry>();
   for (const record of new TextDecoder("utf-8", { fatal: true }).decode(raw).split("\0")) {
     if (!record) continue;
@@ -51,8 +51,8 @@ async function delta(root: string, scope: ObservationScope, base: string, tip: s
 async function canonicalSources(root: string, scope: ObservationScope, tree: Map<string, Entry>, executable?: string): Promise<CanonicalSnapshotSource[]> {
   const selected: Entry[] = [];
   for (const entry of tree.values()) {
-    if (entry.path === ".projector") throw new Error("Canonical root is not a real directory");
-    if (!entry.path.startsWith(".projector/")) continue;
+    if (entry.path === ".conceptor") throw new Error("Canonical root is not a real directory");
+    if (!entry.path.startsWith(".conceptor/")) continue;
     const relativePath = entry.path.slice(11);
     const selection = classifyCanonicalSource(relativePath, entry.mode === "120000" ? "symlink" : entry.type === "commit" ? "directory" : "file");
     if (selection === "ignore") continue;

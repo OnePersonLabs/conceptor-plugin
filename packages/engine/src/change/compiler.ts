@@ -11,7 +11,7 @@ import {
   type StateBinding,
   type StateBindingValidator,
   type StateDigest,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { createStateBinding } from "../state/index.js";
 

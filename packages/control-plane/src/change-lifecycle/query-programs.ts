@@ -1,5 +1,5 @@
-import { BehavioralScenarioSchema, RequirementSchema, deriveEntityId, hashFramedDomain, type BehavioralScenario, type Requirement, type DerivedObservationBudget } from "@projector/core";
-import { InMemoryGraphReader, QueryDependencyRegistry, type RegisteredQueryProgram } from "@projector/engine";
+import { BehavioralScenarioSchema, RequirementSchema, deriveEntityId, hashFramedDomain, type BehavioralScenario, type Requirement, type DerivedObservationBudget } from "@conceptor/core";
+import { InMemoryGraphReader, QueryDependencyRegistry, type RegisteredQueryProgram } from "@conceptor/engine";
 
 import type { ChangeRepositoryObservation } from "./repository-observer.js";
 

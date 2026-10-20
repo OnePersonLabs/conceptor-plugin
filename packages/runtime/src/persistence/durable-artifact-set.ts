@@ -3,7 +3,7 @@ import { constants } from "node:fs";
 import { link, lstat, mkdir, open, opendir, readdir, rename, rm } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 
-import { DerivedObservationBudget, ObservationBudget, ObservationError, PortableRelativePathSchema } from "@projector/core";
+import { DerivedObservationBudget, ObservationBudget, ObservationError, PortableRelativePathSchema } from "@conceptor/core";
 import { currentObservationScope } from "../observation-scope.js";
 
 export interface ArtifactBlobDeclaration { path: string; sha256: string }

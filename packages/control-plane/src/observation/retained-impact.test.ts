@@ -1,8 +1,8 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { ObservationError } from "@projector/core";
-import { readDerivedCacheSource, withObservationScope } from "@projector/runtime";
+import { ObservationError } from "@conceptor/core";
+import { readDerivedCacheSource, withObservationScope } from "@conceptor/runtime";
 import { expect, it } from "vitest";
 import { observeChangeRepository } from "../change-lifecycle/repository-observer.js";
 import { buildRepositoryImpactSnapshot, impactReference, persistRepositoryImpactSnapshot, readRepositoryImpactSnapshot, reconcileRetainedImpact } from "../impact/service.js";
@@ -13,7 +13,7 @@ it("rejects an oversized retained impact read and preserves the prior snapshot",
     await writeFile(join(root, "package.json"), '{"name":"bounded-impact","type":"module"}');
     const snapshot = buildRepositoryImpactSnapshot(await observeChangeRepository(root));
     await persistRepositoryImpactSnapshot(root, snapshot);
-    const path = `.projector/runtime/impact/${snapshot.contentHash.slice("sha256:v1:".length)}.json`;
+    const path = `.conceptor/runtime/impact/${snapshot.contentHash.slice("sha256:v1:".length)}.json`;
     const prior = await readDerivedCacheSource(root, path);
     await expect(withObservationScope({ limits: { maxDerivedBytes: 128 } }, () => readRepositoryImpactSnapshot(root, impactReference(snapshot))))
       .rejects.toMatchObject({ code: "observation-limit-exceeded", limit: "maxDerivedBytes" });

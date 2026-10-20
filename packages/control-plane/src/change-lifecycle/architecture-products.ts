@@ -3,8 +3,8 @@ import {
   canonicalJson,
   type ArchitectureConcern, type ArchitectureDecision, type CanonicalDocumentEnvelope, type Concept,
   type DecisionConsequence, type DeveloperPreference,
-} from "@projector/core";
-import { normalizeSelector } from "@projector/engine";
+} from "@conceptor/core";
+import { normalizeSelector } from "@conceptor/engine";
 
 /** Check the final model, so a decision and its products share one journal/approval. */
 export function validateArchitectureProducts(documents: readonly CanonicalDocumentEnvelope[], now: string, changedIds: ReadonlySet<string>): void {

@@ -1,4 +1,4 @@
-import { hashFramedDomain, type ContentHash } from "@projector/core";
+import { hashFramedDomain, type ContentHash } from "@conceptor/core";
 
 export const MANDATORY_VERTICAL_SLICE_STEPS = [
   "inventory-and-classify-without-execution",

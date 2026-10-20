@@ -1,8 +1,8 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { hashFramedDomain, withCanonicalHashes, type CanonicalDocumentEnvelope } from "@projector/core";
-import { CanonicalFileRepository } from "@projector/runtime";
+import { hashFramedDomain, withCanonicalHashes, type CanonicalDocumentEnvelope } from "@conceptor/core";
+import { CanonicalFileRepository } from "@conceptor/runtime";
 import { afterAll, describe, expect } from "vitest";
 import { integrationTest } from "../../../../scripts/testing/integration-test.mjs";
 import { ResidentObservationWorkerPool, withResidentObservationWorkerPool } from "../observation/resident-pool.js";

@@ -9,7 +9,7 @@ afterEach(async () => { for (const root of roots.splice(0)) await rm(root, { rec
 
 it("reclaims interrupted temporary databases and their sidecars while preserving unrelated files", async () => {
   const root = await mkdtemp(join(tmpdir(), "projector-observation-temporary-")); roots.push(root);
-  const owner = join(root, ".projector", "runtime", "observations");
+  const owner = join(root, ".conceptor", "runtime", "observations");
   const indexPath = join(owner, "index.sqlite");
   const name = `${"a".repeat(32)}.db`;
   const directories = [owner, join(owner, "captures"), `${indexPath}.temporary`];

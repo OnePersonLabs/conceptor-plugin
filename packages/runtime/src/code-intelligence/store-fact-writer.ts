@@ -1,5 +1,5 @@
 import { DatabaseSync, type StatementSync } from "node:sqlite";
-import { canonicalJson, type CodePartition, type CodeProvenance } from "@projector/core";
+import { canonicalJson, type CodePartition, type CodeProvenance } from "@conceptor/core";
 
 /** One transaction's prepared writer. Only interned keys remain resident across files. */
 export class CodeFactWriter {

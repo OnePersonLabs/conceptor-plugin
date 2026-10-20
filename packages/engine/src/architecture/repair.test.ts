@@ -13,7 +13,7 @@ import {
   type SelectorExpr,
   type StateBindingValidation,
   type StateQueryDependency,
-} from "@projector/core";
+} from "@conceptor/core";
 import { describe, expect, it, vi } from "vitest";
 
 import { discoverArchitectureConcerns } from "./discovery.js";

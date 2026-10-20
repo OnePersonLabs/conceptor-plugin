@@ -21,8 +21,8 @@ import {
   type StateBinding,
   type StateBindingValidation,
   type StateDigest,
-} from "@projector/core";
-import type { CompiledSemanticContext, GovernanceBundleEvaluation, RelevanceMetrics } from "@projector/engine";
+} from "@conceptor/core";
+import type { CompiledSemanticContext, GovernanceBundleEvaluation, RelevanceMetrics } from "@conceptor/engine";
 import { z } from "zod";
 import { RepositoryImpactReferenceSchema, RepositoryImpactReportSchema, type RepositoryImpactReference, type RepositoryImpactReport } from "../impact/service.js";
 import { KnowledgeApplicationEvidenceAssessmentSchema, type KnowledgeApplicationEvidenceAssessment } from "./application-evidence.js";

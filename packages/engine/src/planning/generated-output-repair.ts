@@ -1,4 +1,4 @@
-import type { RepairCapabilities } from "@projector/core";
+import type { RepairCapabilities } from "@conceptor/core";
 
 export type GeneratedOutputRepairIntent = "upstream-regeneration" | "direct-generated-patch" | "temporary-generated-overlay";
 export interface GeneratedOutputRepairRequest {

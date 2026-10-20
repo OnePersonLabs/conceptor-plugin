@@ -1,8 +1,8 @@
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { hashFramedDomain, type ArchitectureDecision, type AuthorityRecord } from "@projector/core";
-import { parseCanonicalSnapshotSources, withObservationScope } from "@projector/runtime";
+import { hashFramedDomain, type ArchitectureDecision, type AuthorityRecord } from "@conceptor/core";
+import { parseCanonicalSnapshotSources, withObservationScope } from "@conceptor/runtime";
 import { afterEach, describe, expect, test } from "vitest";
 import { DecisionBaselineReader } from "./decision-baselines.js";
 
@@ -15,7 +15,7 @@ const authority: AuthorityRecord = { id: "authority:test", key: "test", subjectI
 async function fixture() {
   const root = await mkdtemp(join(tmpdir(), "projector-baseline-limits-"));
   roots.push(root);
-  const directory = join(root, ".projector/runtime/change-lifecycles/results");
+  const directory = join(root, ".conceptor/runtime/change-lifecycles/results");
   await mkdir(directory, { recursive: true });
   return { root, directory, reader: new DecisionBaselineReader({ repositoryRoot: root, canonical: parseCanonicalSnapshotSources([]) }) };
 }

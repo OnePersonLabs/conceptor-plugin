@@ -6,7 +6,7 @@ import {
   type ObservabilityClass,
   type PatternCandidate,
   type ProjectionUnit,
-} from "@projector/core";
+} from "@conceptor/core";
 
 const compareStrings = (left: string, right: string): number => left < right ? -1 : left > right ? 1 : 0;
 const sortedUnique = (values: readonly string[]): string[] => [...new Set(values)].sort(compareStrings);

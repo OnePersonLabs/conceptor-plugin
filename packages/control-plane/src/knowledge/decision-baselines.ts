@@ -1,10 +1,10 @@
 import { lstat, opendir } from "node:fs/promises";
 import { relative } from "node:path";
 
-import { AuthorityRecordSchema, ContentHashSchema, ObservationError, canonicalJson, normalizeRepositoryRelativePath, type ArchitectureDecision, type AuthorityRecord, type AuthorityReconsiderTrigger, type CanonicalDocumentEnvelope } from "@projector/core";
-import { checkObservation, observationGit, readObservationFile, GitCommandError } from "@projector/analyzers";
-import { evaluateSelector } from "@projector/engine";
-import { CanonicalFileRepository, RepositoryPathService, currentObservationScope, withObservationScope } from "@projector/runtime";
+import { AuthorityRecordSchema, ContentHashSchema, ObservationError, canonicalJson, normalizeRepositoryRelativePath, type ArchitectureDecision, type AuthorityRecord, type AuthorityReconsiderTrigger, type CanonicalDocumentEnvelope } from "@conceptor/core";
+import { checkObservation, observationGit, readObservationFile, GitCommandError } from "@conceptor/analyzers";
+import { evaluateSelector } from "@conceptor/engine";
+import { CanonicalFileRepository, RepositoryPathService, currentObservationScope, withObservationScope } from "@conceptor/runtime";
 import { z } from "zod";
 
 import type { ChangeRepositoryObservation } from "../change-lifecycle/repository-observer.js";
@@ -134,7 +134,7 @@ export class DecisionBaselineReader {
     const repository = this.observation.repositoryRoot;
     const paths = await RepositoryPathService.create(repository);
     const sources: Record<string, string> = {};
-    const resultsRoot = ".projector/runtime/change-lifecycles/results";
+    const resultsRoot = ".conceptor/runtime/change-lifecycles/results";
     const collect = async (directory: string): Promise<void> => {
       checkObservation(scope.budget, scope.signal, "decision-baseline-enumeration", directory);
       const resolved = await paths.resolveRead(directory);
@@ -157,8 +157,8 @@ export class DecisionBaselineReader {
     // All transitive authentication sources are collected before entering the worker.
     await collect(resultsRoot);
     if (Object.keys(sources).length === 0) return [];
-    await collect(".projector/runtime/change-lifecycles");
-    await collect(".projector/runtime/journal");
+    await collect(".conceptor/runtime/change-lifecycles");
+    await collect(".conceptor/runtime/journal");
     const result = await runObservationTask("decision-baseline-data", { kind: "receipts", repositoryRoot: paths.root, sources }, scope);
     if (result.kind !== "receipts") throw new Error("Decision baseline worker returned another result kind");
     return result.receipts;
@@ -212,7 +212,7 @@ export class DecisionBaselineReader {
             sources.push({ text: await this.git(["show", `${anchor}:${subjectPath}`]), path: `${anchor}:${subjectPath}`, subjectId }); break;
         }
       }
-      const paths = [...trackedPaths].filter((path) => path !== ".projector" && !path.startsWith(".projector/"));
+      const paths = [...trackedPaths].filter((path) => path !== ".conceptor" && !path.startsWith(".conceptor/"));
       const decisionLocator = await files.locate("architecture-decision", decision.id);
       if (decisionLocator === undefined) throw new Error("current decision locator is unavailable");
       const decisionPath = relative(this.observation.repositoryRoot, decisionLocator.path).replaceAll("\\", "/");

@@ -7,16 +7,16 @@ import {
   CodeIndexRequestSchema, CodeIndexRunSchema, CodeIndexStatusSchema, CodeIndexStatusRequestSchema,
   CodeIndexWaitRequestSchema, CodeIndexCancelRequestSchema,
   type CodeIndexRun,
-} from "@projector/core";
+} from "@conceptor/core";
 import {
   NativeProcessLauncher, RepositoryPathService, currentObservationScope, resolveDerivedCachePath,
   withRetainedObservationScope,
-} from "@projector/runtime";
+} from "@conceptor/runtime";
 import { observeIndexedRepository } from "../change-lifecycle/indexed-observer.js";
 import { runObservationTask } from "../observation/task-runner.js";
 import { residentObservationWorkerPool } from "../observation/resident-pool.js";
 import type { IndexedRepositoryObservation } from "../observation/indexed-types.js";
-import type { InventoryEntry } from "@projector/analyzers";
+import type { InventoryEntry } from "@conceptor/analyzers";
 
 type CodeOperation = "code.query" | "code.index" | "code.index-status" | "code.index-wait" | "code.index-cancel" | "code.impact" | "code.tests" | "code.evidence" | "code.export";
 type ExecutionOptions = { readonly signal: AbortSignal; readonly environment: Readonly<Record<string, string | undefined>> };
@@ -24,7 +24,7 @@ type ActiveRun = { readonly controller: AbortController; readonly promise: Promi
 const activeRuns = new Map<string, ActiveRun>();
 
 async function runDirectory(root: string): Promise<string> {
-  const path = await resolveDerivedCachePath(root, ".projector/runtime/code/runs");
+  const path = await resolveDerivedCachePath(root, ".conceptor/runtime/code/runs");
   await mkdir(path, { recursive: true });
   return path;
 }

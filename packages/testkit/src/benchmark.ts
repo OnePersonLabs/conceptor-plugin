@@ -1,4 +1,4 @@
-import { hashFramedDomain, type ContentHash } from "@projector/core";
+import { hashFramedDomain, type ContentHash } from "@conceptor/core";
 
 export interface BenchmarkGateDefinition { readonly id: string; readonly threshold: number; readonly direction: "minimum" | "maximum" | "strict-maximum"; readonly protectedDimension?: boolean }
 export const REQUIRED_BENCHMARK_GATES: readonly BenchmarkGateDefinition[] = Object.freeze([

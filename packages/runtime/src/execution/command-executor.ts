@@ -9,7 +9,7 @@ import type {
   StateBinding,
   StateBindingValidator,
   StateDigest,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { PathSecurityError, type RepositoryPathService } from "../security/index.js";
 

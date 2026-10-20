@@ -1,4 +1,4 @@
-import { hashFramedDomain, type AnalyzerFailure, type ContentHash } from "@projector/core";
+import { hashFramedDomain, type AnalyzerFailure, type ContentHash } from "@conceptor/core";
 
 import type { InventoryEntry } from "../filesystem/inventory.js";
 import { compareCodePoint } from "../ordering.js";

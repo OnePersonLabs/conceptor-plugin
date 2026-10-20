@@ -1,33 +1,33 @@
 import { readFile } from "node:fs/promises";
 import { isAbsolute, relative, resolve, sep } from "node:path";
 
-import { ChangeProposalSchema, ProjectorOperationInputSchemas, type ProjectorOperation, type ProjectorOperationError } from "@projector/core";
-import { CanonicalFileRepository } from "@projector/runtime";
+import { ChangeProposalSchema, ProjectorOperationInputSchemas, type ProjectorOperation, type ProjectorOperationError } from "@conceptor/core";
+import { CanonicalFileRepository } from "@conceptor/runtime";
 import { z } from "zod";
 
-export const publicCommandHelp = `Projector: retrieve meaning, change with Codex, check consequences.
+export const publicCommandHelp = `Conceptor: retrieve meaning, change with Codex, check consequences.
 
-  projector init
-  projector context "task" [--entity ID] [--target path] [--budget characters] [--full]
-  projector check [CONTEXT]
-  projector integration --target REF --incoming REF [--base REF] [--result REF]
-  projector audit [--scope PATH] [--context CONTEXT] [--question-offset N] [--json]
-  projector accept proposal.json [--context CONTEXT] [--request "reason"]
-  projector accept --apply CHANGE --hash HASH
-  projector resume CONTEXT|CHANGE|APPROVAL
-  projector inspect ID [--cursor CURSOR] [--limit N] [--full]
-  projector inspect --representations
-  projector recover APPROVAL | --access | --representations
-  projector evaluate options.json
-  projector verify check.json
-  projector verify --inspect [EVENT] | --recover
-  projector verify --builtin --target REF
-  projector verify --builtin --assess EVENT --target REF
-  projector verify --builtin --inspect | --recover
-  projector generate generation.json
-  projector generate --inspect producers.json | --recover producers.json
-  projector code query|index|impact|tests|test-run|evidence|export request.json
-  projector code status [RUN] | wait RUN | cancel RUN
+  conceptor init
+  conceptor context "task" [--entity ID] [--target path] [--budget characters] [--full]
+  conceptor check [CONTEXT]
+  conceptor integration --target REF --incoming REF [--base REF] [--result REF]
+  conceptor audit [--scope PATH] [--context CONTEXT] [--question-offset N] [--json]
+  conceptor accept proposal.json [--context CONTEXT] [--request "reason"]
+  conceptor accept --apply CHANGE --hash HASH
+  conceptor resume CONTEXT|CHANGE|APPROVAL
+  conceptor inspect ID [--cursor CURSOR] [--limit N] [--full]
+  conceptor inspect --representations
+  conceptor recover APPROVAL | --access | --representations
+  conceptor evaluate options.json
+  conceptor verify check.json
+  conceptor verify --inspect [EVENT] | --recover
+  conceptor verify --builtin --target REF
+  conceptor verify --builtin --assess EVENT --target REF
+  conceptor verify --builtin --inspect | --recover
+  conceptor generate generation.json
+  conceptor generate --inspect producers.json | --recover producers.json
+  conceptor code query|index|impact|tests|test-run|evidence|export request.json
+  conceptor code status [RUN] | wait RUN | cancel RUN
 
 Use --root PATH for another repository, --json for exact machine results.
 Use --timeout-ms N to request an explicit bounded observation timeout.

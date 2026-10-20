@@ -2,8 +2,8 @@ import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promis
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { hashFramedDomain, type ExecutionPlan, type StateBinding } from "@projector/core";
-import { FileTransactionJournal, RepositoryPathService, withObservationScope } from "@projector/runtime";
+import { hashFramedDomain, type ExecutionPlan, type StateBinding } from "@conceptor/core";
+import { FileTransactionJournal, RepositoryPathService, withObservationScope } from "@conceptor/runtime";
 import { afterEach, describe, expect, test } from "vitest";
 
 import { ChangeLifecycleStore } from "../change-lifecycle/store.js";
@@ -59,7 +59,7 @@ describe("knowledge cache protection from durable owners", () => {
     for (let index = 0; index < 4; index += 1) {
       await journal.begin({ transactionId: `large-proof-${index}`, planId: capture.planId, beforeState: state.compiledAgainst, allowedWriteRoots: ["src"] });
     }
-    for (const directory of [".projector/runtime/change-lifecycles/captures", ".projector/runtime/change-lifecycles/approvals", ".projector/runtime/journal"]) {
+    for (const directory of [".conceptor/runtime/change-lifecycles/captures", ".conceptor/runtime/change-lifecycles/approvals", ".conceptor/runtime/journal"]) {
       for (const name of await readdir(join(root, directory))) {
         const path = join(root, directory, name);
         await writeFile(path, (await readFile(path, "utf8")).padEnd(3 * 1024 * 1024, " "));
@@ -73,7 +73,7 @@ describe("knowledge cache protection from durable owners", () => {
     await approve();
     const sources: Record<string, string> = {};
     for (const kind of ["captures", "approvals"]) {
-      const directory = `.projector/runtime/change-lifecycles/${kind}`;
+      const directory = `.conceptor/runtime/change-lifecycles/${kind}`;
       for (const name of await readdir(join(root, directory))) {
         const path = `${directory}/${name}`;
         sources[path] = await readFile(join(root, path), "utf8");
@@ -122,7 +122,7 @@ describe("knowledge cache protection from durable owners", () => {
   test("refuses an incomplete proof from corrupt lifecycle metadata or unknown open journals", async () => {
     const { root, approve, journal } = await fixture();
     await approve();
-    const directory = join(root, ".projector/runtime/change-lifecycles/approvals");
+    const directory = join(root, ".conceptor/runtime/change-lifecycles/approvals");
     const [name] = await readdir(directory);
     const path = join(directory, name!);
     const original = await readFile(path, "utf8");
@@ -142,7 +142,7 @@ describe("knowledge cache protection from durable owners", () => {
     await expect(readProtectedKnowledgeContextIds(root, { ...budget(), remainingEntries: 1 })).rejects.toThrow(/bound/iu);
     await expect(readProtectedKnowledgeContextIds(root, { ...budget(), remainingBytes: 1 })).rejects.toThrow(/bound/iu);
     await expect(readProtectedKnowledgeContextIds(root, { ...budget(), deadline: Date.now() - 1 })).rejects.toThrow(/bound/iu);
-    await mkdir(join(root, ".projector/runtime/change-lifecycles/unknown"));
+    await mkdir(join(root, ".conceptor/runtime/change-lifecycles/unknown"));
     await expect(readProtectedKnowledgeContextIds(root)).rejects.toThrow(/unknown/iu);
   });
 });

@@ -1,7 +1,7 @@
 import { lstat } from "node:fs/promises";
-import { readObservationFile } from "@projector/analyzers";
-import { hashFramedDomain, type ContentHash } from "@projector/core";
-import { withObservationScope } from "@projector/runtime";
+import { readObservationFile } from "@conceptor/analyzers";
+import { hashFramedDomain, type ContentHash } from "@conceptor/core";
+import { withObservationScope } from "@conceptor/runtime";
 import { runObservationTask } from "./task-runner.js";
 
 /** Missing is distinct from an unreadable or exhausted observation. */

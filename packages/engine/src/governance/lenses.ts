@@ -10,7 +10,7 @@ import {
   type ProjectionUnit,
   type Rule,
   type SelectorExpr,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { assessLensAuthority, governanceBasisIsEndogenous } from "../authority/index.js";
 import {

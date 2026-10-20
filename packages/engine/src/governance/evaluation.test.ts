@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hashFramedDomain, type EnumerationContract, type NormalizedPredicate, type SelectorExpr } from "@projector/core";
+import { hashFramedDomain, type EnumerationContract, type NormalizedPredicate, type SelectorExpr } from "@conceptor/core";
 import { compileEffectiveRuleBundle } from "./rules.js";
 import { evaluateEffectiveRuleBundle, prepareGovernanceEvaluator, type GovernanceObservation } from "./evaluation.js";
 import { projectionUnit, rule } from "./test-fixtures.js";
@@ -91,7 +91,7 @@ describe("observed predicate evaluation", () => {
   });
 
   it("finds an observed forbidden edge even when enumeration is open, independent of order/duplicates", () => {
-    const edge = { fromUnitId: "core", toSubjectId: "engine", specifier: "@projector/engine", evidenceIds: ["import:1"] };
+    const edge = { fromUnitId: "core", toSubjectId: "engine", specifier: "@conceptor/engine", evidenceIds: ["import:1"] };
     const observed = observation({ dependencies: [edge], dependencyEnumerations: [{ unitId: "core", contract: { ...closed, observability: "open" }, unknowns: [] }] });
     const first = evaluate([forbidden], observed);
     expect(first.status).toBe("violated");

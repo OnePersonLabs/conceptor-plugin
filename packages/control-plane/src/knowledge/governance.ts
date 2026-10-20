@@ -1,5 +1,5 @@
-import { canonicalJson, hashFramedDomain, type AdapterContext, type ArchitectureDecision, type AuthorityRecord, type AuthorityReconsiderTrigger, type StateQueryDependency } from "@projector/core";
-import { DependencyScopedStateBindingValidator, assessDecisionValidity, createStateBinding, type GovernanceBundleEvaluation } from "@projector/engine";
+import { canonicalJson, hashFramedDomain, type AdapterContext, type ArchitectureDecision, type AuthorityRecord, type AuthorityReconsiderTrigger, type StateQueryDependency } from "@conceptor/core";
+import { DependencyScopedStateBindingValidator, assessDecisionValidity, createStateBinding, type GovernanceBundleEvaluation } from "@conceptor/engine";
 
 import type { ChangeRepositoryObservation } from "../change-lifecycle/repository-observer.js";
 import { DecisionBaselineReader, captureDecisionTriggerObservations, type DecisionBaselineEvidence, type KnowledgeDecisionBaseline } from "./decision-baselines.js";

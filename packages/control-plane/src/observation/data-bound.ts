@@ -1,4 +1,4 @@
-import { ObservationError } from "@projector/core";
+import { ObservationError } from "@conceptor/core";
 
 /** Counts plain-data transfer size without first allocating a serialized copy. */
 export function assertBoundedObservationData(value: unknown, maximumBytes: number, deadline: number): number {

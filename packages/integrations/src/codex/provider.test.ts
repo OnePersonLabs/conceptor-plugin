@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setTimeout as delay } from "node:timers/promises";
 
-import { hashFramedDomain, type RiskAssessment, type StructuredModelRequest } from "@projector/core";
+import { hashFramedDomain, type RiskAssessment, type StructuredModelRequest } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { CodexExecProviderError, DISABLED_CODEX_EXEC_FEATURES, createCodexExecProvider, type CodexProcessRequest, type CodexProcessRunner } from "./provider.js";

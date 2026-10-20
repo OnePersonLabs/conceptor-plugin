@@ -4,9 +4,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 
-import { hashFramedDomain, withCanonicalHashes, type ArchitectureDecision, type AuthorityRecord, type CanonicalDocumentEnvelope, type Concept, type ProjectionLens } from "@projector/core";
-import { createRepositoryScriptLens } from "@projector/engine";
-import { CanonicalFileRepository, NativeProcessLauncher, canonicalApiVersion, canonicalSchemaVersion, type ProcessLauncher, type ProcessLaunchRequest } from "@projector/runtime";
+import { hashFramedDomain, withCanonicalHashes, type ArchitectureDecision, type AuthorityRecord, type CanonicalDocumentEnvelope, type Concept, type ProjectionLens } from "@conceptor/core";
+import { createRepositoryScriptLens } from "@conceptor/engine";
+import { CanonicalFileRepository, NativeProcessLauncher, canonicalApiVersion, canonicalSchemaVersion, type ProcessLauncher, type ProcessLaunchRequest } from "@conceptor/runtime";
 import { afterAll, afterEach, describe, expect } from "vitest";
 import { integrationTest } from "../../../../scripts/testing/integration-test.mjs";
 import { ResidentObservationWorkerPool, withResidentObservationWorkerPool } from "../observation/resident-pool.js";
@@ -34,7 +34,7 @@ async function canonical(root: string, kind: CanonicalDocumentEnvelope["kind"], 
 }
 async function git(root: string, args: string[]) { return (await execute("git", args, { cwd: root })).stdout.trim(); }
 async function commit(root: string) {
-  await git(root, ["add", "package.json", "src", ".projector/model", ".projector/decisions", ".projector/authorities"]);
+  await git(root, ["add", "package.json", "src", ".conceptor/model", ".conceptor/decisions", ".conceptor/authorities"]);
   await git(root, ["commit", "-qm", "accepted fixture"]);
 }
 async function repository(record = authority(), tracked = true) {
@@ -237,8 +237,8 @@ describe("public durable repository validators", () => {
     const pending = service.context({ request: "inspect", entities: ["lens:validator"], signal: controller.signal });
     setTimeout(() => controller.abort(), 20).unref();
     await expect(pending).rejects.toMatchObject({ name: "AbortError" });
-    expect(await readdir(join(root, ".projector/runtime/knowledge/contexts")).catch(() => [])).toEqual([]);
-    expect(await readdir(join(root, ".projector/runtime/impact")).catch(() => [])).toEqual([]);
+    expect(await readdir(join(root, ".conceptor/runtime/knowledge/contexts")).catch(() => [])).toEqual([]);
+    expect(await readdir(join(root, ".conceptor/runtime/impact")).catch(() => [])).toEqual([]);
   });
 
   it("reports denied host execution as unavailable without claiming validator conformance", async () => {

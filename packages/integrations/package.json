@@ -1,5 +1,5 @@
 {
-  "name": "@projector/integrations",
+  "name": "@conceptor/integrations",
   "version": "3.0.0",
   "private": true,
   "type": "module",
@@ -34,8 +34,8 @@
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {
-    "@projector/core": "workspace:*",
-    "@projector/engine": "workspace:*",
+    "@conceptor/core": "workspace:*",
+    "@conceptor/engine": "workspace:*",
     "zod": "^4.0.15"
   }
 }

@@ -2,7 +2,7 @@ import { chmod, copyFile, mkdir, mkdtemp, readFile, readdir, rename, stat, write
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import type { ContentHash, StateDigest, TransactionPhase } from "@projector/core";
+import type { ContentHash, StateDigest, TransactionPhase } from "@conceptor/core";
 import { describe, expect, it, vi } from "vitest";
 
 import { RepositoryPathService } from "../security/index.js";
@@ -210,8 +210,8 @@ describe("FileTransactionJournal", () => {
   ] satisfies TransactionPhase[])("recovers a restart injected after authoritative phase %s", async (targetPhase) => {
     const root = await mkdtemp(join(tmpdir(), "projector-phase-crash-"));
     await writeFile(join(root, "workspace.txt"), "workspace-before");
-    await mkdir(join(root, ".projector", "model"), { recursive: true });
-    await writeFile(join(root, ".projector", "model", "canonical.json"), "canonical-before");
+    await mkdir(join(root, ".conceptor", "model"), { recursive: true });
+    await writeFile(join(root, ".conceptor", "model", "canonical.json"), "canonical-before");
     let crashed = false;
     const journal = await journalFor(root, (point) => {
       if (!crashed && point === `after-phase:${targetPhase}`) {
@@ -223,7 +223,7 @@ describe("FileTransactionJournal", () => {
     try {
       const transaction = await journal.begin(beginInput(`tx-phase-${targetPhase}`));
       await transaction.writeFile("workspace.txt", "workspace-after");
-      await transaction.writeFile(".projector/model/canonical.json", "canonical-after");
+      await transaction.writeFile(".conceptor/model/canonical.json", "canonical-after");
       if (targetPhase === "rolling-back" || targetPhase === "rolled-back") {
         await transaction.rollback();
       } else if (targetPhase === "recovery-required") {
@@ -241,7 +241,7 @@ describe("FileTransactionJournal", () => {
     const restarted = await journalFor(root);
     const recovery = await restarted.recoverIncomplete();
     const workspace = await readFile(join(root, "workspace.txt"), "utf8");
-    const canonical = await readFile(join(root, ".projector", "model", "canonical.json"), "utf8");
+    const canonical = await readFile(join(root, ".conceptor", "model", "canonical.json"), "utf8");
     if (targetPhase === "committed") {
       expect(recovery).toEqual([]);
       expect([workspace, canonical]).toEqual(["workspace-after", "canonical-after"]);
@@ -314,8 +314,8 @@ describe("FileTransactionJournal", () => {
 
     const targetRoot = await mkdtemp(join(tmpdir(), "projector-journal-clone-"));
     const target = await journalFor(targetRoot);
-    const sourceDirectory = join(sourceRoot, ".projector", "runtime", "journal");
-    const targetDirectory = join(targetRoot, ".projector", "runtime", "journal");
+    const sourceDirectory = join(sourceRoot, ".conceptor", "runtime", "journal");
+    const targetDirectory = join(targetRoot, ".conceptor", "runtime", "journal");
     await mkdir(targetDirectory, { recursive: true });
     for (const name of await readdir(sourceDirectory)) {
       await copyFile(join(sourceDirectory, name), join(targetDirectory, name));
@@ -332,7 +332,7 @@ describe("FileTransactionJournal", () => {
     for (const phase of phasesAfterMutation) await transaction.transition(phase);
     await transaction.commit();
 
-    const directory = join(root, ".projector", "runtime", "journal");
+    const directory = join(root, ".conceptor", "runtime", "journal");
     const [name] = await readdir(directory);
     if (name === undefined) throw new Error("Expected a committed journal");
     const path = join(directory, name);
@@ -361,13 +361,13 @@ describe("FileTransactionJournal", () => {
     const source = await journalFor(sourceRoot);
     const active = await source.begin(beginInput("tx-prior-worktree-active"));
     await active.writeFile("sample.txt", "uncommitted");
-    const sourceDirectory = join(sourceRoot, ".projector", "runtime", "journal");
+    const sourceDirectory = join(sourceRoot, ".conceptor", "runtime", "journal");
     const [name] = await readdir(sourceDirectory);
     if (name === undefined) throw new Error("Expected an active source journal");
 
     const targetRoot = await mkdtemp(join(tmpdir(), "projector-journal-clone-active-"));
     const target = await journalFor(targetRoot);
-    const targetDirectory = join(targetRoot, ".projector", "runtime", "journal");
+    const targetDirectory = join(targetRoot, ".conceptor", "runtime", "journal");
     await mkdir(targetDirectory, { recursive: true });
     await copyFile(join(sourceDirectory, name), join(targetDirectory, name));
 
@@ -382,9 +382,9 @@ describe("FileTransactionJournal", () => {
     await transaction.commit();
 
     const exact = await journal.readExact("tx-exact-committed");
-    const [recordName] = await readdir(join(root, ".projector", "runtime", "journal"));
+    const [recordName] = await readdir(join(root, ".conceptor", "runtime", "journal"));
     if (recordName === undefined) throw new Error("committed journal record was not persisted");
-    const persisted = await readFile(join(root, ".projector", "runtime", "journal", recordName));
+    const persisted = await readFile(join(root, ".conceptor", "runtime", "journal", recordName));
 
     expect(exact.record.entry.phase).toBe("committed");
     expect(exact.bytes.equals(persisted)).toBe(true);
@@ -580,7 +580,7 @@ describe("FileTransactionJournal", () => {
   it("fails closed instead of interpreting a corrupt journal phase", async () => {
     const { root, journal } = await harness();
     await journal.begin(beginInput("tx-corrupt"));
-    const directory = join(root, ".projector", "runtime", "journal");
+    const directory = join(root, ".conceptor", "runtime", "journal");
     const [name] = await readdir(directory);
     if (name === undefined) throw new Error("Expected a journal record");
     const path = join(directory, name);
@@ -636,7 +636,7 @@ describe("FileTransactionJournal", () => {
     const { root, journal } = await harness();
     const transaction = await journal.begin(beginInput("tx-corrupt-path-index"));
     await transaction.writeFile("sample.txt", "after");
-    const directory = join(root, ".projector", "runtime", "journal");
+    const directory = join(root, ".conceptor", "runtime", "journal");
     const [name] = await readdir(directory);
     if (name === undefined) throw new Error("Expected a journal record");
     const path = join(directory, name);
@@ -651,7 +651,7 @@ describe("FileTransactionJournal", () => {
     const { root, journal } = await harness();
     const transaction = await journal.begin(beginInput("tx-renamed-record"));
     await transaction.writeFile("sample.txt", "after");
-    const directory = join(root, ".projector", "runtime", "journal");
+    const directory = join(root, ".conceptor", "runtime", "journal");
     const [name] = await readdir(directory);
     if (name === undefined) throw new Error("Expected a journal record");
     await rename(join(directory, name), join(directory, `${"0".repeat(64)}.json`));

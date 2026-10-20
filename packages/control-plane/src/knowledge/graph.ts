@@ -33,7 +33,7 @@ import {
   type StateQueryDependency,
   type StateValueDependencyRef,
   type Tombstone,
-} from "@projector/core";
+} from "@conceptor/core";
 import {
   InMemoryGraphReader,
   QueryDependencyRegistry,
@@ -53,9 +53,9 @@ import {
   type RelevanceDiscoveryEdge,
   type RelevanceDiscoveryPort,
   type QueryMemoPort,
-} from "@projector/engine";
-import { verifyCodeInputBinding } from "@projector/analyzers";
-import { SqliteCodeStore, checkoutCacheLocation } from "@projector/runtime";
+} from "@conceptor/engine";
+import { verifyCodeInputBinding } from "@conceptor/analyzers";
+import { SqliteCodeStore, checkoutCacheLocation } from "@conceptor/runtime";
 
 import type { ChangeRepositoryObservation } from "../change-lifecycle/repository-observer.js";
 import { SEMANTIC_TOPOLOGY_PROGRAM, projectSemanticNeighborhood } from "./code-graph.js";

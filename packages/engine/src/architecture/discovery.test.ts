@@ -1,4 +1,4 @@
-import { hashFramedDomain, type ContentHash, type RelevanceClosure, type SelectorExpr, type StateDigest } from "@projector/core";
+import { hashFramedDomain, type ContentHash, type RelevanceClosure, type SelectorExpr, type StateDigest } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { discoverArchitectureConcerns } from "./discovery.js";

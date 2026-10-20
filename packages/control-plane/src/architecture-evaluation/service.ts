@@ -1,7 +1,7 @@
-import { ArchitectureEvaluationRequestSchema, ArchitectureConcernSchema, AuthorityRecordSchema, DeveloperPreferenceSchema, canonicalJson, hashSemantic, type ArchitectureConcern, type AuthorityRecord, type DecisionOption, type DeveloperPreference, type Evidence } from "@projector/core";
-import { evaluateDecisionOptions, evaluateSelector } from "@projector/engine";
+import { ArchitectureEvaluationRequestSchema, ArchitectureConcernSchema, AuthorityRecordSchema, DeveloperPreferenceSchema, canonicalJson, hashSemantic, type ArchitectureConcern, type AuthorityRecord, type DecisionOption, type DeveloperPreference, type Evidence } from "@conceptor/core";
+import { evaluateDecisionOptions, evaluateSelector } from "@conceptor/engine";
 import { observeChangeRepository, type ChangeRepositoryObservation } from "../change-lifecycle/repository-observer.js";
-export { ArchitectureEvaluationOutputSchema } from "@projector/core";
+export { ArchitectureEvaluationOutputSchema } from "@conceptor/core";
 
 /** Reports candidate tradeoffs. This service cannot approve or mutate canonical products. */
 export async function evaluateArchitectureOptions(observation: Pick<ChangeRepositoryObservation, "canonical">, request: unknown, host: { now?: () => string } = {}) {

@@ -25,8 +25,8 @@ import {
   type SurfaceChange,
   type SurfacePlan,
   type ValidationResult,
-} from "@projector/core";
-import { executionCapsuleHash, executionPlanHash, type ExecutionApproval } from "@projector/engine";
+} from "@conceptor/core";
+import { executionCapsuleHash, executionPlanHash, type ExecutionApproval } from "@conceptor/engine";
 
 const compare = (left: string, right: string): number => left < right ? -1 : left > right ? 1 : 0;
 

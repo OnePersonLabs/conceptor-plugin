@@ -4,8 +4,8 @@ import { join } from "node:path";
 import { StatementSync } from "node:sqlite";
 import { afterEach, expect, it, vi } from "vitest";
 import { readDerivedCacheSource, touchDerivedCacheEntry, withDerivedCacheAdmission } from "./derived-cache.js";
-const context = `.projector/runtime/knowledge/contexts/${"a".repeat(32)}.json`;
-const impact = `.projector/runtime/impact/${"b".repeat(64)}.json`;
+const context = `.conceptor/runtime/knowledge/contexts/${"a".repeat(32)}.json`;
+const impact = `.conceptor/runtime/impact/${"b".repeat(64)}.json`;
 const roots:string[]=[];
 afterEach(async()=>{vi.unstubAllEnvs();await Promise.all(roots.splice(0).map(root=>rm(root,{recursive:true,force:true})));});
 async function project(){const root=await mkdtemp(join(tmpdir(),"projector-cache-"));roots.push(root);const cache=await mkdtemp(join(tmpdir(),"projector-cache-owner-"));roots.push(cache);vi.stubEnv("PROJECTOR_CACHE_DIRECTORY",cache);return root;}
@@ -23,7 +23,7 @@ it("reuses identical content and refuses a conflicting immutable cache address",
   await expect(withDerivedCacheAdmission(root,cache=>cache.publish(context,"different"))).rejects.toMatchObject({code:"cache-corrupt"});expect(await readDerivedCacheSource(root,context)).toBe("same bytes");
 });
 it("preserves historical local evidence and interrupted staging without enrolling it",async()=>{
-  const root=await project();await mkdir(join(root,".projector/runtime/knowledge/contexts"),{recursive:true});await writeFile(join(root,context),"historical");await writeFile(join(root,`${context}.123.456.tmp`),"interrupted");
+  const root=await project();await mkdir(join(root,".conceptor/runtime/knowledge/contexts"),{recursive:true});await writeFile(join(root,context),"historical");await writeFile(join(root,`${context}.123.456.tmp`),"interrupted");
   await withDerivedCacheAdmission(root,async cache=>{expect(cache.entries).toEqual([]);expect(cache.totalBytes).toBe(0);await cache.publish(context,"new external");});
   expect(await readFile(join(root,context),"utf8")).toBe("historical");expect(await readFile(join(root,`${context}.123.456.tmp`),"utf8")).toBe("interrupted");expect(await readDerivedCacheSource(root,context)).toBe("new external");
 });

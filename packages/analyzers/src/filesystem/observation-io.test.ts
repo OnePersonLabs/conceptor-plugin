@@ -3,7 +3,7 @@ import { chmod, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { delimiter, join } from "node:path";
 import { promisify } from "node:util";
-import { ObservationBudget } from "@projector/core";
+import { ObservationBudget } from "@conceptor/core";
 import { expect, it } from "vitest";
 import { observationGit } from "./observation-io.js";
 

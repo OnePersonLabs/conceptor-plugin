@@ -3,7 +3,7 @@ import { readFile, stat } from "node:fs/promises";
 import { dirname, toNamespacedPath } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { z } from "zod";
-import { CodeBridgeSchema, CodeRuntimeEvidenceSchema, DEFAULT_OBSERVATION_LIMITS, canonicalJson, type CodeRuntimeEvidence } from "@projector/core";
+import { CodeBridgeSchema, CodeRuntimeEvidenceSchema, DEFAULT_OBSERVATION_LIMITS, canonicalJson, type CodeRuntimeEvidence } from "@conceptor/core";
 import { resolveDerivedCachePath } from "../cache/location.js";
 
 export interface StoredCodeBridge {
@@ -26,8 +26,8 @@ export class SqliteCodeEvidenceStore {
   private readonly db: DatabaseSync;
 
   static async open(repositoryRoot: string, migrationAllowanceBytes: number | null): Promise<SqliteCodeEvidenceStore> {
-    const path = await resolveDerivedCachePath(repositoryRoot, ".projector/runtime/code/evidence.sqlite");
-    const legacyPath = await resolveDerivedCachePath(repositoryRoot, ".projector/runtime/code/evidence.json");
+    const path = await resolveDerivedCachePath(repositoryRoot, ".conceptor/runtime/code/evidence.sqlite");
+    const legacyPath = await resolveDerivedCachePath(repositoryRoot, ".conceptor/runtime/code/evidence.json");
     const store = new SqliteCodeEvidenceStore(path);
     try {
       await store.migrateLegacy(legacyPath, migrationAllowanceBytes);

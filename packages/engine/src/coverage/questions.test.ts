@@ -1,4 +1,4 @@
-import { hashSemantic, hashFramedDomain, type AuthorityRecord, type ContentHash, type StateDigest } from "@projector/core";
+import { hashSemantic, hashFramedDomain, type AuthorityRecord, type ContentHash, type StateDigest } from "@conceptor/core";
 import { describe, expect, it, vi } from "vitest";
 
 import { InMemorySettledAnswerStore, rankCompletionQuestions, settleCompletionQuestion } from "./questions.js";

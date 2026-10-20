@@ -13,7 +13,7 @@ import {
   type StateQueryResultFingerprint,
   type StateQuerySpec,
   type StateValueDependencyRef,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { QueryProgramVersionError, UnknownQueryProgramError } from "../query/index.js";
 

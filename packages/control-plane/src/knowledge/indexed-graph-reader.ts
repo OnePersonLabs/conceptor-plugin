@@ -1,8 +1,8 @@
 import type {
   BehavioralScenario, CanonicalDocumentEnvelope, Concept, ContentHash,
   DerivationInput, EntityId, GraphReader, ProjectionUnit, Relation, Requirement,
-} from "@projector/core";
-import type { SqliteObservationStore } from "@projector/runtime";
+} from "@conceptor/core";
+import type { SqliteObservationStore } from "@conceptor/runtime";
 
 /** Addressed implementation of the existing graph contract. The caller holds a
  * readGeneration snapshot; lexical search explicitly enumerates its population. */

@@ -9,20 +9,20 @@ The user wants one clip to appear more than once in an arrangement. Each use can
 In Codex Plan mode, the conversation can look like this:
 
 ```text
-You: Use $projector. Let one clip be used more than once in an arrangement,
+You: Use $conceptor. Let one clip be used more than once in an arrangement,
      with a separate transpose value for each use. Save and reload must preserve
      the shared clip reference.
 
-Codex: I propose concept:clip at .projector/model/concepts/clip.md:
+Codex: I propose concept:clip at .conceptor/model/concepts/clip.md:
        "A clip owns reusable notes and timing."
        requirement:independent-transposition-per-use at
-       .projector/model/requirements/transpose-each-clip-use-independently--independent-transposition-per-use.md
+       .conceptor/model/requirements/transpose-each-clip-use-independently--independent-transposition-per-use.md
        says each use stores its own semitone value and save/reload preserves the
        shared clip reference.
        scenario:two-uses-of-one-clip-save-reload at
-       .projector/model/scenarios/save-and-reload-two-uses-of-one-clip--two-uses-of-one-clip-save-reload.md
+       .conceptor/model/scenarios/save-and-reload-two-uses-of-one-clip--two-uses-of-one-clip-save-reload.md
        exercises one C4 clip used twice. I would add Clip -> Requirement and
-       Requirement -> Scenario relations under .projector/model/relations/.
+       Requirement -> Scenario relations under .conceptor/model/relations/.
        The app needs a clip reference, position, and transpose value for each
        use, plus playback and save/reload behavior that preserves them.
 
@@ -52,11 +52,11 @@ The requirement says:
 
 The scenario starts with one C4 note and uses its clip twice with transpose values of 0 and 2. Playing, saving, reloading, and playing again must yield C4 and D4 from that same clip. Neither operation may rewrite the note or the other use's transpose.
 
-The two typed relationships connect `concept:clip` to `requirement:independent-transposition-per-use`, then connect that requirement to `scenario:two-uses-of-one-clip-save-reload`. In Plan mode, feedback revises proposed text and consequences in conversation without writing `.projector/` or editing code.
+The two typed relationships connect `concept:clip` to `requirement:independent-transposition-per-use`, then connect that requirement to `scenario:two-uses-of-one-clip-save-reload`. In Plan mode, feedback revises proposed text and consequences in conversation without writing `.conceptor/` or editing code.
 
 ## Authorized execution
 
-The user then says, “Implement this plan.” `$projector` accepts the exact model through its lifecycle and implements the app under the user's authorization. An illustrative handoff might report:
+The user then says, “Implement this plan.” `$conceptor` accepts the exact model through its lifecycle and implements the app under the user's authorization. An illustrative handoff might report:
 
 ```text
 Accepted concept:clip, requirement:independent-transposition-per-use, and
@@ -85,7 +85,7 @@ Codex: I will revise requirement:independent-transposition-per-use and
 
 You: Implement the revision.
 
-Codex: Projector accepted the revision. I updated input validation and checked
+Codex: Conceptor accepted the revision. I updated input validation and checked
        rejected 25 and 1.5 plus the original two-use reload case.
 ```
 

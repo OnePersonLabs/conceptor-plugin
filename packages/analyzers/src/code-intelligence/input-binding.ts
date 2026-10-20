@@ -1,6 +1,6 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
-import { hashFramedDomain, type CodeInputBinding } from "@projector/core";
+import { hashFramedDomain, type CodeInputBinding } from "@conceptor/core";
 
 /** Shared byte binding for native, SCIP, SemanticDB, and syntax providers. */
 export function codeInputHash(content: string | Uint8Array): string {

@@ -3,7 +3,7 @@ import { dirname, isAbsolute, toNamespacedPath } from "node:path";
 import { threadId } from "node:worker_threads";
 import { DatabaseSync } from "node:sqlite";
 import { createHash } from "node:crypto";
-import { canonicalJson, hashFramedDomain, ObservationBudget, ObservationError } from "@projector/core";
+import { canonicalJson, hashFramedDomain, ObservationBudget, ObservationError } from "@conceptor/core";
 import { RepositoryPathService } from "../security/repository-path.js";
 import { checkoutCacheLocation } from "../cache/location.js";
 import { SqliteObservationStage, type ObservationStageDescriptor } from "./observation-stage.js";
@@ -48,7 +48,7 @@ export class SqliteObservationStore {
     options.signal?.throwIfAborted(); options.budget?.check("observation-index-path");
     const location = await checkoutCacheLocation(repositoryRoot);
     const paths = await RepositoryPathService.create(location.cacheRoot);
-    const relative = ".projector/runtime/observations/index.sqlite";
+    const relative = ".conceptor/runtime/observations/index.sqlite";
     const database = await paths.resolveWrite(relative);
     for (const suffix of ["-wal", "-shm", "-journal"]) await paths.resolveWrite(`${relative}${suffix}`);
     for (const suffix of ["", "-journal", "-wal", "-shm"]) await paths.resolveWrite(`${relative}.source-lifetime.sqlite${suffix}`);

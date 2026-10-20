@@ -2,7 +2,7 @@ import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import type { ContentHash, StateBinding, StateDigest } from "@projector/core";
+import type { ContentHash, StateBinding, StateDigest } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { FileTransactionJournal } from "../journal/index.js";

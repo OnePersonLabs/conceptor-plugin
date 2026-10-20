@@ -1,5 +1,5 @@
-import { canonicalJson, type CanonicalDocumentEnvelope, type ChangeProposal } from "@projector/core";
-import { CanonicalFileRepository } from "@projector/runtime";
+import { canonicalJson, type CanonicalDocumentEnvelope, type ChangeProposal } from "@conceptor/core";
+import { CanonicalFileRepository } from "@conceptor/runtime";
 
 import { RepositoryKnowledgeService } from "../knowledge/service.js";
 import type { KnowledgeContextResult } from "../knowledge/types.js";

@@ -5,7 +5,7 @@ import {
   type ContentHash,
   type RelevanceBand,
   type RelevanceClosure,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import { evaluateSelector, type SelectorSubject } from "../governance/selectors.js";
 

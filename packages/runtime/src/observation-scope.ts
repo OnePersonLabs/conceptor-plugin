@@ -1,5 +1,5 @@
 import { AsyncLocalStorage } from "node:async_hooks";
-import { ObservationBudget, type ObservationLimits } from "@projector/core";
+import { ObservationBudget, type ObservationLimits } from "@conceptor/core";
 
 export interface ObservationScope {
   readonly limits: ObservationLimits;

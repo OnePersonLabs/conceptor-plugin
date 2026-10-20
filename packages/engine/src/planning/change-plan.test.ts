@@ -1,4 +1,4 @@
-import { hashFramedDomain, type CompletionContract, type RepresentationProjectionRef, type RiskAssessment, type SemanticChange, type StateDigest } from "@projector/core";
+import { hashFramedDomain, type CompletionContract, type RepresentationProjectionRef, type RiskAssessment, type SemanticChange, type StateDigest } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { createStateBinding } from "../state/index.js";

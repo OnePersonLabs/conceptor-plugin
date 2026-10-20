@@ -20,7 +20,7 @@ import {
   type CodePartition,
   type CodeSnapshot,
   type CodeSymbol,
-} from "@projector/core";
+} from "@conceptor/core";
 import { codeInputHash } from "./input-binding.js";
 import { boundedProtobufFrames } from "./protobuf-framing.js";
 

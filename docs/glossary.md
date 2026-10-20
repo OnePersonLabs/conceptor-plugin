@@ -1,18 +1,18 @@
 # Glossary
 
-**Accepted meaning**: Canonical project intent and rationale stored under `.projector/`.
+**Accepted meaning**: Canonical project intent and rationale stored under `.conceptor/`.
 
-**Assimilation topic note**: A Markdown unit in the `.assimilate/` working synthesis. It is not a Projector record.
+**Assimilation topic note**: A Markdown unit in the `.assimilate/` working synthesis. It is not a Conceptor record.
 
-**Canonical record**: One authored Projector fact with stable identity and its schema-defined content and relationships.
+**Canonical record**: One authored Conceptor fact with stable identity and its schema-defined content and relationships.
 
 **Concept**: An accepted domain boundary or capability with a stable ID. In the [clip use example](examples/clip-use.md), `concept:clip` owns shared notes reused by arrangements.
 
 **Context packet**: A task-specific bounded retrieval of accepted meaning, with disclosure about selection, omissions, and unknowns.
 
-**Context ID**: The actual identifier for retained context that Projector can resume or check.
+**Context ID**: The actual identifier for retained context that Conceptor can resume or check.
 
-**Controlled write**: A Projector-managed canonical mutation with a reviewed plan, exact state checks, and retained recovery evidence.
+**Controlled write**: A Conceptor-managed canonical mutation with a reviewed plan, exact state checks, and retained recovery evidence.
 
 **Currentness**: Whether the dependencies and source evidence bound to retained context still match the observed repository state.
 
@@ -30,6 +30,6 @@
 
 **Typed relationship**: A schema-defined edge between records, such as a requirement demonstrated by a scenario.
 
-**Working synthesis**: The complete assimilation-owned set of index, topic notes, intake, and frontier. It may be durable without being accepted Projector meaning.
+**Working synthesis**: The complete assimilation-owned set of index, topic notes, intake, and frontier. It may be durable without being accepted Conceptor meaning.
 
 Continue with [Concepts](concepts.md) or the [documentation home](README.md).

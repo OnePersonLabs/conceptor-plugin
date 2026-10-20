@@ -1,4 +1,4 @@
-import type { TransactionPhase } from "@projector/core";
+import type { TransactionPhase } from "@conceptor/core";
 
 export const transactionCrashPhases = [
   "prepared",

@@ -1,10 +1,10 @@
-import { hashFramedDomain, withCanonicalHashes, type SelectorExpr } from "@projector/core";
-import { CanonicalFileRepository } from "@projector/runtime";
+import { hashFramedDomain, withCanonicalHashes, type SelectorExpr } from "@conceptor/core";
+import { CanonicalFileRepository } from "@conceptor/runtime";
 import { execFileSync } from "node:child_process";
 import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { evaluateSelector, type SelectorSubject } from "@projector/engine";
+import { evaluateSelector, type SelectorSubject } from "@conceptor/engine";
 import { expect, it } from "vitest";
 import { realizationSelectorGates, safeRealizationCandidateIds } from "./indexed-selector-incidence.js";
 import { observeIndexedRepository } from "../change-lifecycle/indexed-observer.js";

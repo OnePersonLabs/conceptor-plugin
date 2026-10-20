@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { DerivedObservationBudget, hashFramedDomain } from "@projector/core";
+import { DerivedObservationBudget, hashFramedDomain } from "@conceptor/core";
 import type { ExportFact, ImportBindingFact, SemanticDeclarationFact, SourceLocationFact } from "./facts.js";
 import { compareCodePoint } from "../ordering.js";
 

@@ -1,4 +1,4 @@
-import { hashFramedDomain, type RiskAssessment, type StructuredModelRequest } from "@projector/core";
+import { hashFramedDomain, type RiskAssessment, type StructuredModelRequest } from "@conceptor/core";
 import { describe, expect, it, vi } from "vitest";
 
 import { runStructuredInference, type InferenceArtifactStore } from "./inference.js";

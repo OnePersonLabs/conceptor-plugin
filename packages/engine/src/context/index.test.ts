@@ -3,7 +3,7 @@ import type {
   ContentHash,
   RelevanceClosure,
   SelectorExpr,
-} from "@projector/core";
+} from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import {

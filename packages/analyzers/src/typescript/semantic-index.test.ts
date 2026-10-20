@@ -1,4 +1,4 @@
-import { hashFramedDomain } from "@projector/core";
+import { hashFramedDomain } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import type { InventoryEntry } from "../filesystem/inventory.js";
@@ -53,9 +53,9 @@ describe("TS/JS semantic index", () => {
   });
 
   it("keeps bundled runtime dependencies available for resolution without analyzing their source", () => {
-    const vendorRoot = "plugins/projector-v3/runtime/projector/node_modules/example";
+    const vendorRoot = "plugins/conceptor-v3/runtime/conceptor/node_modules/example";
     const vendorFile = `${vendorRoot}/index.test.ts`;
-    const firstPartyFile = "plugins/projector-v3/runtime/projector/src/consumer.ts";
+    const firstPartyFile = "plugins/conceptor-v3/runtime/conceptor/src/consumer.ts";
     const result = analyzeJavaScript([
       entry(`${vendorRoot}/package.json`, '{"name":"example"}'),
       entry(vendorFile, [
@@ -65,7 +65,7 @@ describe("TS/JS semantic index", () => {
         "test('vendor', () => {});",
         "bus.emit('vendor.event');",
       ].join("\n")),
-      entry("plugins/projector-v3/runtime/projector/package.json", '{"name":"@projector/runtime-bundle"}'),
+      entry("plugins/conceptor-v3/runtime/conceptor/package.json", '{"name":"@conceptor/runtime-bundle"}'),
       entry(firstPartyFile, [
         "import '../node_modules/example/index.test.js';",
         "export interface FirstPartyContract {}",
@@ -78,7 +78,7 @@ describe("TS/JS semantic index", () => {
     expect(isBundledRuntimeDependencyPath("node_modules/other/index.ts")).toBe(false);
     expect(result.files.map(({ path }) => path)).toEqual(["node_modules/other/index.ts", firstPartyFile]);
     expect(result.files.find(({ path }) => path === firstPartyFile)).toMatchObject({
-      scopeKey: "@projector/runtime-bundle",
+      scopeKey: "@conceptor/runtime-bundle",
       declarations: expect.arrayContaining([expect.objectContaining({ name: "FirstPartyContract" })]),
     });
     expect(result.dependencies).toEqual([expect.objectContaining({ importerPath: firstPartyFile, resolvedPath: vendorFile })]);

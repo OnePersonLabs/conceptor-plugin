@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { hashFramedDomain, type ArchitectureDecision, type AuthorityRecord } from "@projector/core";
+import { hashFramedDomain, type ArchitectureDecision, type AuthorityRecord } from "@conceptor/core";
 import type { ChangeRepositoryObservation } from "../change-lifecycle/repository-observer.js";
 import { captureDecisionTriggerObservations } from "./decision-baselines.js";
 import { KnowledgeDecisionRun } from "./governance.js";

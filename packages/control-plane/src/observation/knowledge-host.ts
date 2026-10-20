@@ -1,6 +1,6 @@
-import type { ArchitectureDecision, AuthorityRecord } from "@projector/core";
-import type { ExternalGovernanceValidatorFinding } from "@projector/engine";
-import type { StateDigest } from "@projector/core";
+import type { ArchitectureDecision, AuthorityRecord } from "@conceptor/core";
+import type { ExternalGovernanceValidatorFinding } from "@conceptor/engine";
+import type { StateDigest } from "@conceptor/core";
 import type { assessKnowledgeApplicationEvidence } from "../knowledge/application-evidence.js";
 import type { DecisionBaselineEvidence } from "../knowledge/decision-baselines.js";
 import type { KnowledgeValidatorRequest } from "../knowledge/validators.js";

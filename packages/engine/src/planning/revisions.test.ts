@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hashFramedDomain, type ExecutionPlan, type StateBindingValidation } from "@projector/core";
+import { hashFramedDomain, type ExecutionPlan, type StateBindingValidation } from "@conceptor/core";
 import { createExecutionPlan } from "./index.js";
 import { InMemoryPlanRevisionStore, rebaseExecutionPlan, type CapsuleProof, type CapsuleInventoryEntry } from "./revisions.js";
 

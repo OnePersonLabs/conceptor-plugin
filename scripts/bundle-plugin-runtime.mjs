@@ -11,8 +11,8 @@ const bundledTreeSitterLanguageSet = new Set(bundledTreeSitterLanguages);
 export async function bundlePluginRuntime(releaseRoot, outputRoot, manifest, options = {}) {
   // Keep vendor package boundaries: Node supplies CommonJS filename/directory
   // semantics and resolves package assets from the copied native closure.
-  const external = Object.keys(manifest.dependencies ?? {}).filter(name => !name.startsWith("@projector/")).sort();
-  const entries = { "dist/command-main": join(releaseRoot, manifest.bin.projector), "workers/task-worker": join(releaseRoot, "node_modules/@projector/control-plane/dist/observation/task-worker.js") };
+  const external = Object.keys(manifest.dependencies ?? {}).filter(name => !name.startsWith("@conceptor/")).sort();
+  const entries = { "dist/command-main": join(releaseRoot, manifest.bin.conceptor), "workers/task-worker": join(releaseRoot, "node_modules/@conceptor/control-plane/dist/observation/task-worker.js") };
   const exports = {};
   for (const [name, target] of Object.entries(manifest.exports)) {
     const runtimePath = typeof target === "string" ? target : target.default;
@@ -54,7 +54,7 @@ export async function bundlePluginRuntime(releaseRoot, outputRoot, manifest, opt
   await writeFile(join(outputRoot, "dist/command-main.mjs"), command);
   await unlink(join(outputRoot, "dist/command-main.js"));
   await mkdir(join(outputRoot, "assets"), { recursive: true });
-  await cp(join(releaseRoot, "node_modules/@projector/runtime/dist/execution/windows-job-supervisor.ps1"), join(outputRoot, "assets/windows-job-supervisor.ps1"));
+  await cp(join(releaseRoot, "node_modules/@conceptor/runtime/dist/execution/windows-job-supervisor.ps1"), join(outputRoot, "assets/windows-job-supervisor.ps1"));
   const packages = new Map();
   const packageNames = new Set(Object.keys(externalDependencies));
   for (const input of Object.keys(result.metafile.inputs)) {

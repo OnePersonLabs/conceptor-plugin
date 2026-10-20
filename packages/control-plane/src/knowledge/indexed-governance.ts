@@ -1,6 +1,6 @@
-import { buildManifest, manifestKey, canonicalJson, hashFramedDomain, type AdapterContext, type ArchitectureDecision, type AuthorityRecord, type CanonicalDocumentEnvelope, type ContentHash, type DerivedObservationBudget, type ProjectionLens, type ProjectionUnit, type SelectorExpr, type StateQueryDependency } from "@projector/core";
-import { buildGovernancePopulation, compileEffectiveRuleBundle, lensMembershipFingerprint, prepareIndexedGovernanceEvaluator, type ExternalGovernanceValidatorFinding, type GovernanceBundleEvaluation, type GovernanceObservation, type GovernanceObservationReader, type GovernancePopulationSummary, type ProjectionUnitSelectorFacts, type QueryDependencyRegistry } from "@projector/engine";
-import type { IndexedObservationDelta, SqliteObservationStore } from "@projector/runtime";
+import { buildManifest, manifestKey, canonicalJson, hashFramedDomain, type AdapterContext, type ArchitectureDecision, type AuthorityRecord, type CanonicalDocumentEnvelope, type ContentHash, type DerivedObservationBudget, type ProjectionLens, type ProjectionUnit, type SelectorExpr, type StateQueryDependency } from "@conceptor/core";
+import { buildGovernancePopulation, compileEffectiveRuleBundle, lensMembershipFingerprint, prepareIndexedGovernanceEvaluator, type ExternalGovernanceValidatorFinding, type GovernanceBundleEvaluation, type GovernanceObservation, type GovernanceObservationReader, type GovernancePopulationSummary, type ProjectionUnitSelectorFacts, type QueryDependencyRegistry } from "@conceptor/engine";
+import type { IndexedObservationDelta, SqliteObservationStore } from "@conceptor/runtime";
 import type { IndexedObservationDescriptor } from "../observation/indexed-types.js";
 import type { RepositoryObservationData } from "../observation/tasks.js";
 import { captureDecisionTriggerObservations, DecisionBaselineReader, type KnowledgeDecisionBaseline } from "./decision-baselines.js";

@@ -1,7 +1,7 @@
 import { lstat, mkdir, realpath } from "node:fs/promises";
 import { homedir } from "node:os";
 import { isAbsolute, join } from "node:path";
-import { hashFramedDomain } from "@projector/core";
+import { hashFramedDomain } from "@conceptor/core";
 import { RepositoryPathService } from "../security/repository-path.js";
 
 export interface CheckoutCacheLocation { readonly checkoutId: string; readonly checkoutRoot: string; readonly cacheRoot: string; }
@@ -31,7 +31,7 @@ export async function checkoutCacheLocation(repositoryRoot: string): Promise<Che
 
 /** Existing derived addresses are virtual names; their physical owner is the user cache. */
 export async function resolveDerivedCachePath(repositoryRoot: string, relativePath: string): Promise<string> {
-  if (!/^\.projector\/runtime\/(?:knowledge\/contexts\/|impact\/|observations\/|code\/)/u.test(relativePath)) throw new Error("Path is not a disposable Projector cache address");
+  if (!/^\.conceptor\/runtime\/(?:knowledge\/contexts\/|impact\/|observations\/|code\/)/u.test(relativePath)) throw new Error("Path is not a disposable Projector cache address");
   const { cacheRoot } = await checkoutCacheLocation(repositoryRoot);
   const paths = await RepositoryPathService.create(cacheRoot);
   return (await paths.resolveWrite(relativePath)).realTarget;

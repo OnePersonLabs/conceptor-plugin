@@ -7,8 +7,8 @@ import {
   sourceContentFor,
 } from "@jridgewell/trace-mapping";
 import { z } from "zod";
-import { codeInputHash } from "@projector/analyzers";
-import type { CodeRuntimeEvidence } from "@projector/core";
+import { codeInputHash } from "@conceptor/analyzers";
+import type { CodeRuntimeEvidence } from "@conceptor/core";
 
 const rangeSchema = z.object({
   startOffset: z.number().int().nonnegative(),

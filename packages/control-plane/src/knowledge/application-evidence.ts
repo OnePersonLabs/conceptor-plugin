@@ -14,10 +14,10 @@ import {
   type CanonicalDocumentEnvelope,
   type ContentHash,
   type StateValueDependencyRef,
-} from "@projector/core";
+} from "@conceptor/core";
 import { z } from "zod";
 
-export type { ApplicationEvidencePort } from "@projector/core";
+export type { ApplicationEvidencePort } from "@conceptor/core";
 
 const unavailable = z.strictObject({
   status: z.literal("unavailable"),

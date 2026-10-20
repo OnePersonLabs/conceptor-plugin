@@ -4,9 +4,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 
-import { canonicalJson, createDurableRepresentationArtifactRecord, hashFramedDomain, withCanonicalHashes, type BehavioralScenario, type RepresentationProjection, type Requirement } from "@projector/core";
-import { createStateBinding } from "@projector/engine";
-import { CanonicalFileRepository } from "@projector/runtime";
+import { canonicalJson, createDurableRepresentationArtifactRecord, hashFramedDomain, withCanonicalHashes, type BehavioralScenario, type RepresentationProjection, type Requirement } from "@conceptor/core";
+import { createStateBinding } from "@conceptor/engine";
+import { CanonicalFileRepository } from "@conceptor/runtime";
 import { afterAll, describe, expect } from "vitest";
 import { integrationTest } from "../../../../scripts/testing/integration-test.mjs";
 import { ResidentObservationWorkerPool, withResidentObservationWorkerPool } from "../observation/resident-pool.js";
@@ -78,7 +78,7 @@ describe("RepositoryRepresentationInspectionService", () => {
       const store = await ChangeLifecycleStore.create(root);
       const oldCapture = canonicalJson(await store.readCapture(historical.capture.semanticChangeId));
       const oldApproval = canonicalJson(await store.readApproval(approval.id));
-      const approvalFiles = await readdir(join(root, ".projector/runtime/change-lifecycles/approvals"));
+      const approvalFiles = await readdir(join(root, ".conceptor/runtime/change-lifecycles/approvals"));
 
       const result = await (await RepositoryRepresentationProfileReconciliationService.create(root)).reconcile({
         changeSelector: historical.capture.semanticChangeId,
@@ -103,7 +103,7 @@ describe("RepositoryRepresentationInspectionService", () => {
       expect(result.invalidation.preservedCanonicalEntityIds).toEqual(expect.arrayContaining(["requirement:greeting"]));
       expect(canonicalJson(await store.readCapture(historical.capture.semanticChangeId))).toBe(oldCapture);
       expect(canonicalJson(await store.readApproval(approval.id))).toBe(oldApproval);
-      expect(await readdir(join(root, ".projector/runtime/change-lifecycles/approvals"))).toEqual(approvalFiles);
+      expect(await readdir(join(root, ".conceptor/runtime/change-lifecycles/approvals"))).toEqual(approvalFiles);
       await expect((await RepositoryRepresentationInspectionService.create(root)).inspect({
         changeSelector: historical.capture.semanticChangeId,
         approvalSelector: approval.id,
@@ -114,7 +114,7 @@ describe("RepositoryRepresentationInspectionService", () => {
       })).rejects.toThrow(/already current/iu);
 
       const oldReference = historical.capture.capsules[0]!.representation!;
-      const recordPath = join(root, ".projector/runtime/representations/projections", `${hashFramedDomain("representation-projection-path", oldReference.projectionId).slice("sha256:v1:".length)}.json`);
+      const recordPath = join(root, ".conceptor/runtime/representations/projections", `${hashFramedDomain("representation-projection-path", oldReference.projectionId).slice("sha256:v1:".length)}.json`);
       const record = JSON.parse(await readFile(recordPath, "utf8")) as { projection: RepresentationProjection };
       const staleBinding = createStateBinding({
         compiledAgainst: record.projection.boundState.compiledAgainst,
@@ -182,7 +182,7 @@ describe("RepositoryRepresentationInspectionService", () => {
       const lifecycle = await RepositoryChangeLifecycleService.create(root);
       const captured = await lifecycle.capture({ request: "Change the greeting.", proposal: proposal() });
       const reference = captured.capture.capsules[0]!.representation!;
-      await writeFile(join(root, ".projector/runtime/representations/content", `${reference.contentHash.slice("sha256:v1:".length)}.txt`), "tampered");
+      await writeFile(join(root, ".conceptor/runtime/representations/content", `${reference.contentHash.slice("sha256:v1:".length)}.txt`), "tampered");
       const result = await (await RepositoryRepresentationInspectionService.create(root)).inspect({ changeSelector: captured.capture.semanticChangeId, view: "content" });
       expect(result).toMatchObject({ artifactIntegrity: { status: "invalid" }, semanticFidelity: { status: "invalid" } });
       expect(result).not.toHaveProperty("renderedText");
@@ -232,7 +232,7 @@ describe("RepositoryRepresentationInspectionService", () => {
     try {
       const lifecycle = await RepositoryChangeLifecycleService.create(root);
       const captured = await lifecycle.capture({ request: "Change the greeting.", proposal: proposal() });
-      const artifactRoot = join(root, ".projector/runtime/representations");
+      const artifactRoot = join(root, ".conceptor/runtime/representations");
       await rm(artifactRoot, { recursive: true, force: true });
 
       const result = await (await RepositoryRepresentationInspectionService.create(root)).inspect({ changeSelector: captured.capture.semanticChangeId, view: "summary" });

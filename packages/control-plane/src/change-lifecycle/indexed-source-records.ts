@@ -1,6 +1,6 @@
-import {localImportCandidates,localSemanticKey,type InventoryEntry} from "@projector/analyzers";
-import {hashFramedDomain} from "@projector/core";
-import type {IndexedObservationDelta} from "@projector/runtime";
+import {localImportCandidates,localSemanticKey,type InventoryEntry} from "@conceptor/analyzers";
+import {hashFramedDomain} from "@conceptor/core";
+import type {IndexedObservationDelta} from "@conceptor/runtime";
 import type {RepositoryObservationData} from "../observation/tasks.js";
 type StoreRow={kind:string;key:string;value:unknown};
 type Population={selector:string;member:string;present:boolean};

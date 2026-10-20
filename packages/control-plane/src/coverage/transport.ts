@@ -1,6 +1,6 @@
-import { AnalyzerFailureSchema, ContentHashSchema, CoverageLaneSchema, CoverageSnapshotSchema, StateBindingSchema, StateBindingValidationSchema, type AnalyzerFailure, type ContentHash, type CoverageSnapshot, type StateBinding, type StateBindingValidation } from "@projector/core";
+import { AnalyzerFailureSchema, ContentHashSchema, CoverageLaneSchema, CoverageSnapshotSchema, StateBindingSchema, StateBindingValidationSchema, type AnalyzerFailure, type ContentHash, type CoverageSnapshot, type StateBinding, type StateBindingValidation } from "@conceptor/core";
 import { z } from "zod";
-import { CompletionAssessmentSchema, CompletionRepairAlternativeSchema, CompletionRepairRouteSchema } from "@projector/core";
+import { CompletionAssessmentSchema, CompletionRepairAlternativeSchema, CompletionRepairRouteSchema } from "@conceptor/core";
 import type { CompletionQuestion } from "./issues.js";
 import { KnowledgeApplicationEvidenceAssessmentSchema, type KnowledgeApplicationEvidenceAssessment } from "../knowledge/application-evidence.js";
 import { RepositoryContinuationSchema, type RepositoryContinuation } from "./continuation.js";

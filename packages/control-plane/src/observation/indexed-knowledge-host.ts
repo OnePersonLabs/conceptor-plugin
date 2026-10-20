@@ -1,5 +1,5 @@
-import type { CanonicalDocumentEnvelope } from "@projector/core";
-import { currentObservationScope, withObservationScope } from "@projector/runtime";
+import type { CanonicalDocumentEnvelope } from "@conceptor/core";
+import { currentObservationScope, withObservationScope } from "@conceptor/runtime";
 import { captureIndependentValidator, observeChangeRepository } from "../change-lifecycle/repository-observer.js";
 import { inspectRepositoryContinuation } from "../coverage/continuation.js";
 import { readRepositoryImpactSnapshot } from "../impact/service.js";
@@ -40,7 +40,7 @@ export function createIndexedKnowledgeComputeHostHandler(
           if (request.requests.length === 0) return { findings: [], executed: false };
           validators ??= new KnowledgeValidatorRun({
             repositoryRoot: descriptor.repositoryRoot,
-            independentValidator: (path) => captureIndependentValidator(descriptor.repositoryRoot, descriptor.metadata.analysisHeader.git.availability, (address) => store.getAt<import("@projector/analyzers").LocalRepositoryAnalysis["gitIdentities"][number]>(descriptor.generation, "git-identity", address), path),
+            independentValidator: (path) => captureIndependentValidator(descriptor.repositoryRoot, descriptor.metadata.analysisHeader.git.availability, (address) => store.getAt<import("@conceptor/analyzers").LocalRepositoryAnalysis["gitIdentities"][number]>(descriptor.generation, "git-identity", address), path),
           }, combined, host);
           return { findings: await validators.evaluateAll(request.requests), executed: validators.executed };
         }

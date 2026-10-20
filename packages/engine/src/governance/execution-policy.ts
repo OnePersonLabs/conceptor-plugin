@@ -1,4 +1,4 @@
-import type { ExecutionPolicy, RiskClass } from "@projector/core";
+import type { ExecutionPolicy, RiskClass } from "@conceptor/core";
 
 const RISKS: RiskClass[] = ["R0", "R1", "R2", "R3", "R4"];
 export const riskRank = (risk: RiskClass): number => RISKS.indexOf(risk);

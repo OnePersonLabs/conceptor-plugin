@@ -50,21 +50,21 @@ describe("standalone plugin assembly", () => {
     expect(result.root).toBe(plugin);
     expect(result.nodeRuntime).toEqual({ executable: "node", resolution: "host-path" });
     expect(await readdir(join(plugin, "runtime"))).toEqual(["projector"]);
-    expect(JSON.parse(await readFile(join(plugin, "runtime/projector/package.json"), "utf8"))).toMatchObject({ name: "@onepersonlabs/projector", version: releaseVersion });
-    expect(JSON.parse(await readFile(join(plugin, "runtime/projector/node_modules/typescript/package.json"), "utf8"))).toMatchObject({name:"typescript",version:"5.9.3"});
-    expect(await readFile(join(plugin, "runtime/projector/node_modules/typescript/lib/typescript.js"), "utf8")).toBe(await readFile(resolve("node_modules/typescript/lib/typescript.js"),"utf8"));
+    expect(JSON.parse(await readFile(join(plugin, "runtime/conceptor/package.json"), "utf8"))).toMatchObject({ name: "@onepersonlabs/conceptor", version: releaseVersion });
+    expect(JSON.parse(await readFile(join(plugin, "runtime/conceptor/node_modules/typescript/package.json"), "utf8"))).toMatchObject({name:"typescript",version:"5.9.3"});
+    expect(await readFile(join(plugin, "runtime/conceptor/node_modules/typescript/lib/typescript.js"), "utf8")).toBe(await readFile(resolve("node_modules/typescript/lib/typescript.js"),"utf8"));
     expect(bundledTreeSitterLanguages).toEqual(supportedTreeSitterLanguages);
-    expect((await readdir(join(plugin, "runtime/projector/node_modules/tree-sitter-wasm/out"))).sort()).toEqual(bundledTreeSitterLanguages);
-    expect(await readFile(join(plugin, "runtime/projector/assets/windows-job-supervisor.ps1"), "utf8")).toContain("param");
-    expect(JSON.parse(await readFile(join(plugin, "runtime/projector/licenses/third-party.json"), "utf8"))).toContainEqual(expect.objectContaining({ name: "zod" }));
-    await access(join(plugin, "runtime/projector/licenses/zod/LICENSE"));
+    expect((await readdir(join(plugin, "runtime/conceptor/node_modules/tree-sitter-wasm/out"))).sort()).toEqual(bundledTreeSitterLanguages);
+    expect(await readFile(join(plugin, "runtime/conceptor/assets/windows-job-supervisor.ps1"), "utf8")).toContain("param");
+    expect(JSON.parse(await readFile(join(plugin, "runtime/conceptor/licenses/third-party.json"), "utf8"))).toContainEqual(expect.objectContaining({ name: "zod" }));
+    await access(join(plugin, "runtime/conceptor/licenses/zod/LICENSE"));
     const hostNode = await execute("node", ["--version"], { cwd: plugin, env: { ...process.env, NODE_PATH: "" }, encoding: "utf8" });
     expect(hostNode.stdout.trim()).toBe(process.version);
     const hooks = JSON.parse(await readFile(join(plugin, "hooks/hooks.json"), "utf8")).hooks;
-    const hook = hooks.SessionStart[0].hooks.find((entry: { command: string }) => entry.command.includes("projector-instructions.mjs"));
-    expect(hook.command).toBe('node "${PLUGIN_ROOT}/hooks/projector-instructions.mjs"');
+    const hook = hooks.SessionStart[0].hooks.find((entry: { command: string }) => entry.command.includes("conceptor-instructions.mjs"));
+    expect(hook.command).toBe('node "${PLUGIN_ROOT}/hooks/conceptor-instructions.mjs"');
     expect(hook.commandWindows).toBeUndefined();
-    const instructions = await execute("node", [join(plugin, "hooks/projector-instructions.mjs")], { cwd: root, env: { ...process.env, NODE_PATH: "" }, encoding: "utf8" });
+    const instructions = await execute("node", [join(plugin, "hooks/conceptor-instructions.mjs")], { cwd: root, env: { ...process.env, NODE_PATH: "" }, encoding: "utf8" });
     expect(JSON.parse(instructions.stdout).hookSpecificOutput.additionalContext).toBe(await readFile(join(plugin, "AGENTS.md"), "utf8"));
     expect(hooks.PreToolUse).toBeUndefined();
 
@@ -81,15 +81,15 @@ describe("standalone plugin assembly", () => {
       requestId: "installed-init",
       input: {},
     };
-    const child = spawn(process.execPath, [join(plugin, "scripts/projector-operation.mjs")], { cwd: repository, env, stdio: ["pipe", "pipe", "pipe"] });
+    const child = spawn(process.execPath, [join(plugin, "scripts/conceptor-operation.mjs")], { cwd: repository, env, stdio: ["pipe", "pipe", "pipe"] });
     child.stdin.end(`${JSON.stringify(request)}\n`);
     let stdout = ""; let stderr = "";
     child.stdout.setEncoding("utf8"); child.stderr.setEncoding("utf8");
     child.stdout.on("data", (chunk) => { stdout += chunk; }); child.stderr.on("data", (chunk) => { stderr += chunk; });
     const exitCode = await new Promise((resolveExit, reject) => { child.once("error", reject); child.once("exit", resolveExit); });
     expect({ exitCode, stderr }).toEqual({ exitCode: 0, stderr: "" });
-    expect(JSON.parse(stdout)).toMatchObject({ status: "succeeded", operation: "init", package: { name: "@onepersonlabs/projector", version: releaseVersion }, output: { created: true, readiness: { status: "ready" } } });
-    expect(await readFile(join(repository, ".projector/config.toml"), "utf8")).toContain("projectorVersion");
+    expect(JSON.parse(stdout)).toMatchObject({ status: "succeeded", operation: "init", package: { name: "@onepersonlabs/conceptor", version: releaseVersion }, output: { created: true, readiness: { status: "ready" } } });
+    expect(await readFile(join(repository, ".conceptor/config.toml"), "utf8")).toContain("projectorVersion");
 
     if (process.platform === "win32") {
       const installedCommand = hook.command.replaceAll("${PLUGIN_ROOT}", plugin);
@@ -102,14 +102,14 @@ describe("standalone plugin assembly", () => {
       expect(JSON.parse(executedHook.stdout)).toMatchObject({ hookSpecificOutput: { hookEventName: "SessionStart" } });
     }
 
-    const help = await execute("node", [join(plugin, "scripts/projector.mjs"), "--help"], { cwd: repository, env, encoding: "utf8" });
+    const help = await execute("node", [join(plugin, "scripts/conceptor.mjs"), "--help"], { cwd: repository, env, encoding: "utf8" });
     expect(help.stdout).toContain("context");
-    const statusScript = "import { createBundledProjectorOperationRunner } from './runtime/projector/exports/operations.js'; const runner = await createBundledProjectorOperationRunner({ packagedRoot: './runtime/projector' }); console.log(JSON.stringify(await runner.execute(JSON.parse(process.argv[1]))));";
+    const statusScript = "import { createBundledProjectorOperationRunner } from './runtime/conceptor/exports/operations.js'; const runner = await createBundledProjectorOperationRunner({ packagedRoot: './runtime/conceptor' }); console.log(JSON.stringify(await runner.execute(JSON.parse(process.argv[1]))));";
     const status = await execute("node", ["--input-type=module", "-e", statusScript, JSON.stringify({ ...request, operation: "status", requestId: "installed-status" })], { cwd: plugin, env, encoding: "utf8" });
     expect(JSON.parse(status.stdout)).toMatchObject({ operation: "status", readiness: { status: "ready" } });
-    const context = await execute("node", [join(plugin, "scripts/projector.mjs"), "context", "Inspect the ordinary repository", "--target","src/typed.ts", "--json"], { cwd: repository, env, encoding: "utf8" });
+    const context = await execute("node", [join(plugin, "scripts/conceptor.mjs"), "context", "Inspect the ordinary repository", "--target","src/typed.ts", "--json"], { cwd: repository, env, encoding: "utf8" });
     expect(JSON.parse(context.stdout)).toHaveProperty("contentHash");
-    const check = await execute("node", [join(plugin, "scripts/projector.mjs"), "check", "--json"], { cwd: repository, env, encoding: "utf8" });
+    const check = await execute("node", [join(plugin, "scripts/conceptor.mjs"), "check", "--json"], { cwd: repository, env, encoding: "utf8" });
     expect(JSON.parse(check.stdout)).toHaveProperty("repository");
   // This integration check packages the compiler and language grammars, then
   // starts the installed CLI for init, context and check on a fresh checkout.

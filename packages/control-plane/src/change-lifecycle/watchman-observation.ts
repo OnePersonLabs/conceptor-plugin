@@ -1,8 +1,8 @@
 import { spawn } from "node:child_process";
 import { isAbsolute, resolve } from "node:path";
-import { ObservationBudget, ObservationError, hashFramedDomain, observationLimitValue } from "@projector/core";
-import type { InventoryByteReuse, InventoryResult } from "@projector/analyzers";
-import { observationGit } from "@projector/analyzers";
+import { ObservationBudget, ObservationError, hashFramedDomain, observationLimitValue } from "@conceptor/core";
+import type { InventoryByteReuse, InventoryResult } from "@conceptor/analyzers";
+import { observationGit } from "@conceptor/analyzers";
 
 interface WatchmanHost { readonly executable: string; readonly socket: string; }
 export interface WatchmanBaseline {
@@ -155,7 +155,7 @@ export type WatchmanChanges = { readonly kind:"delta"; readonly baseline:Watchma
  * remain selected by check-ignore's normal index semantics. Explicit canonical
  * authority and ignore/config control inputs remain currentness dependencies. */
 export async function filterSourceWatchmanEvents(root:string,events:readonly WatchmanDeltaEvent[],budget:ObservationBudget,signal:AbortSignal):Promise<readonly WatchmanDeltaEvent[]>{
-  const candidates=[...new Set(events.map(({path})=>path).filter(path=>!path.startsWith(".projector/")&&!/(?:^|\/)(?:\.gitignore|\.gitattributes|\.watchmanconfig)$/u.test(path)))];
+  const candidates=[...new Set(events.map(({path})=>path).filter(path=>!path.startsWith(".conceptor/")&&!/(?:^|\/)(?:\.gitignore|\.gitattributes|\.watchmanconfig)$/u.test(path)))];
   if(candidates.length===0)return events;
   const output=await observationGit(root,["check-ignore","-z","--stdin"],budget,{signal,input:candidates.map(path=>`${path}\0`).join(""),allowedExitCodes:[1],stage:"watchman-effective-ignore"});
   const ignored=new Set(output.split("\0").filter(Boolean));
@@ -218,7 +218,7 @@ export async function validateWatchmanByteReuse(reuse: InventoryByteReuse, budge
   const reply = await command(host, ["query", baseline.root, { since: proof.clock, fields: ["name", "exists", "type"], sync_timeout: 5_000 }], budget, signal);
   if (reply.warning !== undefined || reply.is_fresh_instance === true) throw failure("Watchman lost currentness during observation; retry with a fresh observation.");
   const result = delta(reply, budget);
-  const events=result.events.filter(({path})=>![".git", ".worktrees", ".projector/runtime"].some((prefix) => path === prefix || path.startsWith(`${prefix}/`)));
+  const events=result.events.filter(({path})=>![".git", ".worktrees", ".conceptor/runtime"].some((prefix) => path === prefix || path.startsWith(`${prefix}/`)));
   const selected=proof.gitBoundary?await filterSourceWatchmanEvents(baseline.root,events,budget,signal):events;
   const changed = selected[0]?.path;
   if (changed !== undefined) throw failure(`Repository changed during byte reuse (${changed}); retry observation. The prior baseline remains unchanged.`);

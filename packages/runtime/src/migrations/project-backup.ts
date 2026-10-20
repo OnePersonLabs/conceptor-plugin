@@ -9,7 +9,7 @@ import {
   hashFramedDomain,
   parseCanonicalJson,
   type ContentHash,
-} from "@projector/core";
+} from "@conceptor/core";
 
 import type { ProjectOperationAccess } from "../access/operation-access.js";
 import type {
@@ -37,7 +37,7 @@ export interface ProjectBackupManifest {
   formatVersion: 1;
   backupId: string;
   createdAt: string;
-  source: { projectorDirectory: ".projector" };
+  source: { projectorDirectory: ".conceptor" };
   files: ProjectBackupManifestFile[];
 }
 export interface ProjectBackupResult {
@@ -83,7 +83,7 @@ export async function createProjectBackup(
 ): Promise<ProjectBackupResult> {
   const repositoryRoot = resolveRequiredPath(input.repositoryRoot, "repository root");
   const codexDataRoot = resolveRequiredPath(input.codexDataRoot, "Codex data root");
-  const sourceRoot = containedPath(repositoryRoot, join(repositoryRoot, ".projector"), "project source");
+  const sourceRoot = containedPath(repositoryRoot, join(repositoryRoot, ".conceptor"), "project source");
   const backupId = (dependencies.createBackupId ?? randomUUID)();
   const temporaryId = (dependencies.createTemporaryId ?? randomUUID)();
   assertBackupId(backupId);
@@ -110,8 +110,8 @@ export async function createProjectBackup(
     formatVersion: 1,
     backupId,
     createdAt: (dependencies.now ?? (() => new Date()))().toISOString(),
-    source: { projectorDirectory: ".projector" },
-    files: initial.files.map((file) => ({ path: `.projector/${file.path}`, length: file.length, sha256: file.sha256 })),
+    source: { projectorDirectory: ".conceptor" },
+    files: initial.files.map((file) => ({ path: `.conceptor/${file.path}`, length: file.length, sha256: file.sha256 })),
   };
   const manifestBytes = Buffer.from(`${canonicalJson(manifest)}\n`);
   if (manifestBytes.byteLength > maximumManifestBytes) throw new ProjectBackupError("Backup manifest exceeds its byte limit");
@@ -128,14 +128,14 @@ export async function createProjectBackup(
         archiveHash.update(bytes);
       }
       for (const file of initial.files) {
-        const source = await openRegularFile(join(sourceRoot, ...file.path.split("/")), "r", `.projector/${file.path}`);
+        const source = await openRegularFile(join(sourceRoot, ...file.path.split("/")), "r", `.conceptor/${file.path}`);
         try {
           const copied = await copyAndHash(source, output, archiveHash);
           if (copied.length !== file.length || copied.sha256 !== file.sha256) {
-            throw new ProjectBackupError(`Projector source changed while copying .projector/${file.path}`, temporaryPath);
+            throw new ProjectBackupError(`Projector source changed while copying .conceptor/${file.path}`, temporaryPath);
           }
         } finally { await source.close(); }
-        await dependencies.afterFileCopied?.(`.projector/${file.path}`);
+        await dependencies.afterFileCopied?.(`.conceptor/${file.path}`);
       }
       await output.sync();
     } finally { await output.close(); }
@@ -331,7 +331,7 @@ function parseManifest(bytes: Buffer, expectedBackupId: string): ProjectBackupMa
     throw new ProjectBackupError("Backup archive manifest has an invalid structure");
   }
   const source = value.source;
-  if (!isRecord(source) || !hasExactKeys(source, ["projectorDirectory"]) || source.projectorDirectory !== ".projector") {
+  if (!isRecord(source) || !hasExactKeys(source, ["projectorDirectory"]) || source.projectorDirectory !== ".conceptor") {
     throw new ProjectBackupError("Backup archive manifest source is invalid");
   }
   if (value.formatVersion !== 1 || value.backupId !== expectedBackupId || typeof value.createdAt !== "string" ||
@@ -344,7 +344,7 @@ function parseManifest(bytes: Buffer, expectedBackupId: string): ProjectBackupMa
   let total = 0;
   for (const item of value.files) {
     if (!isRecord(item) || !hasExactKeys(item, ["length", "path", "sha256"]) || typeof item.path !== "string" ||
-        !item.path.startsWith(".projector/") || !PortableRelativePathSchema.safeParse(item.path).success ||
+        !item.path.startsWith(".conceptor/") || !PortableRelativePathSchema.safeParse(item.path).success ||
         typeof item.length !== "number" || !Number.isSafeInteger(item.length) || item.length < 0 ||
         typeof item.sha256 !== "string" || !/^[0-9a-f]{64}$/u.test(item.sha256) || item.path <= prior) {
       throw new ProjectBackupError("Backup archive manifest contains an invalid file declaration");
@@ -358,7 +358,7 @@ function parseManifest(bytes: Buffer, expectedBackupId: string): ProjectBackupMa
     formatVersion: 1,
     backupId: value.backupId,
     createdAt: value.createdAt,
-    source: { projectorDirectory: ".projector" },
+    source: { projectorDirectory: ".conceptor" },
     files,
   };
   if (!bytes.equals(Buffer.from(`${canonicalJson(manifest)}\n`))) throw new ProjectBackupError("Backup archive manifest is not canonical JSON");
@@ -370,7 +370,7 @@ async function scanTree(root: string, excludedPaths: ReadonlySet<string> = new S
   let entries = 0;
   let totalBytes = 0;
   async function visit(directory: string, prefix: string): Promise<void> {
-    await assertRegularDirectory(directory, prefix.length === 0 ? "Projector source directory" : `.projector/${prefix}`);
+    await assertRegularDirectory(directory, prefix.length === 0 ? "Projector source directory" : `.conceptor/${prefix}`);
     const names: string[] = [];
     const stream = await opendir(directory);
     for await (const entry of stream) {
@@ -382,22 +382,22 @@ async function scanTree(root: string, excludedPaths: ReadonlySet<string> = new S
     for (const name of names) {
       const relativePath = prefix.length === 0 ? name : `${prefix}/${name}`;
       if (excludedPaths.has(relativePath)) continue;
-      if (!PortableRelativePathSchema.safeParse(`.projector/${relativePath}`).success) {
-        throw new ProjectBackupError(`Projector source contains an unsafe path: .projector/${relativePath}`);
+      if (!PortableRelativePathSchema.safeParse(`.conceptor/${relativePath}`).success) {
+        throw new ProjectBackupError(`Projector source contains an unsafe path: .conceptor/${relativePath}`);
       }
       const path = join(directory, name);
       const status = await lstat(path);
-      if (status.isSymbolicLink()) throw new ProjectBackupError(`Projector source contains a symbolic link: .projector/${relativePath}`);
+      if (status.isSymbolicLink()) throw new ProjectBackupError(`Projector source contains a symbolic link: .conceptor/${relativePath}`);
       if (status.isDirectory()) await visit(path, relativePath);
       else if (status.isFile()) {
-        const source = await openRegularFile(path, "r", `.projector/${relativePath}`);
+        const source = await openRegularFile(path, "r", `.conceptor/${relativePath}`);
         try {
           const measured = await hashOpenFile(source);
           totalBytes += measured.length;
           if (!Number.isSafeInteger(totalBytes) || totalBytes > maximumArchiveBytes) throw new ProjectBackupError("Projector source exceeds its byte limit");
           files.push({ path: relativePath, ...measured });
         } finally { await source.close(); }
-      } else throw new ProjectBackupError(`Projector source contains a non-regular entry: .projector/${relativePath}`);
+      } else throw new ProjectBackupError(`Projector source contains a non-regular entry: .conceptor/${relativePath}`);
     }
   }
   await visit(root, "");
@@ -405,11 +405,11 @@ async function scanTree(root: string, excludedPaths: ReadonlySet<string> = new S
   return { files };
 }
 
-const accessCounterPath = ".projector/runtime/operation-access/next-ticket";
-const accessHolderPattern = /^\.projector\/runtime\/operation-access\/holders\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.json$/iu;
+const accessCounterPath = ".conceptor/runtime/operation-access/next-ticket";
+const accessHolderPattern = /^\.conceptor\/runtime\/operation-access\/holders\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.json$/iu;
 const writerLeasePaths = [
-  ".projector/runtime/writer-lease.lock/owner.json",
-  ".projector/runtime/writer-lease.lock/heartbeat",
+  ".conceptor/runtime/writer-lease.lock/owner.json",
+  ".conceptor/runtime/writer-lease.lock/heartbeat",
 ] as const;
 
 async function authenticateCoordination(
@@ -431,7 +431,7 @@ async function authenticateCoordination(
       throw new ProjectBackupError(`Backup coordination contains an unsafe owned path: ${path}`);
     }
   }
-  return new Set([...paths, ...writerLeasePaths].map((path) => path.slice(".projector/".length)));
+  return new Set([...paths, ...writerLeasePaths].map((path) => path.slice(".conceptor/".length)));
 }
 
 async function assertCoordinationOwned(coordination: ProjectBackupCoordination | undefined): Promise<void> {

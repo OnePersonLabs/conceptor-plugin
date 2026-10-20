@@ -25,7 +25,7 @@ import type {
   SurfacePlan,
   ValidationResult,
   EnumerationContract,
-} from "@projector/core";
+} from "@conceptor/core";
 
 const clone = <T>(value: T): T => structuredClone(value);
 const compareText = (left: string, right: string): number => left < right ? -1 : left > right ? 1 : 0;

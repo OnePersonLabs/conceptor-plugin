@@ -1,5 +1,5 @@
 {
-  "name": "projector",
+  "name": "conceptor",
   "version": "3.0.0",
   "private": true,
   "type": "module",
@@ -21,12 +21,12 @@
     "release:check": "node scripts/check-installed-workflow.mjs"
   },
   "devDependencies": {
-    "@projector/analyzers": "workspace:*",
-    "@projector/control-plane": "workspace:*",
-    "@projector/core": "workspace:*",
-    "@projector/engine": "workspace:*",
-    "@projector/runtime": "workspace:*",
-    "@projector/testkit": "workspace:*",
+    "@conceptor/analyzers": "workspace:*",
+    "@conceptor/control-plane": "workspace:*",
+    "@conceptor/core": "workspace:*",
+    "@conceptor/engine": "workspace:*",
+    "@conceptor/runtime": "workspace:*",
+    "@conceptor/testkit": "workspace:*",
     "@types/node": "^24.2.1",
     "@vitest/coverage-v8": "5.0.1",
     "esbuild": "0.28.1",

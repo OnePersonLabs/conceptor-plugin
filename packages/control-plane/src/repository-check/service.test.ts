@@ -4,8 +4,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { afterEach, expect, test } from "vitest";
-import { CodeIndexRunSchema } from "@projector/core";
-import { SqliteCodeStore, withObservationScope } from "@projector/runtime";
+import { CodeIndexRunSchema } from "@conceptor/core";
+import { SqliteCodeStore, withObservationScope } from "@conceptor/runtime";
 import { executeCodeOperation, shutdownCodeIndexRuns } from "../code-intelligence/service.js";
 import { checkRepository } from "./service.js";
 
@@ -70,7 +70,7 @@ test("a failed state publication retains the old semantic baseline pin", async (
   await writeFile(source, "export const value = () => 1;\n");
   const first = await checkRepository(root);
   const baseline = first.semantic!.generation;
-  const cache = join(root, ".projector/runtime/repository-check/state.json");
+  const cache = join(root, ".conceptor/runtime/repository-check/state.json");
   const oldState = await readFile(cache, "utf8");
   await writeFile(source, "export const value = () => 2;\n");
   const temporary = `${cache}.${process.pid}.tmp`;
@@ -89,13 +89,13 @@ test("a failed state publication retains the old semantic baseline pin", async (
 test("combined Git output respects the caller's allowance across separate commands", async () => {
   const root = await repository();
   await checkRepository(root);
-  const statePath = join(root, ".projector/runtime/repository-check/state.json");
+  const statePath = join(root, ".conceptor/runtime/repository-check/state.json");
   const priorState = await readFile(statePath, "utf8");
   for (let index = 0; index < 5; index++) {
     await writeFile(join(root, `untracked-${index}-${"long-name".repeat(4)}.txt`), "content");
   }
 
-  const pathspec = ["--", ".", ":(exclude).projector/runtime", ":(exclude).projector/runtime/**"];
+  const pathspec = ["--", ".", ":(exclude).conceptor/runtime", ":(exclude).conceptor/runtime/**"];
   const [topLevel, head, untracked] = await Promise.all([
     git(root, "rev-parse", "--show-toplevel"),
     git(root, "rev-parse", "--revs-only", "HEAD"),
@@ -115,7 +115,7 @@ test("combined Git output respects the caller's allowance across separate comman
 test("parallel file inspection reserves one shared total-byte allowance", async () => {
   const root = await repository();
   await checkRepository(root);
-  const statePath = join(root, ".projector/runtime/repository-check/state.json");
+  const statePath = join(root, ".conceptor/runtime/repository-check/state.json");
   const priorState = await readFile(statePath, "utf8");
   for (let index = 0; index < 4; index++) {
     await writeFile(join(root, `parallel-${index}.txt`), "four");
@@ -199,14 +199,14 @@ test("observes staged identities, deletions, nonignored untracked and canonical 
   const root = await repository();
   const first = await checkRepository(root);
   await checkRepository(root, { handled: { findingId: first.pending!.findingId, evidenceIdentity: first.pending!.evidenceIdentity } });
-  await mkdir(join(root, ".projector", "model"), { recursive: true });
-  await writeFile(join(root, ".projector", "model", "meaning.json"), "{}");
+  await mkdir(join(root, ".conceptor", "model"), { recursive: true });
+  await writeFile(join(root, ".conceptor", "model", "meaning.json"), "{}");
   await writeFile(join(root, "new.txt"), "new");
   await writeFile(join(root, "ignored.txt"), "ignore");
   await rm(join(root, "file.txt"));
   const changed = await checkRepository(root);
-  expect(changed.pending?.paths).toEqual([".projector/model/meaning.json", "file.txt", "new.txt"]);
-  await writeFile(join(root, ".projector", "runtime", "noise"), "noise");
+  expect(changed.pending?.paths).toEqual([".conceptor/model/meaning.json", "file.txt", "new.txt"]);
+  await writeFile(join(root, ".conceptor", "runtime", "noise"), "noise");
   expect((await checkRepository(root)).status).toBe("unchanged");
   await git(root, "add", "new.txt");
   expect((await checkRepository(root)).status).toBe("changed");
@@ -231,16 +231,16 @@ test("commit-only detects new commits in a clean tree and retains diff anchors",
 test("bounds and lock failures preserve unresolved state; malformed baseline never becomes clean", async () => {
   const root = await repository();
   const first = await checkRepository(root);
-  const cache = join(root, ".projector/runtime/repository-check/state.json");
+  const cache = join(root, ".conceptor/runtime/repository-check/state.json");
   const original = await readFile(cache, "utf8");
   await writeFile(join(root, "large.txt"), "too many bytes");
   expect(await checkRepository(root, {}, { maxFileBytes: 4 })).toMatchObject({ status: "incomplete", pending: { findingId: first.pending!.findingId } });
   expect(await readFile(cache, "utf8")).toBe(original);
   expect((await checkRepository(root, {}, { maxMilliseconds: 0 })).status).toBe("incomplete");
-  await writeFile(join(root, ".projector/runtime/repository-check/check.lock"), "{}");
+  await writeFile(join(root, ".conceptor/runtime/repository-check/check.lock"), "{}");
   expect((await checkRepository(root)).status).toBe("incomplete");
   expect(await readFile(cache, "utf8")).toBe(original);
-  await rm(join(root, ".projector/runtime/repository-check/check.lock"));
+  await rm(join(root, ".conceptor/runtime/repository-check/check.lock"));
   await writeFile(cache, "broken");
   expect((await checkRepository(root)).status).toBe("incomplete");
   expect(await readFile(cache, "utf8")).toBe("broken");
@@ -256,7 +256,7 @@ test("concurrent calls cannot overwrite a pending finding", async () => {
 test("unchanged cheap checks preserve cache write time; a new finding can be offered in the same session", async () => {
   const root = await repository();
   const first = await checkRepository(root, { sessionId: "same" });
-  const cache = join(root, ".projector/runtime/repository-check/state.json");
+  const cache = join(root, ".conceptor/runtime/repository-check/state.json");
   await utimes(cache, new Date(1000), new Date(1000));
   const before = await stat(cache);
   expect((await checkRepository(root, { sessionId: "same", mode: "commit-only" })).offer).toBe(false);
@@ -283,7 +283,7 @@ test("unborn checkout is observable and disclosed paths remain bounded across co
 test("dirty submodules and symlinked paths are incomplete and preserve pending investigation", async () => {
   const root = await repository();
   const first = await checkRepository(root);
-  const cache = join(root, ".projector/runtime/repository-check/state.json");
+  const cache = join(root, ".conceptor/runtime/repository-check/state.json");
   const original = await readFile(cache, "utf8");
   const nested = join(root, "nested");
   await mkdir(nested);

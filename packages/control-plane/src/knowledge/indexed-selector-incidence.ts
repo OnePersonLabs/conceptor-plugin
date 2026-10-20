@@ -1,7 +1,7 @@
-import { hashFramedDomain, type ProjectionUnit, type SelectorExpr } from "@projector/core";
-import { projectionUnitSelectorSubject, type SelectorSubject } from "@projector/engine";
-import type { LocalRepositoryAnalysis } from "@projector/analyzers";
-import type { IndexedObservationDelta, SqliteObservationStore } from "@projector/runtime";
+import { hashFramedDomain, type ProjectionUnit, type SelectorExpr } from "@conceptor/core";
+import { projectionUnitSelectorSubject, type SelectorSubject } from "@conceptor/engine";
+import type { LocalRepositoryAnalysis } from "@conceptor/analyzers";
+import type { IndexedObservationDelta, SqliteObservationStore } from "@conceptor/runtime";
 import type { IndexedObservationDescriptor } from "../observation/indexed-types.js";
 import type { RepositoryObservationData } from "../observation/tasks.js";
 

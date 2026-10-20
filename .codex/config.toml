@@ -7,5 +7,5 @@
 [plugins."projector@projector"]
 enabled = false
 
-[plugins."projector-v3@projector-v3"]
+[plugins."conceptor-v3@conceptor-v3"]
 enabled = true

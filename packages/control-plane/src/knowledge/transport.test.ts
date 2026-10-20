@@ -1,8 +1,8 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { hashFramedDomain, withCanonicalHashes, ProjectorOperationInputSchemas } from "@projector/core";
-import { CanonicalFileRepository, currentObservationScope } from "@projector/runtime";
+import { hashFramedDomain, withCanonicalHashes, ProjectorOperationInputSchemas } from "@conceptor/core";
+import { CanonicalFileRepository, currentObservationScope } from "@conceptor/runtime";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { RepositoryKnowledgeService } from "./service.js";
 import { finalizeKnowledgeContext, KnowledgeContextStore } from "./store.js";

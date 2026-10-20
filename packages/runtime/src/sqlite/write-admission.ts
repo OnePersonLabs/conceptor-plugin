@@ -1,7 +1,7 @@
 import { setTimeout as delay } from "node:timers/promises";
 import type { DatabaseSync } from "node:sqlite";
 
-import type { ObservationBudget } from "@projector/core";
+import type { ObservationBudget } from "@conceptor/core";
 
 export interface SqliteWriteAdmissionOptions {
   readonly signal?: AbortSignal | undefined;

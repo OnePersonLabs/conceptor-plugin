@@ -1,6 +1,6 @@
-import { collectLocalRepositoryInputs } from "@projector/analyzers";
-import { hashFramedDomain, ObservationError, type ContentHash } from "@projector/core";
-import { inspectRepositoryCoverage, runObservationTask, type ApplicationEvidencePort, type RepositoryCoverageResult } from "@projector/control-plane";
+import { collectLocalRepositoryInputs } from "@conceptor/analyzers";
+import { hashFramedDomain, ObservationError, type ContentHash } from "@conceptor/core";
+import { inspectRepositoryCoverage, runObservationTask, type ApplicationEvidencePort, type RepositoryCoverageResult } from "@conceptor/control-plane";
 import {
   collectCanonicalSnapshotSources,
   currentObservationScope,
@@ -10,7 +10,7 @@ import {
   unavailableOperationalEvidence,
   type OperationalExitProof,
   type OperationalReport,
-} from "@projector/runtime";
+} from "@conceptor/runtime";
 
 export interface ReadOnlyOperationalVerificationOptions {
   readonly signal: AbortSignal;
@@ -171,7 +171,7 @@ export async function inspectCanonicalKnowledge(repositoryRoot: string): Promise
       findings: [{
         code: "canonical-knowledge-invalid",
         title: reason,
-        path: ".projector",
+        path: ".conceptor",
         severity: "error",
         evidenceIds: [],
       }],

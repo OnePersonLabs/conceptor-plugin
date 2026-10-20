@@ -2,8 +2,8 @@ import { constants } from "node:fs";
 import { lstat, open, opendir } from "node:fs/promises";
 import { basename } from "node:path";
 
-import { canonicalJson, hashFramedDomain, observationLimitValue } from "@projector/core";
-import { RepositoryPathService, fileTransactionJournalRelativePath, parseFileTransactionJournalSource, withObservationScope, type DurableTransactionRecord, type ObservationScope } from "@projector/runtime";
+import { canonicalJson, hashFramedDomain, observationLimitValue } from "@conceptor/core";
+import { RepositoryPathService, fileTransactionJournalRelativePath, parseFileTransactionJournalSource, withObservationScope, type DurableTransactionRecord, type ObservationScope } from "@conceptor/runtime";
 import { runObservationTask } from "../observation/task-runner.js";
 
 import { ChangeLifecycleStore, type LifecycleApprovalRecord, type LifecycleAttemptRecord, type LifecycleAttemptResultRecord, type LifecycleCaptureRecord } from "../change-lifecycle/store.js";
@@ -14,8 +14,8 @@ export interface CacheProtectionBudget {
   remainingBytes: number | null;
 }
 
-const lifecycleRoot = ".projector/runtime/change-lifecycles";
-const journalRoot = ".projector/runtime/journal";
+const lifecycleRoot = ".conceptor/runtime/change-lifecycles";
+const journalRoot = ".conceptor/runtime/journal";
 const recordDirectories = ["captures", "approvals", "attempts", "results", "prepared", "states"] as const;
 const allowedDirectories = new Set([
   lifecycleRoot, journalRoot, `${lifecycleRoot}/artifacts`,

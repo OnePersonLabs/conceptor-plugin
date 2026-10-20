@@ -5,7 +5,7 @@ import {
   type CodePartition,
   type CodeSnapshot,
   type CodeSymbol,
-} from "@projector/core";
+} from "@conceptor/core";
 import { Parser, Language, type Node as SyntaxNode } from "web-tree-sitter";
 import { getWasmPath, type SupportedLanguage } from "tree-sitter-wasm";
 import { codeInputHash } from "./input-binding.js";

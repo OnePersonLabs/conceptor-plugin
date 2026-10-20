@@ -10,7 +10,7 @@ import {
   type CodePartition,
   type CodeSnapshot,
   type CodeSymbol,
-} from "@projector/core";
+} from "@conceptor/core";
 import { scala } from "./semanticdb/generated/semanticdb.js";
 import { boundedProtobufFrames } from "./protobuf-framing.js";
 import { codeInputHash } from "./input-binding.js";

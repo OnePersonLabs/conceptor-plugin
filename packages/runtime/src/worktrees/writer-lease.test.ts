@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, readFile, stat, symlink, writeFile } from "node:fs/prom
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import type { ContentHash, StateBinding, StateDigest } from "@projector/core";
+import type { ContentHash, StateBinding, StateDigest } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { RepositoryPathService } from "../security/index.js";
@@ -39,7 +39,7 @@ describe("WriterLeaseManager", () => {
     const root = await mkdtemp(join(tmpdir(), "projector-generation-lease-")); const manager = await leaseManager(root);
     const generationId = "generated_11111111-1111-4111-8111-111111111111";
     const reservation = { generationId, sessionId: generationId, processId: process.pid, requestHash: hash, writePaths: ["output.txt"] };
-    for (const path of [".projector/config.toml", ".PROJECTOR/model/x", ".GIT/config", "../escape"]) await expect(manager.acquireGeneration({ ...reservation, writePaths: [path] })).rejects.toThrow();
+    for (const path of [".conceptor/config.toml", ".PROJECTOR/model/x", ".GIT/config", "../escape"]) await expect(manager.acquireGeneration({ ...reservation, writePaths: [path] })).rejects.toThrow();
     await expect(manager.acquireGeneration({ ...reservation, leaseId: "forged" } as typeof reservation)).rejects.toThrow(/unexpected keys/u);
     const lease = await manager.acquireGeneration(reservation); await lease.release();
   });
@@ -61,7 +61,7 @@ describe("WriterLeaseManager", () => {
     const lease = await manager.acquire(owner("session-a"));
 
     const record = JSON.parse(
-      await readFile(join(root, ".projector", "runtime", "writer-lease.lock", "owner.json"), "utf8"),
+      await readFile(join(root, ".conceptor", "runtime", "writer-lease.lock", "owner.json"), "utf8"),
     );
     expect(record).toMatchObject({
       version: 1,
@@ -87,7 +87,7 @@ describe("WriterLeaseManager", () => {
     });
 
     const record = JSON.parse(
-      await readFile(join(root, ".projector", "runtime", "writer-lease.lock", "owner.json"), "utf8"),
+      await readFile(join(root, ".conceptor", "runtime", "writer-lease.lock", "owner.json"), "utf8"),
     );
     expect(record).toMatchObject({
       version: 2,
@@ -121,7 +121,7 @@ describe("WriterLeaseManager", () => {
     await expect(manager.acquireMigrationRecovery({ ...valid, processId: " " })).rejects.toThrow(/process/i);
     await expect(manager.acquireMigrationRecovery({ ...valid, leaseId: "caller-chosen" } as typeof valid))
       .rejects.toThrow(/keys|fields/i);
-    await expect(stat(join(root, ".projector", "runtime", "writer-lease.lock")))
+    await expect(stat(join(root, ".conceptor", "runtime", "writer-lease.lock")))
       .rejects.toMatchObject({ code: "ENOENT" });
   });
 
@@ -146,8 +146,8 @@ describe("WriterLeaseManager", () => {
   it("refuses to place its lease through a symlinked runtime directory", async () => {
     const root = await mkdtemp(join(tmpdir(), "projector-lease-"));
     const outside = await mkdtemp(join(tmpdir(), "projector-outside-"));
-    await mkdir(join(root, ".projector"));
-    await symlink(outside, join(root, ".projector", "runtime"), "dir");
+    await mkdir(join(root, ".conceptor"));
+    await symlink(outside, join(root, ".conceptor", "runtime"), "dir");
     const manager = await leaseManager(root);
 
     await expect(manager.acquire(owner("session-a"))).rejects.toMatchObject({ code: "symlink-refused" });
@@ -159,14 +159,14 @@ describe("WriterLeaseManager", () => {
     const paths = await RepositoryPathService.create(root);
     const manager = new WriterLeaseManager(paths, { staleAfterMs: 1_000, now: () => now });
     await manager.acquire(owner("session-a"));
-    const ownerPath = join(root, ".projector", "runtime", "writer-lease.lock", "owner.json");
+    const ownerPath = join(root, ".conceptor", "runtime", "writer-lease.lock", "owner.json");
     const record = JSON.parse(await readFile(ownerPath, "utf8"));
     record.leaseId = "../../../stolen";
     await writeFile(ownerPath, JSON.stringify(record));
     now = new Date("2026-08-07T12:00:02.000Z");
 
     await expect(manager.acquire(owner("session-b"))).rejects.toMatchObject({ code: "lease-corrupt" });
-    expect((await stat(join(root, ".projector", "runtime", "writer-lease.lock"))).isDirectory()).toBe(true);
+    expect((await stat(join(root, ".conceptor", "runtime", "writer-lease.lock"))).isDirectory()).toBe(true);
     await expect(stat(join(root, "stolen"))).rejects.toMatchObject({ code: "ENOENT" });
   });
 });

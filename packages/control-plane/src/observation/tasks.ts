@@ -1,15 +1,15 @@
-import type { CollectedLocalRepositoryInputs, LocalRepositoryAnalysis, InventoryResult, JavaScriptFacts } from "@projector/analyzers";
-import type { CanonicalSnapshot, CanonicalSnapshotSource } from "@projector/runtime";
+import type { CollectedLocalRepositoryInputs, LocalRepositoryAnalysis, InventoryResult, JavaScriptFacts } from "@conceptor/analyzers";
+import type { CanonicalSnapshot, CanonicalSnapshotSource } from "@conceptor/runtime";
 import type { ChangeRepositoryObservation } from "../change-lifecycle/repository-observer.js";
 import type { RepositoryImpactSnapshot, RepositoryImpactReport, RepositoryImpactReference } from "../impact/service.js";
-import type { DerivedCacheWrite } from "@projector/runtime";
+import type { DerivedCacheWrite } from "@conceptor/runtime";
 import type { KnowledgeContextRequest, KnowledgeContextResult, KnowledgeReconciliationResult } from "../knowledge/types.js";
 import type { KnowledgeDecisionBaseline } from "../knowledge/decision-baselines.js";
 import type { DecisionBaselineDataInput, DecisionBaselineDataResult } from "../knowledge/decision-baseline-data.js";
 import type { RepositoryCoverageRequest } from "../coverage/service.js";
 import type { RepositoryCoverageMode, RepositoryCoverageResult } from "../coverage/transport.js";
 import type { computeRepositoryArchitecture } from "../knowledge/architecture-inspection.js";
-import type { AdapterContext, ContentHash, ObservationLimits, StateQuerySpec, StateQueryResultFingerprint } from "@projector/core";
+import type { AdapterContext, ContentHash, ObservationLimits, StateQuerySpec, StateQueryResultFingerprint } from "@conceptor/core";
 
 export interface ObservationTaskFailure {
   readonly message: string;
@@ -38,7 +38,7 @@ export interface ObservationTaskInputs {
   "prepare-impact": { observation: RepositoryObservationData; editedPaths: readonly string[]; canonicalChanges: readonly { id: string; kind: string }[]; affectedUnitIds: readonly string[] };
   "analyze-collected": { collected: CollectedLocalRepositoryInputs };
   "analyze-javascript": { inventory: InventoryResult };
-  "analyze-incremental": { collected:CollectedLocalRepositoryInputs; context?:Parameters<typeof import("@projector/analyzers").analyzeCollectedLocalRepository>[2] };
+  "analyze-incremental": { collected:CollectedLocalRepositoryInputs; context?:Parameters<typeof import("@conceptor/analyzers").analyzeCollectedLocalRepository>[2] };
   coverage: { observation: RepositoryObservationData; request: RepositoryCoverageRequest; mode: RepositoryCoverageMode; now: string };
   architecture: { observation: RepositoryObservationData; now: string };
   "hash-content": { content: string };

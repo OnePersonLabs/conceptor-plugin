@@ -8,14 +8,14 @@ import {
   type TransformContext,
   type TransformResult,
   type ValidationResult,
-} from "@projector/core";
+} from "@conceptor/core";
 import {
   StateBoundChangeExecutor,
   type ChangeTransaction,
   type ChangeTransactionPort,
   type ExecutionApproval,
   type StateBoundChangeResult,
-} from "@projector/engine";
+} from "@conceptor/engine";
 import {
   ExactTextPatchTransform,
   FileTransactionJournal,
@@ -30,7 +30,7 @@ import {
   type GovernedWorktreeSession,
   type ProcessLauncher,
   type TransformMutationPort,
-} from "@projector/runtime";
+} from "@conceptor/runtime";
 
 import type { CompiledRepositoryChange } from "./compiler.js";
 import { observeChangeRepository, type ChangeRepositoryObservation } from "./repository-observer.js";
@@ -237,7 +237,7 @@ async function observeAppliedRepositoryChange(
   const observedChangedPaths = [...new Set([...beforeFiles.keys(), ...afterFiles.keys()])]
     .filter((path) => beforeFiles.get(path) !== afterFiles.get(path)).sort();
   const predictedChangedPaths = compiled.exactPatchInput.edits
-    .filter(({ path, before, after }) => !path.startsWith(".projector/") && before !== after)
+    .filter(({ path, before, after }) => !path.startsWith(".conceptor/") && before !== after)
     .map(({ path }) => path).sort();
   const unexpectedChangedPaths = observedChangedPaths.filter((path) => !predictedChangedPaths.includes(path));
   const beforeCanonical = new Map(compiled.baselineObservation.canonicalEntries.map(({ entityId, canonicalDocumentHash }) => [entityId, canonicalDocumentHash]));

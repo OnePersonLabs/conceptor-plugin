@@ -1,9 +1,9 @@
 import { existsSync } from "node:fs";
 import { AsyncResource } from "node:async_hooks";
 import { setTimeout as delay } from "node:timers/promises";
-import { ObservationError, observationLimitValue, type ObservationLimits } from "@projector/core";
-import { inventoryForTransport } from "@projector/analyzers";
-import { currentObservationScope, SqliteCodeStore } from "@projector/runtime";
+import { ObservationError, observationLimitValue, type ObservationLimits } from "@conceptor/core";
+import { inventoryForTransport } from "@conceptor/analyzers";
+import { currentObservationScope, SqliteCodeStore } from "@conceptor/runtime";
 import { assertBoundedObservationData } from "./data-bound.js";
 import type { ObservationTaskFailure, ObservationTaskInputs, ObservationTaskResults } from "./tasks.js";
 import type { KnowledgeHostRequest } from "./knowledge-host.js";

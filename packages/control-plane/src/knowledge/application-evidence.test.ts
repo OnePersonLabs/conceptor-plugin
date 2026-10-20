@@ -1,4 +1,4 @@
-import { hashFramedDomain } from "@projector/core";
+import { hashFramedDomain } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { applicationEvidenceDisposition, assessmentKey, type KnowledgeApplicationEvidenceAssessment } from "./application-evidence.js";

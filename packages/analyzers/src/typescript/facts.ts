@@ -1,6 +1,6 @@
 import { extname, posix } from "node:path";
 
-import { canonicalJson, DerivedObservationBudget, hashFramedCanonicalJsonChunks, hashFramedDomain, type AnalyzerFailure, type ContentHash, type SourceClass } from "@projector/core";
+import { canonicalJson, DerivedObservationBudget, hashFramedCanonicalJsonChunks, hashFramedDomain, type AnalyzerFailure, type ContentHash, type SourceClass } from "@conceptor/core";
 
 import type { InventoryEntry } from "../filesystem/inventory.js";
 import { compareCodePoint } from "../ordering.js";
@@ -116,7 +116,7 @@ export interface JavaScriptFacts {
 }
 
 export function isBundledRuntimeDependencyPath(path: string): boolean {
-  return path.startsWith("plugins/projector-v3/runtime/projector/node_modules/");
+  return path.startsWith("plugins/conceptor-v3/runtime/conceptor/node_modules/");
 }
 
 type TokenKind = "identifier" | "number" | "string" | "template" | "regex" | "punctuator" | "line-break";

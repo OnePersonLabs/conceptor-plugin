@@ -1,5 +1,5 @@
-import type { AdapterContext, StateQuerySpec } from "@projector/core";
-import { withObservationScope } from "@projector/runtime";
+import type { AdapterContext, StateQuerySpec } from "@conceptor/core";
+import { withObservationScope } from "@conceptor/runtime";
 import type { ChangeRepositoryObservation } from "../change-lifecycle/repository-observer.js";
 import { runObservationTask } from "./task-runner.js";
 

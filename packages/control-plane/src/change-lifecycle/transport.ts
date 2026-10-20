@@ -13,8 +13,8 @@ import {
   type ContentHash,
   type ExecutionPlan,
   type Relation,
-} from "@projector/core";
-import type { StateBoundChangeResult } from "@projector/engine";
+} from "@conceptor/core";
+import type { StateBoundChangeResult } from "@conceptor/engine";
 import { z } from "zod";
 
 import type { CompiledRepositoryChange, RepositoryIntentReview } from "./compiler.js";

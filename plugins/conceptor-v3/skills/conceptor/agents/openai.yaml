@@ -1,0 +1,5 @@
+interface:
+  display_name: "Conceptor"
+  short_description: "Plan and build from concepts, requirements and decisions"
+policy:
+  allow_implicit_invocation: true

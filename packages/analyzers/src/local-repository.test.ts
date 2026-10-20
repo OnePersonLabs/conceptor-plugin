@@ -5,7 +5,7 @@ import { delimiter, join } from "node:path";
 import { promisify } from "node:util";
 
 import { afterEach, describe, expect, it } from "vitest";
-import { DerivedObservationBudget, hashFramedDomain } from "@projector/core";
+import { DerivedObservationBudget, hashFramedDomain } from "@conceptor/core";
 
 import { analyzeJavaScript, analyzeLocalRepository, normalizeJavaScriptSemantics } from "./index.js";
 

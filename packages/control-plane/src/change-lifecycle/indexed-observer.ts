@@ -5,9 +5,9 @@ import {summarizeColdObservation,type IndexedColdResult} from "./indexed-cold.js
 import {sourceRecords} from "./indexed-source-records.js";
 import { dirname, resolve } from "node:path";
 import { lstat, mkdir, rm } from "node:fs/promises";
-import { inventoryEntryBytes, inventoryEntryChunks, collectGitPathIdentities, collectGitFacts, parseGitStatus, localImportCandidates, syntaxProgramVersion, localRepositoryAdapterVersion, localSemanticKey, readInventoryEntry, readObservationFile, inventoryRepository, inventoryRepositoryIdentities, collectLocalRepositoryInputs, observationGit, detectMechanicalDivergences, type LocalRepositoryAnalysis, type InventoryEntry, type CollectedLocalRepositoryInputs, type GitIdentityFact, type ModuleDependencyFact, type TestTargetFact, type InventoryResult, type JavaScriptFacts } from "@projector/analyzers";
-import { buildManifest, updateManifest, manifestKey, hashFramedDomain, ObservationError, observationLimitValue, type ContentHash } from "@projector/core";
-import { RepositoryPathService, checkoutCacheLocation, collectCanonicalSnapshotSources, SqliteObservationStore, SqliteObservationSourceCapture, withObservationScope, type ObservationStageDescriptor, type IndexedObservationDelta, type ObservationScope } from "@projector/runtime";
+import { inventoryEntryBytes, inventoryEntryChunks, collectGitPathIdentities, collectGitFacts, parseGitStatus, localImportCandidates, syntaxProgramVersion, localRepositoryAdapterVersion, localSemanticKey, readInventoryEntry, readObservationFile, inventoryRepository, inventoryRepositoryIdentities, collectLocalRepositoryInputs, observationGit, detectMechanicalDivergences, type LocalRepositoryAnalysis, type InventoryEntry, type CollectedLocalRepositoryInputs, type GitIdentityFact, type ModuleDependencyFact, type TestTargetFact, type InventoryResult, type JavaScriptFacts } from "@conceptor/analyzers";
+import { buildManifest, updateManifest, manifestKey, hashFramedDomain, ObservationError, observationLimitValue, type ContentHash } from "@conceptor/core";
+import { RepositoryPathService, checkoutCacheLocation, collectCanonicalSnapshotSources, SqliteObservationStore, SqliteObservationSourceCapture, withObservationScope, type ObservationStageDescriptor, type IndexedObservationDelta, type ObservationScope } from "@conceptor/runtime";
 import { runObservationTask } from "../observation/task-runner.js";
 import type { RepositoryObservationData } from "../observation/tasks.js";
 import { INDEXED_OBSERVATION_CONTRACT, type IndexedObservationDescriptor, type IndexedObservationEnrollment, type IndexedObservationMetadata, type IndexedRepositoryObservation } from "../observation/indexed-types.js";
@@ -21,7 +21,7 @@ import { realizeChangeRepositoryData } from "./repository-observer.js";
 
 async function captureStore(root:string,scope:ObservationScope):Promise<SqliteObservationSourceCapture>{
   const location=await checkoutCacheLocation(root),paths=await RepositoryPathService.create(location.cacheRoot);
-  const target=await paths.resolveWrite(".projector/runtime/observations/index.sqlite");
+  const target=await paths.resolveWrite(".conceptor/runtime/observations/index.sqlite");
   const capture=await SqliteObservationSourceCapture.create(target.realTarget,scope.budget,scope.signal);
   scope.registerCleanup(async()=>{await capture.dispose();});
   return capture;
@@ -38,7 +38,7 @@ async function verifyCapturedInventory(root:string,expected:InventoryResult,scop
       hashFramedDomain("indexed-directory-boundary",expected.directories)!==hashFramedDomain("indexed-directory-boundary",current.directories))
       throw new Error("Repository source changed during indexed computation; the previous completed generation remains current");
 }
-const exclusions=[".git",".worktrees",".projector/runtime"] as const;
+const exclusions=[".git",".worktrees",".conceptor/runtime"] as const;
 const observerPrograms=`projector.local-repository@${localRepositoryAdapterVersion}/indexed-producer@4/source-versions@2/query-registry@3/governance-merkle@2/knowledge-lexical@1/realization-incidence@1/git-full-identity@1/git-leaf-proof@1/reverse-derivation-manifest@1/directory-population@1/${syntaxProgramVersion}`;
 function merge(...deltas:readonly IndexedObservationDelta[]):IndexedObservationDelta{
   return{upserts:deltas.flatMap(delta=>delta.upserts??[]),deletes:deltas.flatMap(delta=>delta.deletes??[]),populations:deltas.flatMap(delta=>delta.populations??[]),dependencies:deltas.flatMap(delta=>delta.dependencies??[])};
@@ -151,7 +151,7 @@ async function syntaxLane(descriptor:IndexedObservationDescriptor,scope:Observat
 async function leafDelta(store:SqliteObservationStore,descriptor:IndexedObservationDescriptor,paths:readonly string[],scope:ObservationScope,enrollment:IndexedObservationEnrollment|undefined,gitSnapshot?:GitLeafSnapshot,globalSyntax?:JavaScriptFacts):Promise<{metadata:IndexedObservationMetadata;delta:IndexedObservationDelta;paths:readonly string[]}|undefined>{
   const metadata=descriptor.metadata,root=descriptor.repositoryRoot,generation=descriptor.generation;
   if(globalSyntax!==undefined&&(store.getAt<LocalRepositoryAnalysis["failures"]>(generation,"analysis-global","failures")??[]).length>0)return undefined;
-  if(paths.some(path=>path.startsWith(".projector/")||/(?:^|\/)(?:\.gitignore|\.gitattributes|\.watchmanconfig)$/u.test(path)||path.endsWith("package.json")||/(?:^|\/)(?:tsconfig[^/]*\.json|[^/]*config\.[^/]+|[^/]*lock[^/]*)$/u.test(path)))return undefined;
+  if(paths.some(path=>path.startsWith(".conceptor/")||/(?:^|\/)(?:\.gitignore|\.gitattributes|\.watchmanconfig)$/u.test(path)||path.endsWith("package.json")||/(?:^|\/)(?:tsconfig[^/]*\.json|[^/]*config\.[^/]+|[^/]*lock[^/]*)$/u.test(path)))return undefined;
   // Event and contract facts are global within a package. An unrelated static
   // document may still use the scoped lane, while source edits rebuild that lane.
   if(!metadata.incrementalSupport.globalSyntax&&globalSyntax===undefined&&paths.some(path=>/\.(?:[cm]?[jt]s|[jt]sx)$/iu.test(path)||store.has("js",path)))return undefined;
@@ -286,7 +286,7 @@ async function leafDelta(store:SqliteObservationStore,descriptor:IndexedObservat
   let enlarged=false;
   for(const row of governance.delta.upserts??[])if(row.kind==="governance-lens-root"){
     const visit=(prefix:string):void=>{
-      const node=store.getAt<import("@projector/core").ManifestNode>(generation,"governance-lens-manifest",governanceManifestNodeKey(row.key,prefix));
+      const node=store.getAt<import("@conceptor/core").ManifestNode>(generation,"governance-lens-manifest",governanceManifestNodeKey(row.key,prefix));
       if(node===undefined)throw new Error("Indexed lens member manifest is incomplete; rebuild the complete observation");
       if(node.kind==="branch")for(const digit of Object.keys(node.children))visit(prefix+digit);
       else for(const entry of node.entries){const unit=store.getAt<LocalRepositoryAnalysis["projectionUnits"][number]>(generation,"unit",String(entry.value));if(unit===undefined)throw new Error("Lens member refers to missing indexed unit");const artifact=store.getAt<LocalRepositoryAnalysis["artifacts"][number]>(generation,"artifact",unit.artifactId);if(artifact===undefined)throw new Error("Lens member refers to missing indexed artifact");if(!affected.has(artifact.locator)){affected.add(artifact.locator);enlarged=true;}}
@@ -453,7 +453,7 @@ export async function observeIndexedRepository(repositoryRoot:string,options:{re
       const canonicalSources=await collectCanonicalSnapshotSources(root,scope.budget,scope.signal);
       let summary:IndexedColdResult, prepared:IndexedObservationDelta, stage:ObservationStageDescriptor|undefined;
       if(options.enrollment===undefined){
-        const target=await (await RepositoryPathService.create(location.cacheRoot)).resolveWrite(`.projector/runtime/observations/index.sqlite.temporary/${randomUUID().replaceAll("-", "")}.db`);
+        const target=await (await RepositoryPathService.create(location.cacheRoot)).resolveWrite(`.conceptor/runtime/observations/index.sqlite.temporary/${randomUUID().replaceAll("-", "")}.db`);
         await mkdir(dirname(target.realTarget),{recursive:true});
         stage={schemaVersion:"projector.observation-stage/v1",path:target.realTarget};
         const stagePath=stage.path;

@@ -1,4 +1,4 @@
-import { assessApplicationEvidence, applicationEvidenceDependencies, ApplicationEvidenceAssessmentRequestSchema, hashApplicationEvidenceAssessment, hashFramedDomain, type ApplicationEvidenceAssessment, type ApplicationEvidencePort } from "@projector/core";
+import { assessApplicationEvidence, applicationEvidenceDependencies, ApplicationEvidenceAssessmentRequestSchema, hashApplicationEvidenceAssessment, hashFramedDomain, type ApplicationEvidenceAssessment, type ApplicationEvidencePort } from "@conceptor/core";
 import { z } from "zod";
 
 const protocol = "projector-application-evidence-http@1";

@@ -1,6 +1,6 @@
-import type { LocalRepositoryAnalysis, InventoryResult } from "@projector/analyzers";
-import type { CanonicalSnapshot, IndexedObservationDelta, SqliteObservationStore } from "@projector/runtime";
-import type { ContentHash, StateDigest } from "@projector/core";
+import type { LocalRepositoryAnalysis, InventoryResult } from "@conceptor/analyzers";
+import type { CanonicalSnapshot, IndexedObservationDelta, SqliteObservationStore } from "@conceptor/runtime";
+import type { ContentHash, StateDigest } from "@conceptor/core";
 import type { WatchmanBaseline } from "../change-lifecycle/watchman-observation.js";
 import type { RepositoryObservationData } from "./tasks.js";
 

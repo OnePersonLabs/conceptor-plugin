@@ -15,8 +15,8 @@ describe("risk policy", () => {
   });
 
   it("blocks canonical governance conflicts in mutation modes", () => {
-    expect(() => assertGovernanceConflictPolicy("govern", [".projector/rules/a.json"])).toThrow(/canonical governance conflict/u);
-    expect(() => assertGovernanceConflictPolicy("autonomous", [".projector/lenses/a.json"])).toThrow(/canonical governance conflict/u);
-    expect(() => assertGovernanceConflictPolicy("guide", [".projector/rules/a.json"])).not.toThrow();
+    expect(() => assertGovernanceConflictPolicy("govern", [".conceptor/rules/a.json"])).toThrow(/canonical governance conflict/u);
+    expect(() => assertGovernanceConflictPolicy("autonomous", [".conceptor/lenses/a.json"])).toThrow(/canonical governance conflict/u);
+    expect(() => assertGovernanceConflictPolicy("guide", [".conceptor/rules/a.json"])).not.toThrow();
   });
 });

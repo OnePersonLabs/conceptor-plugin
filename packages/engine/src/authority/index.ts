@@ -1,4 +1,4 @@
-import type { AuthorityClass, AuthorityRecord, GovernanceBasis, ProjectionLens } from "@projector/core";
+import type { AuthorityClass, AuthorityRecord, GovernanceBasis, ProjectionLens } from "@conceptor/core";
 
 export const AUTHORITY_ORDER = [
   "host-safety",

@@ -2,7 +2,7 @@ import {
   canonicalJson, hashFramedDomain, normalizeRepositoryRelativePath,
   buildManifest, manifestKey, type ManifestUpdate,
   type ContentHash, type EffectiveRuleBundle, type EnumerationContract, type NormalizedPredicate, type SelectorExpr,
-} from "@projector/core";
+} from "@conceptor/core";
 import { evaluateSelector, type SelectorSubject } from "./selectors.js";
 import { isHardRule } from "./rules.js";
 

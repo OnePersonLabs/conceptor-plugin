@@ -1,5 +1,0 @@
-interface:
-  display_name: "Projector reconcile"
-  short_description: "Compare external edits with accepted meaning"
-policy:
-  allow_implicit_invocation: true

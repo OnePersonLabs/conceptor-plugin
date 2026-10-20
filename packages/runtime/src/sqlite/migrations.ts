@@ -1,6 +1,6 @@
 import type { DatabaseSync } from "node:sqlite";
 
-import { hashFramedDomain } from "@projector/core";
+import { hashFramedDomain } from "@conceptor/core";
 
 export const currentSqliteSchemaVersion = 1;
 

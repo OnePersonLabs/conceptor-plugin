@@ -21,7 +21,7 @@ import {
   type CodeQueryResult,
   type CodeSnapshot,
   type ObservationBudget,
-} from "@projector/core";
+} from "@conceptor/core";
 import { initializeNormalized, migrateNormalized, migrateStageVersions } from "./store-schema.js";
 import { CodeFactWriter } from "./store-fact-writer.js";
 import { mergeCodePartition } from "./store-stage.js";
@@ -97,7 +97,7 @@ export class SqliteCodeStore {
   private readonly legacyStageTables: boolean;
   private readSnapshotOpen = false;
   static async open(repositoryRoot: string): Promise<SqliteCodeStore> {
-    const relative = ".projector/runtime/code/index.sqlite";
+    const relative = ".conceptor/runtime/code/index.sqlite";
     for (const suffix of ["-wal", "-shm", "-journal"])
       await resolveDerivedCachePath(repositoryRoot, `${relative}${suffix}`);
     return new SqliteCodeStore(

@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, readFile, rename, rm, stat, symlink, writeFile } from "
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { toCanonicalDocumentWire, withCanonicalHashes, type CanonicalDocumentEnvelope } from "@projector/core";
+import { toCanonicalDocumentWire, withCanonicalHashes, type CanonicalDocumentEnvelope } from "@conceptor/core";
 import { afterEach, describe, expect, test } from "vitest";
 
 import { CanonicalFileRepository, compareCanonicalSnapshots } from "./canonical-repository.js";
@@ -100,7 +100,7 @@ describe("CanonicalFileRepository V3", () => {
     const repository = new CanonicalFileRepository(root);
     const original = concept("concept:movable", "Original.");
     const path = await repository.write(original);
-    const moved = join(root, ".projector", "model", "concepts", "topic", "human-name.md");
+    const moved = join(root, ".conceptor", "model", "concepts", "topic", "human-name.md");
     await mkdir(join(moved, ".."), { recursive: true });
     await rename(path, moved);
 
@@ -111,7 +111,7 @@ describe("CanonicalFileRepository V3", () => {
   test("rejects V2 TOML within a prose-led family rather than keeping a compatibility reader", async () => {
     const root = await temporaryRepository();
     const repository = new CanonicalFileRepository(root);
-    const legacy = join(root, ".projector", "model", "concepts", "legacy.concept.toml");
+    const legacy = join(root, ".conceptor", "model", "concepts", "legacy.concept.toml");
     await mkdir(join(legacy, ".."), { recursive: true });
     await writeFile(legacy, 'apiVersion = "projector/v2"\n', "utf8");
 
@@ -158,7 +158,7 @@ describe("CanonicalFileRepository V3", () => {
     const root = await temporaryRepository();
     const repository = new CanonicalFileRepository(root);
     await repository.write(concept("concept:indexed", "Meaning."));
-    await writeFile(join(root, ".projector", "README.md"), "# Projector records\n", "utf8");
+    await writeFile(join(root, ".conceptor", "README.md"), "# Projector records\n", "utf8");
     expect((await repository.snapshot()).documents.map(({ id }) => id)).toEqual(["concept:indexed"]);
   });
 
@@ -210,7 +210,7 @@ describe("CanonicalFileRepository V3", () => {
 
     expect(() => repository.prepareWrite(document, { existingPath: join(root, "outside.md") }))
       .toThrow(/outside the concept family/i);
-    expect(() => repository.prepareWrite(document, { existingPath: join(root, ".projector", "model", "requirements", "wrong.md") }))
+    expect(() => repository.prepareWrite(document, { existingPath: join(root, ".conceptor", "model", "requirements", "wrong.md") }))
       .toThrow(/outside the concept family/i);
   });
 
@@ -219,7 +219,7 @@ describe("CanonicalFileRepository V3", () => {
     const repository = new CanonicalFileRepository(root);
     const original = concept("concept:original", "One.", "shared-key");
     const path = await repository.write(original);
-    const duplicatePath = join(root, ".projector", "model", "concepts", "copied.md");
+    const duplicatePath = join(root, ".conceptor", "model", "concepts", "copied.md");
     await writeFile(duplicatePath, await readFile(path, "utf8"), "utf8");
 
     await expect(repository.snapshot()).rejects.toThrow(/duplicate/i);
@@ -233,7 +233,7 @@ describe("CanonicalFileRepository V3", () => {
     const repository = new CanonicalFileRepository(root);
     const external = join(root, "external.md");
     await writeFile(external, "untrusted", "utf8");
-    const link = join(root, ".projector", "model", "concepts", "linked.md");
+    const link = join(root, ".conceptor", "model", "concepts", "linked.md");
     await mkdir(join(link, ".."), { recursive: true });
     await symlink(external, link);
     await expect(repository.snapshot()).rejects.toThrow(/symlink.*canonical/i);

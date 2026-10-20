@@ -1,7 +1,7 @@
-import { canonicalJson, hashFramedDomain, type AdapterContext, type DerivedObservationBudget } from "@projector/core";
-import { withObservationScope } from "@projector/runtime";
-import { assessLensAuthority, createStateBinding } from "@projector/engine";
-import { compileAuthenticatedCoverageSnapshot, REQUIRED_COVERAGE_LANES, type CoverageEvidenceSnapshot, type CoverageLaneEvidence, type RequiredCoverageLaneKey } from "@projector/engine/coverage";
+import { canonicalJson, hashFramedDomain, type AdapterContext, type DerivedObservationBudget } from "@conceptor/core";
+import { withObservationScope } from "@conceptor/runtime";
+import { assessLensAuthority, createStateBinding } from "@conceptor/engine";
+import { compileAuthenticatedCoverageSnapshot, REQUIRED_COVERAGE_LANES, type CoverageEvidenceSnapshot, type CoverageLaneEvidence, type RequiredCoverageLaneKey } from "@conceptor/engine/coverage";
 import { observeChangeRepository } from "../change-lifecycle/repository-observer.js";
 import { KnowledgeGraph } from "../knowledge/graph.js";
 import { assessKnowledgeDecisions } from "../knowledge/governance.js";

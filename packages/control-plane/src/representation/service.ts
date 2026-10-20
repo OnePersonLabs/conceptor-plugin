@@ -7,8 +7,8 @@ import {
   ValidationResultSchema,
   canonicalJson,
   type ExecutionCapsule,
-} from "@projector/core";
-import { currentBuiltInRepresentationProfile, executionCapsuleHash, executionPlanHash } from "@projector/engine";
+} from "@conceptor/core";
+import { currentBuiltInRepresentationProfile, executionCapsuleHash, executionPlanHash } from "@conceptor/engine";
 import { z } from "zod";
 
 import { RepositoryChangeLifecycleService } from "../change-lifecycle/service.js";

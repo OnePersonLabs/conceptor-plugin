@@ -1,4 +1,4 @@
-import { hashFramedDomain, parseChangeProposal, type ExecutionPlan, type StateBinding } from "@projector/core";
+import { hashFramedDomain, parseChangeProposal, type ExecutionPlan, type StateBinding } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import type { CompiledRepositoryChange, RepositoryIntentReview } from "./compiler.js";

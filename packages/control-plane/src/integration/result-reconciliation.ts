@@ -1,6 +1,6 @@
-import { analyzeGitTree } from "@projector/analyzers";
-import { hashFramedDomain, type DerivedObservationBudget, type GitIntegrationAssessment } from "@projector/core";
-import { type CanonicalSnapshot, type ObservationScope } from "@projector/runtime";
+import { analyzeGitTree } from "@conceptor/analyzers";
+import { hashFramedDomain, type DerivedObservationBudget, type GitIntegrationAssessment } from "@conceptor/core";
+import { type CanonicalSnapshot, type ObservationScope } from "@conceptor/runtime";
 import { realizeChangeRepositoryData } from "../change-lifecycle/repository-observer.js";
 import { KnowledgeGraph } from "../knowledge/graph.js";
 import { buildRepositoryImpactSnapshot } from "../impact/service.js";
@@ -32,7 +32,7 @@ export async function reconcileIntegrationResult(root: string, scope: Observatio
       return [...seen].sort();
     };
   });
-  const consumerQueries = unique(changedPaths.filter(path => !path.startsWith(".projector/"))).map(dependencyPath => {
+  const consumerQueries = unique(changedPaths.filter(path => !path.startsWith(".conceptor/"))).map(dependencyPath => {
     const targetConsumers = consumers[0]!(dependencyPath), incomingConsumers = consumers[1]!(dependencyPath), resultConsumers = consumers[2]!(dependencyPath);
     const newlyRelevantConsumers = resultConsumers.filter(path => !targetConsumers.includes(path) || !incomingConsumers.includes(path));
     const removedConsumers = unique([...targetConsumers, ...incomingConsumers]).filter(path => !resultConsumers.includes(path));

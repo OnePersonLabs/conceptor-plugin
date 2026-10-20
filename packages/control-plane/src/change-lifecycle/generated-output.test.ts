@@ -3,8 +3,8 @@ import { mkdtemp, writeFile, rm, mkdir, copyFile, rename, readFile, symlink, ope
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, expect, test, vi } from "vitest";
-import { NativeProcessLauncher, WriterLeaseManager, RepositoryPathService, GovernedWorktreeRuntime, FileTransactionJournal } from "@projector/runtime";
-import { hashFramedDomain } from "@projector/core";
+import { NativeProcessLauncher, WriterLeaseManager, RepositoryPathService, GovernedWorktreeRuntime, FileTransactionJournal } from "@conceptor/runtime";
+import { hashFramedDomain } from "@conceptor/core";
 import { VerificationService } from "../verification/service.js";
 import { GeneratedOutputService } from "./generated-output.js";
 import { observeChangeRepository } from "./repository-observer.js";
@@ -63,7 +63,7 @@ test("pending durable output evidence is visible and recovery never runs its pro
   const { root, request, service } = await fixture("require('node:fs').writeFileSync('output.txt','result');require('node:fs').writeFileSync('cache.txt','cache');");
   const evidence = await service.execute(request);
   const pendingId = `${evidence.id}_pending`;
-  const finalizing = join(root, ".projector/runtime/change-lifecycles/generated-outputs", "finalizing", pendingId);
+  const finalizing = join(root, ".conceptor/runtime/change-lifecycles/generated-outputs", "finalizing", pendingId);
   await mkdir(finalizing); await writeFile(join(finalizing, "manifest.bin"), JSON.stringify(evidence));
   expect((await service.inspect([request.producerId])).pendingPublications).toEqual([{ artifactSetId: pendingId, state: "finalizing", recoverable: true }]);
   const recovered = await (await GeneratedOutputService.create(root)).recover([request.producerId]);
@@ -128,13 +128,13 @@ test("a generated wrapper cannot substitute an unrelated valid execution", async
   const unrelated = await (await VerificationService.create(root)).execute({ executable: process.execPath, args: ["--eval", "process.exit(0)"], inputPaths: ["input.txt"], populations: [], environment: [], timeoutMs: 10000 });
   const { contentHash: _hash, ...basis } = { ...evidence, check: unrelated };
   const forged = { ...basis, contentHash: hashFramedDomain("generated-output-evidence", basis) };
-  await writeFile(join(root, ".projector/runtime/change-lifecycles/generated-outputs/published", evidence.id, "manifest.bin"), JSON.stringify(forged));
+  await writeFile(join(root, ".conceptor/runtime/change-lifecycles/generated-outputs/published", evidence.id, "manifest.bin"), JSON.stringify(forged));
   await expect(service.inspect([request.producerId])).rejects.toThrow(/association|integrity-failed/u);
 });
 test("prepared immediate evidence wins over its generation intent during recovery", async () => {
   const { root, request, service } = await fixture("require('node:fs').writeFileSync('output.txt','result');require('node:fs').writeFileSync('cache.txt','cache');");
   const evidence = await service.execute(request);
-  const storage = join(root, ".projector/runtime/change-lifecycles/generated-outputs");
+  const storage = join(root, ".conceptor/runtime/change-lifecycles/generated-outputs");
   await rename(join(storage, "published", evidence.id), join(storage, "finalizing", evidence.id));
   expect((await service.inspect([])).pendingPublications).toEqual([{ artifactSetId: evidence.id, state: "finalizing", recoverable: true }]);
   const recovered = await service.recover([request.producerId]);
@@ -144,7 +144,7 @@ test("prepared immediate evidence wins over its generation intent during recover
 test("generation intent recovers an interrupted empty terminal staging area", async () => {
   const { root, request, service } = await fixture("require('node:fs').writeFileSync('output.txt','result');require('node:fs').writeFileSync('cache.txt','cache');");
   const evidence = await service.execute(request);
-  const storage = join(root, ".projector/runtime/change-lifecycles/generated-outputs");
+  const storage = join(root, ".conceptor/runtime/change-lifecycles/generated-outputs");
   await rm(join(storage, "published", evidence.id), { recursive: true });
   await mkdir(join(storage, "staging", evidence.id, "blobs"), { recursive: true });
   expect((await service.inspect([])).pendingPublications).toEqual([{ artifactSetId: evidence.id, state: "staged", recoverable: true }]);
@@ -155,7 +155,7 @@ test("generation intent recovers an interrupted empty terminal staging area", as
 test("interrupted intent publication remains visible and recoverable", async () => {
   const { root, request, service } = await fixture("require('node:fs').writeFileSync('output.txt','result');require('node:fs').writeFileSync('cache.txt','cache');");
   const evidence = await service.execute(request);
-  const storage = join(root, ".projector/runtime/change-lifecycles/generated-outputs");
+  const storage = join(root, ".conceptor/runtime/change-lifecycles/generated-outputs");
   await rm(join(storage, "published", evidence.id), { recursive: true });
   await rename(join(storage, "intents/published", evidence.id), join(storage, "intents/finalizing", evidence.id));
   expect((await service.inspect([])).pendingPublications).toEqual([{ artifactSetId: evidence.id, state: "finalizing", recoverable: true }]);
@@ -217,11 +217,11 @@ test("native generation and the lifecycle writer coordinate while independent ch
 });
 test("generation refuses canonical and Git-owned outputs including aliases before launching", async () => {
   const { root, request, service } = await fixture("require('node:fs').writeFileSync('started.txt','launched')");
-  for (const path of [".projector/model/x", ".PROJECTOR/config.toml", ".git/config", ".GIT/config"]) {
+  for (const path of [".conceptor/model/x", ".PROJECTOR/config.toml", ".git/config", ".GIT/config"]) {
     await expect(service.execute({ ...request, outputs: [{ path, ownership: "retained" }] })).rejects.toThrow(/cannot authorize/u);
   }
-  await mkdir(join(root, ".projector/model"), { recursive: true });
-  await symlink(join(root, ".projector/model"), join(root, "alias"), process.platform === "win32" ? "junction" : "dir");
+  await mkdir(join(root, ".conceptor/model"), { recursive: true });
+  await symlink(join(root, ".conceptor/model"), join(root, "alias"), process.platform === "win32" ? "junction" : "dir");
   await expect(service.execute({ ...request, outputs: [{ path: "alias/output.txt", ownership: "retained" }] })).rejects.toMatchObject({ code: "symlink-refused" });
   await expect(readFile(join(root, "started.txt"))).rejects.toMatchObject({ code: "ENOENT" });
 });
@@ -230,7 +230,7 @@ test("writer ownership loss cancels the real native producer and preserves the r
   const execution = service.execute({ ...request, timeoutMs: 20000 });
   const failed = expect(execution).rejects.toThrow();
   await waitForProducer(root);
-  await rename(join(root, ".projector/runtime/writer-lease.lock"), join(root, ".projector/runtime/displaced-generation-lock"));
+  await rename(join(root, ".conceptor/runtime/writer-lease.lock"), join(root, ".conceptor/runtime/displaced-generation-lock"));
   const manager = new WriterLeaseManager(await RepositoryPathService.create(root), { staleAfterMs: 30000 });
   const generationId = "generated_11111111-1111-4111-8111-111111111111";
   const replacement = await manager.acquireGeneration({ sessionId: generationId, generationId, processId: process.pid, requestHash: hashFramedDomain("replacement-writer", request), writePaths: ["output.txt"] });

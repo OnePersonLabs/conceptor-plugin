@@ -1,6 +1,6 @@
-import { ArchitectureConcernSchema, ArchitectureDecisionSchema, canonicalJson, type AdapterContext, type ArchitectureConcern, type ArchitectureDecision, type DecisionValidityAssessment, type DerivedObservationBudget } from "@projector/core";
-import type { DecisionOverlapAssessment } from "@projector/engine";
-import { withObservationScope } from "@projector/runtime";
+import { ArchitectureConcernSchema, ArchitectureDecisionSchema, canonicalJson, type AdapterContext, type ArchitectureConcern, type ArchitectureDecision, type DecisionValidityAssessment, type DerivedObservationBudget } from "@conceptor/core";
+import type { DecisionOverlapAssessment } from "@conceptor/engine";
+import { withObservationScope } from "@conceptor/runtime";
 import { observeChangeRepository } from "../change-lifecycle/repository-observer.js";
 import { KnowledgeGraph } from "./graph.js";
 import { assessKnowledgeDecisions } from "./governance.js";

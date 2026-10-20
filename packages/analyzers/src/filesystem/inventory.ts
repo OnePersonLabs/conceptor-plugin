@@ -3,7 +3,7 @@ import { lstat, open, opendir, readlink } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { ObservationBudget, ObservationError, hashFramedDomain, type AnalyzerFailure, type SourceContentEntry,
-  type ObservationDescriptor, type ObservationLimits } from "@projector/core";
+  type ObservationDescriptor, type ObservationLimits } from "@conceptor/core";
 import { compareCodePoint } from "../ordering.js";
 import { checkObservation, GitCommandError, observationFailure, observationGit, observationGitRecords, observationMap, readObservationFile } from "./observation-io.js";
 import { inventoryEntryChunks, inventoryEntryWithBytes, type InventoryContentDescriptor, type InventoryEntryMetadata } from "./inventory-content-store.js";
@@ -96,7 +96,7 @@ async function fileIdentity(path: string, absolute: string, media: string, budge
   } finally { await handle.close(); }
 }
 const inventoryBytes = new WeakMap<InventoryResult, { root: string; entries: ReadonlyMap<string, { entry: InventoryEntry; size: number }> }>();
-const excludedPrefixes = [".git", ".worktrees", ".projector/runtime"] as const;
+const excludedPrefixes = [".git", ".worktrees", ".conceptor/runtime"] as const;
 const fallbackDirectories = new Set([".git", ".worktrees", "node_modules"]);
 function repositoryPath(root: string, absolute: string): string { return relative(root, absolute).split(sep).join("/"); }
 export function isExcludedInventoryPath(path: string): boolean { return excludedPrefixes.some((prefix) => path === prefix || path.startsWith(`${prefix}/`)); }
@@ -299,8 +299,8 @@ async function scanInventory(repositoryRoot: string, options: InventoryOptions, 
     observationDescriptor: { schemaVersion: "projector.observation/v1", observerVersion: "3.0.0", scope: ".", enumerationMethod: method,
       limits: budget.limits, ignoreSources, excludedPaths: [...excludedPrefixes, ...(method === "recursive-filesystem-fallback" ? ["**/node_modules"] : [])], globalGitConfig: "disabled" },
     enumeration: { method, assumptions: [method === "git-index-and-nonignored-untracked" ? "Git CLI can read repository ignore and index metadata" : "repository root is readable"],
-      blindSpots: method === "git-index-and-nonignored-untracked" ? ["untracked Git-ignored files outside the repository inventory", "excluded .git, .worktrees, and .projector/runtime contents"]
-        : ["confirmed non-Git repository; recursive bounded enumeration used", "excluded .git, .worktrees, node_modules, and .projector/runtime contents"] } };
+      blindSpots: method === "git-index-and-nonignored-untracked" ? ["untracked Git-ignored files outside the repository inventory", "excluded .git, .worktrees, and .conceptor/runtime contents"]
+        : ["confirmed non-Git repository; recursive bounded enumeration used", "excluded .git, .worktrees, node_modules, and .conceptor/runtime contents"] } };
   inventoryBytes.set(result, { root, entries: capturedBytes });
   return result;
 }

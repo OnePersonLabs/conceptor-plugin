@@ -4,8 +4,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 
-import { hashFramedDomain, parseChangeProposal, withCanonicalHashes, type Requirement } from "@projector/core";
-import { CanonicalFileRepository } from "@projector/runtime";
+import { hashFramedDomain, parseChangeProposal, withCanonicalHashes, type Requirement } from "@conceptor/core";
+import { CanonicalFileRepository } from "@conceptor/runtime";
 import { afterAll, expect } from "vitest";
 import { integrationTest } from "../../../../scripts/testing/integration-test.mjs";
 import { ResidentObservationWorkerPool, withResidentObservationWorkerPool } from "../observation/resident-pool.js";
@@ -83,7 +83,7 @@ it("retrieves the current identity through two public lineage transactions after
 
     await retireInto(root, "requirement:a", "requirement:b");
     await retireInto(root, "requirement:b", "requirement:c");
-    await exec("git", ["add", ".projector/model"], { cwd: root });
+    await exec("git", ["add", ".conceptor/model"], { cwd: root });
     await exec("git", ["commit", "-qm", "retain chained identity continuity"], { cwd: root });
     await exec("git", ["clone", "-q", root, cloneRoot]);
 
@@ -116,7 +116,7 @@ it("preserves move, split, merge and retirement records in a fresh clone without
     await exec("git", ["add", "."], { cwd: root });
     await exec("git", ["commit", "-qm", "initial matrix"], { cwd: root });
     for (const entry of cases) await transition(root, entry.kind, entry.sources, entry.replacements);
-    await exec("git", ["add", ".projector/model"], { cwd: root });
+    await exec("git", ["add", ".conceptor/model"], { cwd: root });
     await exec("git", ["commit", "-qm", "accepted continuity matrix"], { cwd: root });
     await exec("git", ["clone", "-q", root, cloneRoot]);
     await rm(root, { recursive: true, force: true });

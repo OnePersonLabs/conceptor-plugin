@@ -1,5 +1,5 @@
-import { canonicalJson, hashFramedDomain, type ArchitectureConcern, type ContentHash, type CompletionAssessment, type CompletionRepairAlternative, type CompletionRepairRoute } from "@projector/core";
-import { isHardRule, normalizeSelector, validateDecisionDeferral, type GovernanceBundleEvaluation } from "@projector/engine";
+import { canonicalJson, hashFramedDomain, type ArchitectureConcern, type ContentHash, type CompletionAssessment, type CompletionRepairAlternative, type CompletionRepairRoute } from "@conceptor/core";
+import { isHardRule, normalizeSelector, validateDecisionDeferral, type GovernanceBundleEvaluation } from "@conceptor/engine";
 import type { KnowledgeGraph } from "../knowledge/graph.js";
 import type { KnowledgeDecisionValidity } from "../knowledge/types.js";
 import type { KnowledgeApplicationEvidenceAssessment } from "../knowledge/application-evidence.js";

@@ -1,4 +1,4 @@
-import { canonicalJson, hashFramedDomain, type AdapterContext, type ValidationResult } from "@projector/core";
+import { canonicalJson, hashFramedDomain, type AdapterContext, type ValidationResult } from "@conceptor/core";
 
 import { KnowledgeGraph } from "../knowledge/graph.js";
 import { RepositoryKnowledgeService } from "../knowledge/service.js";

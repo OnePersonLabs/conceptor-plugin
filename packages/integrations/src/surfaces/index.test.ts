@@ -2,7 +2,7 @@ import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { hashFramedDomain, type AdapterContext, type Artifact, type ContentHash, type ExecutionCapsule, type ExecutionPlan, type Surface } from "@projector/core";
+import { hashFramedDomain, type AdapterContext, type Artifact, type ContentHash, type ExecutionCapsule, type ExecutionPlan, type Surface } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { FakeSurfaceAdapter, FileExternalOperationJournal, FileSurfaceSnapshotStore, InMemoryExternalOperationJournal, captureAndPersistSurfaceSnapshot, captureSurfaceSnapshot, executeSurfacePlan, rebuildPinnedSurfaceSnapshot } from "./index.js";

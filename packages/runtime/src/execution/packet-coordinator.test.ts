@@ -1,4 +1,4 @@
-import { hashFramedDomain, type ContentHash, type ExecutionCapsule, type ExecutionPlan, type StateBinding, type StateDigest, type WorkPacket } from "@projector/core";
+import { hashFramedDomain, type ContentHash, type ExecutionCapsule, type ExecutionPlan, type StateBinding, type StateDigest, type WorkPacket } from "@conceptor/core";
 import { describe, expect, it } from "vitest";
 
 import { executePacketPlan, type AuthenticatedPacketExecution, type ObservedImpact } from "./packet-coordinator.js";

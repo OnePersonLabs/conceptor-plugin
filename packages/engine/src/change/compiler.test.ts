@@ -1,4 +1,4 @@
-import { hashFramedDomain, type ChangeIntentAnalysis, type ContentHash, type RiskAssessment, type StateDigest } from "@projector/core";
+import { hashFramedDomain, type ChangeIntentAnalysis, type ContentHash, type RiskAssessment, type StateDigest } from "@conceptor/core";
 import { describe, expect, it, vi } from "vitest";
 
 import { createStateBinding } from "../state/index.js";

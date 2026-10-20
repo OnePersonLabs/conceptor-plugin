@@ -8,22 +8,22 @@ importers:
 
   .:
     devDependencies:
-      '@projector/analyzers':
+      '@conceptor/analyzers':
         specifier: workspace:*
         version: link:packages/analyzers
-      '@projector/control-plane':
+      '@conceptor/control-plane':
         specifier: workspace:*
         version: link:packages/control-plane
-      '@projector/core':
+      '@conceptor/core':
         specifier: workspace:*
         version: link:packages/core
-      '@projector/engine':
+      '@conceptor/engine':
         specifier: workspace:*
         version: link:packages/engine
-      '@projector/runtime':
+      '@conceptor/runtime':
         specifier: workspace:*
         version: link:packages/runtime
-      '@projector/testkit':
+      '@conceptor/testkit':
         specifier: workspace:*
         version: link:packages/testkit
       '@types/node':
@@ -50,7 +50,7 @@ importers:
       '@bufbuild/protobuf':
         specifier: 2.11.0
         version: 2.11.0
-      '@projector/core':
+      '@conceptor/core':
         specifier: workspace:*
         version: link:../core
       '@scip-code/scip':
@@ -75,22 +75,22 @@ importers:
 
   packages/cli:
     dependencies:
-      '@projector/analyzers':
+      '@conceptor/analyzers':
         specifier: workspace:*
         version: link:../analyzers
-      '@projector/control-plane':
+      '@conceptor/control-plane':
         specifier: workspace:*
         version: link:../control-plane
-      '@projector/core':
+      '@conceptor/core':
         specifier: workspace:*
         version: link:../core
-      '@projector/engine':
+      '@conceptor/engine':
         specifier: workspace:*
         version: link:../engine
-      '@projector/integrations':
+      '@conceptor/integrations':
         specifier: workspace:*
         version: link:../integrations
-      '@projector/runtime':
+      '@conceptor/runtime':
         specifier: workspace:*
         version: link:../runtime
       zod:
@@ -102,19 +102,19 @@ importers:
       '@jridgewell/trace-mapping':
         specifier: 0.3.31
         version: 0.3.31
-      '@projector/analyzers':
+      '@conceptor/analyzers':
         specifier: workspace:*
         version: link:../analyzers
-      '@projector/core':
+      '@conceptor/core':
         specifier: workspace:*
         version: link:../core
-      '@projector/engine':
+      '@conceptor/engine':
         specifier: workspace:*
         version: link:../engine
-      '@projector/integrations':
+      '@conceptor/integrations':
         specifier: workspace:*
         version: link:../integrations
-      '@projector/runtime':
+      '@conceptor/runtime':
         specifier: workspace:*
         version: link:../runtime
       zod:
@@ -129,7 +129,7 @@ importers:
 
   packages/engine:
     dependencies:
-      '@projector/core':
+      '@conceptor/core':
         specifier: workspace:*
         version: link:../core
       zod:
@@ -138,10 +138,10 @@ importers:
 
   packages/integrations:
     dependencies:
-      '@projector/core':
+      '@conceptor/core':
         specifier: workspace:*
         version: link:../core
-      '@projector/engine':
+      '@conceptor/engine':
         specifier: workspace:*
         version: link:../engine
       zod:
@@ -150,7 +150,7 @@ importers:
 
   packages/runtime:
     dependencies:
-      '@projector/core':
+      '@conceptor/core':
         specifier: workspace:*
         version: link:../core
       mdast-util-from-markdown:
@@ -165,7 +165,7 @@ importers:
 
   packages/testkit:
     dependencies:
-      '@projector/core':
+      '@conceptor/core':
         specifier: workspace:*
         version: link:../core
       smol-toml:

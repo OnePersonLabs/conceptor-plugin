@@ -11,7 +11,7 @@ import type {
   StructuredModelRequest,
   Surface,
   TransactionPhase,
-} from "@projector/core";
+} from "@conceptor/core";
 import { afterEach, describe, expect, it } from "vitest";
 
 import {

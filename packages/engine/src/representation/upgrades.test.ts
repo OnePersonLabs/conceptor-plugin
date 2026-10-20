@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hashFramedDomain, hashSemantic } from "@projector/core";
+import { hashFramedDomain, hashSemantic } from "@conceptor/core";
 import { UpgradeDeclarationSchema, planUpgradeInvalidation, reconcileRepresentationProfileUpgrade, upgradeDeclarationHash } from "./upgrades.js";
 
 describe("representation and semantic upgrade protocol", () => {

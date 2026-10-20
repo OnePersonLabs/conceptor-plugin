@@ -13,8 +13,8 @@ import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import ts from "typescript";
 import { expect, it } from "vitest";
-import { codeInputHash } from "@projector/analyzers";
-import type { CodeRuntimeEvidence } from "@projector/core";
+import { codeInputHash } from "@conceptor/analyzers";
+import type { CodeRuntimeEvidence } from "@conceptor/core";
 import { mapV8Coverage } from "./v8-coverage.js";
 
 const run = promisify(execFile);

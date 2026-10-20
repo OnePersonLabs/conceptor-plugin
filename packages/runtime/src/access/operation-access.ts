@@ -52,7 +52,7 @@ interface AccessState {
   nextTicket: number;
 }
 
-const runtimeRelativePath = join(".projector", "runtime");
+const runtimeRelativePath = join(".conceptor", "runtime");
 const accessDirectoryName = "operation-access";
 const requestsDirectoryName = "requests";
 const holdersDirectoryName = "holders";
@@ -97,7 +97,7 @@ export async function tryWithProjectExclusiveAccess<T>(
     try {
       return { acquired: true, value: await operation({
         signal: signal === undefined ? integrity.signal : AbortSignal.any([signal, integrity.signal]),
-        ownedRelativePaths: [".projector/runtime/operation-access/next-ticket", `.projector/runtime/operation-access/holders/${owned.requestId}.json`],
+        ownedRelativePaths: [".conceptor/runtime/operation-access/next-ticket", `.conceptor/runtime/operation-access/holders/${owned.requestId}.json`],
         assertOwned: async () => { await refreshHeartbeat(accessPath, owned); },
       }) };
     } finally { await heartbeat.stop(); }
@@ -126,8 +126,8 @@ export async function withProjectOperationAccess<T>(
       return await operation({
         signal,
         ownedRelativePaths: [
-          ".projector/runtime/operation-access/next-ticket",
-          `.projector/runtime/operation-access/holders/${claim.requestId}.json`,
+          ".conceptor/runtime/operation-access/next-ticket",
+          `.conceptor/runtime/operation-access/holders/${claim.requestId}.json`,
         ],
         assertOwned: async () => { await refreshHeartbeat(accessPath, claim); },
       });
@@ -269,7 +269,7 @@ async function prepareAccessDirectory(root: string): Promise<string> {
   } catch (cause) {
     throw new OperationAccessError("project-not-ready", `Project root is not readable: ${root}`, { cause });
   }
-  const projectorPath = join(governedRoot, ".projector");
+  const projectorPath = join(governedRoot, ".conceptor");
   try {
     const projectorStatus = await lstat(projectorPath);
     if (!projectorStatus.isDirectory() || projectorStatus.isSymbolicLink()) throw new Error("not a real directory");

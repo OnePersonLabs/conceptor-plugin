@@ -9,7 +9,7 @@ import {
   type ObservabilityClass,
   type RelevanceReason,
   type StateQueryDependency,
-} from "@projector/core";
+} from "@conceptor/core";
 
 export type TopologyAssurance = "exact" | "validated" | "heuristic";
 

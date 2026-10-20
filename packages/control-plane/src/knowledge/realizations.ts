@@ -2,12 +2,12 @@ import {
   BehavioralScenarioSchema, ConceptSchema, RequirementSchema, DerivedObservationBudget, hashFramedDomain,
   type BehavioralScenario, type Concept, type ContentHash, type ProjectionUnit,
   type RealizationBinding, type RealizationSelectorExpr, type Requirement,
-} from "@projector/core";
+} from "@conceptor/core";
 import {
   evaluateSelectorMembership, projectionUnitSelectorSubject, SelectorEvaluationError,
-} from "@projector/engine";
-import type { LocalRepositoryAnalysis } from "@projector/analyzers";
-import type { CanonicalSnapshot } from "@projector/runtime";
+} from "@conceptor/engine";
+import type { LocalRepositoryAnalysis } from "@conceptor/analyzers";
+import type { CanonicalSnapshot } from "@conceptor/runtime";
 
 export interface CanonicalRealizationObservation {
   readonly entityId: string;

@@ -2,8 +2,8 @@ import { mkdir, mkdtemp, realpath, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { canonicalJson, hashFramedDomain, type ExecutionCapsule, type ExecutionPlan, type RepresentationProjectionRef, type StateDigest } from "@projector/core";
-import { createExecutionApproval, createStateBinding } from "@projector/engine";
+import { canonicalJson, hashFramedDomain, type ExecutionCapsule, type ExecutionPlan, type RepresentationProjectionRef, type StateDigest } from "@conceptor/core";
+import { createExecutionApproval, createStateBinding } from "@conceptor/engine";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { createHostSessionRecord, hostSessionSelector, loadAuthenticatedRepositorySession } from "./index.js";
@@ -35,8 +35,8 @@ async function fixture(options: { readonly capsuleRepresentation?: "valid" | "ab
   const input = { kind: "task17-host-session" as const, host: options.host ?? "codex", sessionId: "session:repository", repositoryRootHash: hashFramedDomain("task17-host-repository-root", await realpath(root)), plan, capsule, approval: createExecutionApproval(plan, capsule, "approval:session"), instructions: { text: options.instructionText ?? "authenticated instructions", sourceHashes: [capsule.normativeKernelHash], representation: reorderedRepresentation } };
   const record = createHostSessionRecord(input);
   const selector = hostSessionSelector(record); const id = selector.slice("session:".length);
-  await mkdir(join(root, ".projector", "task17-sessions"), { recursive: true });
-  await writeFile(join(root, ".projector", "task17-sessions", `session-${id}.json`), JSON.stringify(record));
+  await mkdir(join(root, ".conceptor", "task17-sessions"), { recursive: true });
+  await writeFile(join(root, ".conceptor", "task17-sessions", `session-${id}.json`), JSON.stringify(record));
   return { root, record, selector, input, plan, capsule };
 }
 
@@ -63,20 +63,20 @@ describe("authenticated repository sessions", () => {
     await expect(loadAuthenticatedRepositorySession({ repositoryRoot: route.root, sessionSelector: route.selector, host: "claude" })).rejects.toThrow(/route|host/iu);
     await expect(loadAuthenticatedRepositorySession({ repositoryRoot: route.root, sessionSelector: "session:not-a-hash" })).rejects.toThrow(/immutable.*selector/iu);
 
-    const wrongRoot = await mkdtemp(join(tmpdir(), "projector-session-wrong-root-")); roots.push(wrongRoot); await mkdir(join(wrongRoot, ".projector", "task17-sessions"), { recursive: true }); await writeFile(join(wrongRoot, ".projector", "task17-sessions", `session-${route.selector.slice("session:".length)}.json`), JSON.stringify(route.record));
+    const wrongRoot = await mkdtemp(join(tmpdir(), "projector-session-wrong-root-")); roots.push(wrongRoot); await mkdir(join(wrongRoot, ".conceptor", "task17-sessions"), { recursive: true }); await writeFile(join(wrongRoot, ".conceptor", "task17-sessions", `session-${route.selector.slice("session:".length)}.json`), JSON.stringify(route.record));
     await expect(loadAuthenticatedRepositorySession({ repositoryRoot: wrongRoot, sessionSelector: route.selector })).rejects.toThrow(/root/iu);
 
     const tampered = await fixture(); const { contentHash: ignoredHash, ...tamperedBody } = tampered.record; void ignoredHash;
-    await writeFile(join(tampered.root, ".projector", "task17-sessions", `session-${tampered.selector.slice("session:".length)}.json`), JSON.stringify({ ...tamperedBody, sessionId: "forged", contentHash: tampered.record.contentHash }));
+    await writeFile(join(tampered.root, ".conceptor", "task17-sessions", `session-${tampered.selector.slice("session:".length)}.json`), JSON.stringify({ ...tamperedBody, sessionId: "forged", contentHash: tampered.record.contentHash }));
     await expect(loadAuthenticatedRepositorySession({ repositoryRoot: tampered.root, sessionSelector: tampered.selector })).rejects.toThrow(/unauthenticated/iu);
 
-    const revision = await fixture(); const revisionRecord = createHostSessionRecord({ ...revision.input, approval: { ...revision.input.approval, planRevision: revision.plan.revision - 1 } }); const revisionSelector = hostSessionSelector(revisionRecord); await writeFile(join(revision.root, ".projector", "task17-sessions", `session-${revisionSelector.slice("session:".length)}.json`), JSON.stringify(revisionRecord));
+    const revision = await fixture(); const revisionRecord = createHostSessionRecord({ ...revision.input, approval: { ...revision.input.approval, planRevision: revision.plan.revision - 1 } }); const revisionSelector = hostSessionSelector(revisionRecord); await writeFile(join(revision.root, ".conceptor", "task17-sessions", `session-${revisionSelector.slice("session:".length)}.json`), JSON.stringify(revisionRecord));
     await expect(loadAuthenticatedRepositorySession({ repositoryRoot: revision.root, sessionSelector: revisionSelector })).rejects.toThrow(/approval/iu);
 
-    const binding = await fixture(); const rebound = createStateBinding({ compiledAgainst: state("revision:other"), valueDependencies: [], queryDependencies: [] }); const reboundCapsule = { ...binding.capsule, boundState: rebound } as ExecutionCapsule; const reboundRecord = createHostSessionRecord({ ...binding.input, capsule: reboundCapsule, approval: createExecutionApproval(binding.plan, reboundCapsule, "approval:rebound") }); const reboundSelector = hostSessionSelector(reboundRecord); await writeFile(join(binding.root, ".projector", "task17-sessions", `session-${reboundSelector.slice("session:".length)}.json`), JSON.stringify(reboundRecord));
+    const binding = await fixture(); const rebound = createStateBinding({ compiledAgainst: state("revision:other"), valueDependencies: [], queryDependencies: [] }); const reboundCapsule = { ...binding.capsule, boundState: rebound } as ExecutionCapsule; const reboundRecord = createHostSessionRecord({ ...binding.input, capsule: reboundCapsule, approval: createExecutionApproval(binding.plan, reboundCapsule, "approval:rebound") }); const reboundSelector = hostSessionSelector(reboundRecord); await writeFile(join(binding.root, ".conceptor", "task17-sessions", `session-${reboundSelector.slice("session:".length)}.json`), JSON.stringify(reboundRecord));
     await expect(loadAuthenticatedRepositorySession({ repositoryRoot: binding.root, sessionSelector: reboundSelector })).rejects.toThrow(/binding|approval/iu);
 
-    const digest = await fixture(); const forgedBinding = { ...digest.plan.boundState, dependencyDigest: hashFramedDomain("session-test", "forged-dependency-digest") }; const forgedPlan = { ...digest.plan, boundState: forgedBinding } as ExecutionPlan; const forgedCapsule = { ...digest.capsule, boundState: forgedBinding } as ExecutionCapsule; const forgedRecord = createHostSessionRecord({ ...digest.input, plan: forgedPlan, capsule: forgedCapsule, approval: createExecutionApproval(forgedPlan, forgedCapsule, "approval:forged-binding") }); const forgedSelector = hostSessionSelector(forgedRecord); await writeFile(join(digest.root, ".projector", "task17-sessions", `session-${forgedSelector.slice("session:".length)}.json`), JSON.stringify(forgedRecord));
+    const digest = await fixture(); const forgedBinding = { ...digest.plan.boundState, dependencyDigest: hashFramedDomain("session-test", "forged-dependency-digest") }; const forgedPlan = { ...digest.plan, boundState: forgedBinding } as ExecutionPlan; const forgedCapsule = { ...digest.capsule, boundState: forgedBinding } as ExecutionCapsule; const forgedRecord = createHostSessionRecord({ ...digest.input, plan: forgedPlan, capsule: forgedCapsule, approval: createExecutionApproval(forgedPlan, forgedCapsule, "approval:forged-binding") }); const forgedSelector = hostSessionSelector(forgedRecord); await writeFile(join(digest.root, ".conceptor", "task17-sessions", `session-${forgedSelector.slice("session:".length)}.json`), JSON.stringify(forgedRecord));
     await expect(loadAuthenticatedRepositorySession({ repositoryRoot: digest.root, sessionSelector: forgedSelector })).rejects.toThrow(/binding|approval/iu);
   });
 });

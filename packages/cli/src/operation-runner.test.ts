@@ -11,10 +11,10 @@ import {
   type PackageIdentity,
   type ProjectReadiness,
   type ProjectorOperation,
-} from "@projector/core";
+} from "@conceptor/core";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { z } from "zod";
-import { currentObservationScope } from "@projector/runtime";
+import { currentObservationScope } from "@conceptor/runtime";
 
 import {
   createProjectorOperationRunner,
@@ -41,7 +41,7 @@ afterEach(async () => {
   })));
 });
 
-async function packagedRoot(manifest: object = { name: "@projector/cli", version: "7.4.2", private: true }): Promise<string> {
+async function packagedRoot(manifest: object = { name: "@conceptor/cli", version: "7.4.2", private: true }): Promise<string> {
   const root = await mkdtemp(join(tmpdir(), "projector-operation-runner-"));
   roots.push(root);
   await writeFile(join(root, "package.json"), `${JSON.stringify(manifest)}\n`);
@@ -59,7 +59,7 @@ function request(operation: ProjectorOperation, input: object = {}) {
 }
 
 function ports(overrides: Partial<OperationRunnerPorts> = {}): OperationRunnerPorts {
-  const packageIdentity = { name: "@projector/cli", version: "7.4.2" };
+  const packageIdentity = { name: "@conceptor/cli", version: "7.4.2" };
   return {
     inspectReadiness: async () => ready(packageIdentity),
     initializer: {
@@ -129,7 +129,7 @@ describe("bounded Projector operation runner", () => {
     const root = await packagedRoot();
     const runner = await createBundledProjectorOperationRunner({ packagedRoot: root });
     await runner.execute({ ...request("init"), repositoryRoot: root });
-    const access = join(root, ".projector", "runtime", "operation-access");
+    const access = join(root, ".conceptor", "runtime", "operation-access");
     const requestId = "00000000-0000-4000-8000-000000000003";
     const exited = spawn(process.execPath, ["--eval", ""]);
     const processId = exited.pid!;
@@ -187,7 +187,7 @@ describe("bounded Projector operation runner", () => {
 
     const inactive = await runner.discoverCapabilities({ repositoryRoot: root });
     expect(applicationEvidence).not.toHaveBeenCalled();
-    await expect(stat(join(root, ".projector/runtime/application-evidence"))).rejects.toMatchObject({ code: "ENOENT" });
+    await expect(stat(join(root, ".conceptor/runtime/application-evidence"))).rejects.toMatchObject({ code: "ENOENT" });
     expect(inactive.readiness.status).toBe("inactive");
     expect(inactive.operations.find(({ operation }) => operation === "verify")).toMatchObject({
       registered: true,
@@ -237,7 +237,7 @@ describe("bounded Projector operation runner", () => {
       output: { command: "verify", exitCode: 5, exitProof: { requiredUnavailable: true } },
     });
     expect(applicationEvidence).toHaveBeenCalledOnce();
-    await expect(stat(join(root, ".projector/runtime/application-evidence"))).rejects.toMatchObject({ code: "ENOENT" });
+    await expect(stat(join(root, ".conceptor/runtime/application-evidence"))).rejects.toMatchObject({ code: "ENOENT" });
   });
 
   test("reports inactive status by bounded inspection without invoking mutation ports", async () => {
@@ -272,7 +272,7 @@ describe("bounded Projector operation runner", () => {
       operation: "status",
       requestId: "request-17",
       readiness: { status: "inactive" },
-      output: { readiness: { status: "inactive" }, package: { name: "@projector/cli" } },
+      output: { readiness: { status: "inactive" }, package: { name: "@conceptor/cli" } },
     });
     expect(initialized).toBe(false);
     expect(accessed).toBe(false);
@@ -344,7 +344,7 @@ describe("bounded Projector operation runner", () => {
             reason: "Interrupted migration",
             recovery: {
               code: "migration-pending",
-              location: ".projector/runtime/migrations/pending.json",
+              location: ".conceptor/runtime/migrations/pending.json",
               action: "Recover the recognized pending migration",
             },
           },
@@ -355,7 +355,7 @@ describe("bounded Projector operation runner", () => {
     await expect(runner.execute(request("verify"))).resolves.toMatchObject({
       status: "unavailable",
       exitCode: 6,
-      readiness: { recovery: { code: "migration-pending", location: ".projector/runtime/migrations/pending.json" } },
+      readiness: { recovery: { code: "migration-pending", location: ".conceptor/runtime/migrations/pending.json" } },
       error: { code: "migration-pending" },
       action: { kind: "recovery-required", operation: "verify", reason: "Recover the recognized pending migration" },
     });
@@ -486,7 +486,7 @@ describe("bounded Projector operation runner", () => {
       ports: ports({
         initializer: {
           resultSchema: initializerResultSchema,
-          execute: async () => ({ readiness: ready({ name: "@projector/cli", version: "7.4.2" }), created: true, extra: true }),
+          execute: async () => ({ readiness: ready({ name: "@conceptor/cli", version: "7.4.2" }), created: true, extra: true }),
         },
       }),
     });
@@ -529,7 +529,7 @@ describe("bounded Projector operation runner", () => {
     await expect(runner.execute(request("application.observe", { ownerSchemaIsUnavailable: { future: true } }))).resolves.toMatchObject({
       status: "unavailable",
       operation: "application.observe",
-      package: { name: "@projector/cli", version: "7.4.2" },
+      package: { name: "@conceptor/cli", version: "7.4.2" },
       error: { code: "operation-unregistered", retriable: false },
     });
     expect(accessed).toBe(false);
@@ -710,7 +710,7 @@ describe("bounded Projector operation runner", () => {
     await expect(createProjectorOperationRunner({ packagedRoot: linkedRoot, handlers: [], ports: ports() }))
       .rejects.toThrow(/regular non-symlink/iu);
 
-    const oversizedRoot = await packagedRoot({ name: "@projector/cli", version: "7.4.2", padding: "x".repeat(17_000) });
+    const oversizedRoot = await packagedRoot({ name: "@conceptor/cli", version: "7.4.2", padding: "x".repeat(17_000) });
     await expect(createProjectorOperationRunner({ packagedRoot: oversizedRoot, handlers: [], ports: ports() }))
       .rejects.toThrow(/exceeds 16384 bytes/iu);
     await expect(stat(join(oversizedRoot, "package.json"))).resolves.toMatchObject({ isFile: expect.any(Function) });

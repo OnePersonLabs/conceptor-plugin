@@ -4,7 +4,7 @@ import { access, lstat, opendir, readFile, realpath } from "node:fs/promises";
 import { delimiter, dirname, isAbsolute, join, relative, sep } from "node:path";
 import { findPackageJSON } from "node:module";
 import { fileURLToPath } from "node:url";
-import { hashFramedDomain, type ContentHash, type ObservationBudget } from "@projector/core";
+import { hashFramedDomain, type ContentHash, type ObservationBudget } from "@conceptor/core";
 
 /** Enumerate actual installed package bytes; callers cannot declare producer closure. */
 export async function resolveHostGitExecutable(repositoryRoot: string): Promise<string> {
@@ -57,7 +57,7 @@ export async function captureBuiltinProducer(entryUrl: string, budget: Observati
         else if (!entry.isFile()) throw new Error(`Unsupported installed producer entry: ${identity}/${key}`);
       }
     }
-    if (manifest.name.startsWith("@projector/")) await walk(join(root, "dist"), "dist");
+    if (manifest.name.startsWith("@conceptor/")) await walk(join(root, "dist"), "dist");
     else await walk(root, "");
     for (const name of Object.keys({ ...manifest.dependencies, ...manifest.optionalDependencies }).sort()) {
       const manifestPath = findPackageJSON(name, join(root, "package.json"));
@@ -74,7 +74,7 @@ export async function captureBuiltinProducer(entryUrl: string, budget: Observati
   // The npm layout executes dist modules. The standalone plugin bundles those
   // same modules into shared ESM chunks, whose complete bytes were hashed above.
   const emittedModule = relativeEntry.startsWith("dist/")
-    || (manifest.name === "@onepersonlabs/projector" && /^chunks\/shared-[^/]+\.js$/u.test(relativeEntry));
+    || (manifest.name === "@onepersonlabs/conceptor" && /^chunks\/shared-[^/]+\.js$/u.test(relativeEntry));
   const production = emittedModule && !process.env.NODE_OPTIONS && !process.execArgv.some(arg => /^(?:--import|--loader|--experimental-loader|--require|-r)(?:=|$)/u.test(arg));
   await hash(await realpath(process.execPath), `node@${process.version}/${process.platform}/${process.arch}`);
   await hash(transport.path, `${transport.version.replace(/^git version /u, "git@")}/transport`);

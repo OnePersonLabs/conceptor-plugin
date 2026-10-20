@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 import { Worker } from "node:worker_threads";
-import { ObservationError } from "@projector/core";
+import { ObservationError } from "@conceptor/core";
 
 export interface ResidentWorkerSlot {
   readonly worker: Worker;

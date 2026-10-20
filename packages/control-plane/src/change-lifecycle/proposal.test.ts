@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseChangeProposal } from "@projector/core";
+import { parseChangeProposal } from "@conceptor/core";
 
 const proposal = () => ({
   apiVersion: "projector.change-proposal/v1",
@@ -63,7 +63,7 @@ describe("change proposal", () => {
     expect(() => parseChangeProposal({ ...proposal(), architecture: { ...proposal().architecture, materiality: "blocking-now" } })).toThrow(/materiality|invalid option/iu);
     expect(() => parseChangeProposal({ ...proposal(), validation: { ...proposal().validation, command: "curl example.com" } })).toThrow(/unrecognized.*command/iu);
     expect(() => parseChangeProposal({ ...proposal(), edits: [{ path: "../escape", before: null, after: "x" }] })).toThrow(/repository-relative|path/iu);
-    expect(() => parseChangeProposal({ ...proposal(), edits: [{ path: ".projector/model/requirements/forged.json", before: null, after: "{}" }] })).toThrow(/reserved|cannot be edited/iu);
+    expect(() => parseChangeProposal({ ...proposal(), edits: [{ path: ".conceptor/model/requirements/forged.json", before: null, after: "{}" }] })).toThrow(/reserved|cannot be edited/iu);
     expect(() => parseChangeProposal({ ...proposal(), requirements: [...proposal().requirements, proposal().requirements[0]] })).toThrow(/duplicate.*requirement/iu);
     expect(() => parseChangeProposal({
       ...proposal(),

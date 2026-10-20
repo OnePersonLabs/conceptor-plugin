@@ -1,4 +1,4 @@
-import { hashFramedDomain, type ContentHash, type StateBinding, type StateDigest } from "@projector/core";
+import { hashFramedDomain, type ContentHash, type StateBinding, type StateDigest } from "@conceptor/core";
 import { describe, expect, it, vi } from "vitest";
 
 import { InMemoryCleanupPlanStore, createCleanupPlan, resumeCleanupPlan } from "./cleanup.js";
