@@ -1,6 +1,6 @@
-# Projector documentation
+# Conceptor documentation
 
-Projector keeps a reviewed plan and its implementation together through revision, checks, and completion. Start with a story, then choose the guide that matches your current work.
+Conceptor keeps a reviewed plan and its implementation together through revision, checks, and completion. Start with a story, then choose the guide that matches your current work.
 
 ## Contents
 
@@ -15,8 +15,8 @@ Projector keeps a reviewed plan and its implementation together through revision
 
 | Your situation | Start here |
 | --- | --- |
-| You have not used Projector yet | [Getting started](getting-started.md) |
-| You want the mental model first | [How Projector fits together](overview.md) |
+| You have not used Conceptor yet | [Getting started](getting-started.md) |
+| You want the mental model first | [How Conceptor fits together](overview.md) |
 | You learn by watching a complete task | [Practical stories](examples.md) |
 | You have a problem but no solution | [Explore before proposing](workflows.md#explore-before-proposing) |
 | The agent has drafted your plan | [Reviewing a change](reviewing-a-change.md) |
@@ -30,13 +30,13 @@ If you read only two pages before starting, use getting started and the [skill g
 ## The short path
 
 ```text
-$projector:init
-$projector:propose Add keyboard navigation to search results.
+$conceptor:init
+$conceptor:propose Add keyboard navigation to search results.
    Review the proposal, requirements, design, and tasks.
-$projector:apply
-$projector:finish
+$conceptor:apply
+$conceptor:finish
    Inspect the reported integrated commit and archive.
-Use $projector:merge to integrate that branch when ready.
+Use $conceptor:merge to integrate that branch when ready.
 ```
 
 The proposal pauses for review unless you explicitly authorize planning, implementation, checks, and finish together. Finish integrates reviewed code and accepted authority together. Use merge for another selected source branch.
@@ -60,7 +60,7 @@ The proposal pauses for review unless you explicitly authorize planning, impleme
 
 ## Reference and contribution
 
-[Runtime reference](reference/runtime.md) explains CLI operations, MCP tools, source queries, the managed observation protocol, and limits. The [workflow coverage map](reference/workflow-coverage.md) identifies the OpenSpec workflow capabilities covered by Projector.
+[Runtime reference](reference/runtime.md) explains CLI operations, MCP tools, source queries, the managed observation protocol, and limits. The [workflow coverage map](reference/workflow-coverage.md) identifies the OpenSpec workflow capabilities covered by Conceptor.
 
 [Development](development.md) covers build, local packaging, installation, and owner updates. [Writing documentation](documentation-guide.md) records page roles, voice, story structure, diagrams, and review criteria.
 
@@ -72,4 +72,4 @@ These records are historical evidence for the checks they describe. They do not 
 
 ## Related projects
 
-[Projector 3](https://github.com/OnePersonLabs/projector/tree/v3) keeps a persistent accepted-meaning model for context and consequence checks during ordinary edits. [Kerf](https://github.com/OnePersonLabs/kerf) uses readable concepts, bounded focus, and local lenses. Projector 4 adds the reviewed change lifecycle and integrated completion described here. Follow each project's own setup and artifact guidance.
+[Conceptor 3](https://github.com/OnePersonLabs/conceptor/tree/v3) keeps a persistent accepted-meaning model for context and consequence checks during ordinary edits. [Kerf](https://github.com/OnePersonLabs/kerf) uses readable concepts, bounded focus, and local lenses. Conceptor 4 adds the reviewed change lifecycle and integrated completion described here. Follow each project's own setup and artifact guidance.

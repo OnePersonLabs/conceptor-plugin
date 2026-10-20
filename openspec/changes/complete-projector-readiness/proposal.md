@@ -1,8 +1,8 @@
-# Complete Projector readiness
+# Complete Conceptor readiness
 
 ## Why
 
-Projector must make a real Psychord rebuild explainable and verifiable without forcing a second workflow into every task list. Mandatory candidate worktrees, raw task-byte evidence invalidation, candidate-only finish, and TypeScript-only ownership currently obstruct that goal. Parser-only support would leave native, style, configuration, asset, and generated contributions unexplained.
+Conceptor must make a real Psychord rebuild explainable and verifiable without forcing a second workflow into every task list. Mandatory candidate worktrees, raw task-byte evidence invalidation, candidate-only finish, and TypeScript-only ownership currently obstruct that goal. Parser-only support would leave native, style, configuration, asset, and generated contributions unexplained.
 
 ## What Changes
 

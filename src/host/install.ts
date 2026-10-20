@@ -11,7 +11,7 @@ export async function install(destination: string): Promise<{ plugin: string; ru
   catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
   await access(join(packageRoot, 'dist', 'host', 'cli.js'));
   await mkdir(runtime, { recursive: true });
-  await cp(join(packageRoot, 'plugins', 'projector'), plugin, { recursive: true });
+  await cp(join(packageRoot, 'plugins', 'conceptor'), plugin, { recursive: true });
   await cp(join(packageRoot, 'dist'), join(runtime, 'dist'), { recursive: true });
   await cp(join(packageRoot, 'openspec', 'schemas'), join(runtime, 'openspec', 'schemas'), { recursive: true });
   await cp(join(packageRoot, 'package.json'), join(runtime, 'package.json'));

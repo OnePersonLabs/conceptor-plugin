@@ -3,7 +3,7 @@ designDelta: 1
 target: projector/host
 baseline: 70fe7ad4ed46c5280a08ef46b4cd262eb7c966532c2f7a33d41f0c9e3ebb05c8
 ---
-# Projector readiness design delta
+# Conceptor readiness design delta
 
 ## Replace: contract
 
@@ -14,7 +14,7 @@ The host exposes kernel queries and change operations through CLI and individual
 
 Applies: [[spec:projector/observation#Shared owner and bounded workers]] | {"kind":"path","root":".","prefix":"src/host/"} | The transport owns exclusive process selection, client lifetime and admission limits.
 Applies: [[spec:projector/observation#Honest read modes]] | {"kind":"path","root":".","prefix":"src/host/"} | Change callbacks must invalidate observations before uncertain writes.
-Applies: [[spec:projector/documents#External design ownership]] | {"kind":"path","root":".","prefix":"plugins/projector/"} | Plugin integration stays outside ordinary application source and runtime dependencies.
+Applies: [[spec:projector/documents#External design ownership]] | {"kind":"path","root":".","prefix":"plugins/conceptor/"} | Plugin integration stays outside ordinary application source and runtime dependencies.
 ```
 
 ## Replace: decision:thin-installed-clients
@@ -28,6 +28,6 @@ Requires: [[spec:projector/documents#External design ownership]] [[spec:projecto
 Consequential: boundary
 Alternative: Let each relay open its own SQLite index or run directly from a developer checkout.
 Tradeoff: A fresh installation pays dependency download and disk costs once; clients do not own competing caches or require application imports.
-Realizes: [[code:src/host/relay.ts#relay]] [[code:src/host/cli.ts]] [[code:src/host/install.ts#install]] [[code:plugins/projector/mcp.json]] [[code:plugins/projector/plugin.json]]
+Realizes: [[code:src/host/relay.ts#relay]] [[code:src/host/cli.ts]] [[code:src/host/install.ts#install]] [[code:plugins/conceptor/mcp.json]] [[code:plugins/conceptor/plugin.json]]
 Evidence: Installed two-client tests execute the declared launch arguments and exercise native paths, queries, nested target preparation, plan/apply/revision, real executed evidence, archive, integrated publication, preservation of unrelated changes, a long evidence check, and a settled repeat. Actual Codex app-server qualification verifies native plugin discovery and the server handshake separately.
 ```

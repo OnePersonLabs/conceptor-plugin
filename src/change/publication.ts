@@ -53,7 +53,7 @@ async function retainRecovery(root: string, transaction: PublicationTransaction)
     await git(root, ['update-index', '-z', '--index-info'], { env, input: entries.join('\0') + '\0' });
     return git(root, ['write-tree'], { env });
   });
-  const retained = await git(root, ['-c', 'user.name=Projector recovery', '-c', 'user.email=recovery@localhost', 'commit-tree', tree, '-p', transaction.commit, '-m', `Publication recovery ${randomUUID()}`]);
+  const retained = await git(root, ['-c', 'user.name=Conceptor recovery', '-c', 'user.email=recovery@localhost', 'commit-tree', tree, '-p', transaction.commit, '-m', `Publication recovery ${randomUUID()}`]);
   transaction.recoveryRef = `refs/projector/publications/${retained}`;
   await git(root, ['update-ref', transaction.recoveryRef, retained, '']);
 }
@@ -97,7 +97,7 @@ export async function preparePublication(input: PublicationInput): Promise<Publi
   }
   const beforeEntries = await treeEntries(root, current), afterEntries = await treeEntries(root, afterWorking);
   const gitDir = await git(root, ['rev-parse', '--absolute-git-dir']);
-  const scratch = path.join(gitDir, `projector-publication-${randomUUID()}`); await mkdir(scratch);
+  const scratch = path.join(gitDir, `conceptor-publication-${randomUUID()}`); await mkdir(scratch);
   const indexPath = path.join(gitDir, 'index');
   try {
     const beforeIndex = await git(root, ['hash-object', '-w', '--no-filters', '--', indexPath]);
@@ -182,7 +182,7 @@ export async function publishPublication(root: string, transaction: PublicationT
       if (!file.after) await unlink(destination);
       else {
         await mkdir(path.dirname(destination), { recursive: true });
-        const temporary = `${destination}.${randomUUID()}.projector-new`;
+        const temporary = `${destination}.${randomUUID()}.conceptor-new`;
         try {
           await blobToFile(root, ['cat-file', 'blob', file.after.blob], temporary);
           if (process.platform !== 'win32') await chmod(temporary, file.after.mode === '100755' ? 0o755 : 0o644);

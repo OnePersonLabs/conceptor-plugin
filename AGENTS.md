@@ -1,10 +1,10 @@
-# Projector V4 development rules
+# Conceptor V4 development rules
 
-Projector V4 development follows the repository's normal durable source, OpenSpec, and design artifacts.
+Conceptor V4 development follows the repository's normal durable source, OpenSpec, and design artifacts.
 
 ## Verification
 
-Use the local [canonical verification procedure](plugins/projector/skills/verify/SKILL.md) for verification planning, test maintenance, execution, and final review. Select its planning, ordinary repository, prepared-change, or branch-integration context from the actual work. This route does not activate Projector, require a prepared change, or depend on an installed plugin. Repository checks and completion gates still apply. Use [development commands](docs/development.md#focused-checks-and-complete-impact) for this checkout.
+Use the local [canonical verification procedure](plugins/conceptor/skills/verify/SKILL.md) for verification planning, test maintenance, execution, and final review. Select its planning, ordinary repository, prepared-change, or branch-integration context from the actual work. This route does not activate Conceptor, require a prepared change, or depend on an installed plugin. Repository checks and completion gates still apply. Use [development commands](docs/development.md#focused-checks-and-complete-impact) for this checkout.
 
 ## Handoff isolation
 

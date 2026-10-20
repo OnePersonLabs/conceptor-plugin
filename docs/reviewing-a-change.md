@@ -16,7 +16,7 @@ Review first asks whether the proposed result is right. Later, it asks whether t
 
 Open the proposal, requirement deltas, concern designs, and tasks. The proposal should explain the problem in your terms. The deltas should say what changes and what survives. The design should explain ownership and the choices that affect implementation. Tasks should follow from those documents.
 
-For an incremental proposal, some layers may still be absent. That is a drafting frontier, not a finished plan. Ask `$projector:continue` to draft the next layer, or ask for the rest of the proposal.
+For an incremental proposal, some layers may still be absent. That is a drafting frontier, not a finished plan. Ask `$conceptor:continue` to draft the next layer, or ask for the rest of the proposal.
 
 ## Review observable behavior
 
@@ -55,7 +55,7 @@ Checked tasks must reflect actual work. Missing checks stay visible. If task tex
 State the intended result directly:
 
 ```text
-$projector:revise Keep focus on the last result instead of wrapping.
+$conceptor:revise Keep focus on the last result instead of wrapping.
 Preserve Enter activation and normal typing in the search field.
 ```
 
@@ -63,7 +63,7 @@ Before a candidate exists, the agent revises the artifacts. After implementation
 
 ## Review the implemented result
 
-Use `$projector:verify` to request executed checks and independent review without archiving. Ask what the checks actually exercised, where they ran, and which behavior remains unverified.
+Use `$conceptor:verify` to request executed checks and independent review without archiving. Ask what the checks actually exercised, where they ran, and which behavior remains unverified.
 
 For keyboard navigation, a build can establish compilation. A realistic interaction check can establish focus movement and activation. Inspect both the test result and the actual diff, including event registration and other consumers.
 
@@ -75,6 +75,6 @@ If the result has a causal defect, ask for a repair within the reviewed scope. I
 
 Finish integrates the checked result and accepted authority into the selected branch. Review the reported commit, archive, actual checks, preserved local work, and remaining limitations.
 
-Request finish when you want the reviewed change landed. Its temporary finalization checks the selected result before publication. Use `$projector:merge` for another source branch; that combined result needs its own checks and review.
+Request finish when you want the reviewed change landed. Its temporary finalization checks the selected result before publication. Use `$conceptor:merge` for another source branch; that combined result needs its own checks and review.
 
 Continue with [integration](integration.md), or use [examples](examples.md) to see review in context.

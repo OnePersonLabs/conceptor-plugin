@@ -1,4 +1,4 @@
-# Projector workflow qualification
+# Conceptor workflow qualification
 
 ## Impact-aware verification protocol, 2026-09-27
 
@@ -86,7 +86,7 @@ The first complete working-code inventory exposed a real cache-capacity/error-re
 
 The affected read-only inventory then passed: 2,853 files, 22,490,105 raw bytes, approximately 5.53 seconds and a 51,458,048-byte disposable cache. It contained 1,388 Markdown files, 883 TypeScript-family files, 61 Python files, six Rust files, six HTML files, three CSS files, 68 configuration files and 438 opaque files. Its 688 diagnostics remain explicit, including dynamic/native framework relationships and unresolved imports. A passing inventory does not make those relationships complete. Observed process RSS was approximately 474 MB, including worker/WASM runtime allocation; Node worker heap limits are not a WASM memory cap.
 
-After the packaged declaration-query update, a fresh-cache repetition also passed: the same 2,853 files and 688 diagnostics, approximately 7.54 seconds, a 53,108,736-byte cache and approximately 560 MB observed process RSS. The failed result and both repaired results are retained in the operating-system temporary directory as `projector-readiness-inventory.json`. Published fixtures contain no machine-specific source paths. These timings describe local working inventories, not a portable performance guarantee.
+After the packaged declaration-query update, a fresh-cache repetition also passed: the same 2,853 files and 688 diagnostics, approximately 7.54 seconds, a 53,108,736-byte cache and approximately 560 MB observed process RSS. The failed result and both repaired results are retained in the operating-system temporary directory as `conceptor-readiness-inventory.json`. Published fixtures contain no machine-specific source paths. These timings describe local working inventories, not a portable performance guarantee.
 
 ### Final installed Psychord inventory
 
@@ -104,17 +104,17 @@ Review also required a specific model-runtime owner instead of attributing model
 
 After independent review of the corrected code and revised authority, finish integrated code and accepted authority in trial commit `8b293b58df80c94a8e0f9377bf8b8f617d50d8b6`. Repeated finish reused that commit. The published result also passed the independent oracle. Its history contains 18 executed evidence records, including the failed regression run. The real producer/consumer probe reports unavailable models, four explicit missing-wiring failures, immediate dispatch while readiness is pending, and `qualified: false` for dispatch-only audio observations.
 
-These results qualify the Projector workflow and the stated rehearsal. Native model round trips, physical audio playback/capture and MIDI remain separate Psychord adapter obligations. Static relationships and dispatch checks cannot establish those outcomes.
+These results qualify the Conceptor workflow and the stated rehearsal. Native model round trips, physical audio playback/capture and MIDI remain separate Psychord adapter obligations. Static relationships and dispatch checks cannot establish those outcomes.
 
-Detailed logs are retained in the operating-system temporary directory: `projector-final-check.log`, `projector-linux-qa-71PJi2/commands.txt`, `projector-readiness-target.json`, `projector-installed-inventory-final.json`, `projector-installed-relations-final.json`, `projector-hosted-semantic-review.md`, `projector-hosted-semantic-recheck.log`, `projector-hosted-oracle-published.log` and `projector-hosted-finish.json`. The earlier failed results are preserved alongside the successful checks.
+Detailed logs are retained in the operating-system temporary directory: `conceptor-final-check.log`, `conceptor-linux-qa-71PJi2/commands.txt`, `conceptor-readiness-target.json`, `conceptor-installed-inventory-final.json`, `conceptor-installed-relations-final.json`, `conceptor-hosted-semantic-review.md`, `conceptor-hosted-semantic-recheck.log`, `conceptor-hosted-oracle-published.log` and `conceptor-hosted-finish.json`. The earlier failed results are preserved alongside the successful checks.
 
-## Projector 4.2.0 reviewed integration
+## Conceptor 4.2.0 reviewed integration
 
 Qualification performed on 2026-09-24 using Windows, Node 24.19.0, Git 2.55.0 and the bundled OpenSpec 1.13.1.
 
 ### Executed checks
 
-The reviewed candidate passed TypeScript build, ESLint and all 66 repository tests. The final integration passed TypeScript build, ESLint and all 67 tests after adding the archived-prerequisite regression check. The installed-client acceptance test verified version 4.2.0 and all 12 packaged workflow skills, including `$projector:merge`. The merge skill also passed the skill-package validator and Simplified Technical English lint.
+The reviewed candidate passed TypeScript build, ESLint and all 66 repository tests. The final integration passed TypeScript build, ESLint and all 67 tests after adding the archived-prerequisite regression check. The installed-client acceptance test verified version 4.2.0 and all 12 packaged workflow skills, including `$conceptor:merge`. The merge skill also passed the skill-package validator and Simplified Technical English lint.
 
 Forward exercises in disposable repositories covered a clean divergent merge, an already-integrated no-op, staged, unstaged and untracked dirty targets, an ambiguous conflict, target movement before publication and deliberate whole-merge rejection. The target stayed unchanged in every blocked or rejected case. The clean merge produced the expected two-parent commit and fast-forward publication. Ambiguous work remained in its locked linked worktree with a complete decision brief. Target movement preserved both the moved target and the reviewed integration. Deliberate rejection removed only the identified temporary worktree and branch. Every disposable repository was removed after its assertions passed.
 
@@ -126,7 +126,7 @@ Review findings led to prepublication final checks, ignored-file protection on p
 
 Git porcelain does not combine working-tree validation and ref advancement in one compare-and-swap operation. The workflow narrows that race by checking the exact branch, target commit, worktree, index and operation state immediately before a fast-forward-only publication. A concurrent ref can succeed only when it already points to an ancestor of the reviewed integration; it cannot introduce an unreviewed tree through that race.
 
-## Projector 4.1.2 lifecycle
+## Conceptor 4.1.2 lifecycle
 
 Qualification performed on 2026-09-23 using Windows, Node 24.19.0 and the bundled OpenSpec 1.13.1.
 
@@ -140,7 +140,7 @@ The mixed-edit import exercise included staged addition/deletion, a file with bo
 
 ### Installed host discovery
 
-Codex's supported installer refreshes `projector@projector-v4-local` into the user cache at version 4.1.2. A fresh actual Codex app-server verifies eleven workflow skills, named `projector:init`, `projector:propose`, and their peers, plus seventeen tools including initProject and syncChange. Discovery uses the registered installed package, without a replacement MCP configuration. Qualification applies process-local exclusions for unrelated integrations; persistent configuration remains unchanged by discovery.
+Codex's supported installer refreshes `conceptor@conceptor-v4-local` into the user cache at version 4.1.2. A fresh actual Codex app-server verifies eleven workflow skills, named `conceptor:init`, `conceptor:propose`, and their peers, plus seventeen tools including initProject and syncChange. Discovery uses the registered installed package, without a replacement MCP configuration. Qualification applies process-local exclusions for unrelated integrations; persistent configuration remains unchanged by discovery.
 
 The installed-client tests execute initProject through the packaged MCP relay, verify all skill directories, and exercise sync followed by revision and finish. Registration, skill discovery, MCP handshake and actual tool execution are distinct checks.
 

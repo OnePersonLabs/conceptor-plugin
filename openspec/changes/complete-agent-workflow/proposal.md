@@ -1,7 +1,7 @@
 # Complete agent workflow
 
 ## Why
-Installing Projector currently exposes delivery machinery without the conversational workflow needed to use it. People should describe and review changes while the agent owns artifacts and technical operations.
+Installing Conceptor currently exposes delivery machinery without the conversational workflow needed to use it. People should describe and review changes while the agent owns artifacts and technical operations.
 
 ## What Changes
 - Add repository initialization and complete agent-operated planning, implementation, reconciliation, audit and finish workflows.

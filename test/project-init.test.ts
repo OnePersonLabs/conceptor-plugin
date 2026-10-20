@@ -88,5 +88,5 @@ test('setup rejects invalid configuration and external directory links without w
   await mkdir(outside);
   await symlink(outside, join(project.root, 'openspec/schemas'), process.platform === 'win32' ? 'junction' : 'dir');
   await assert.rejects(initProject({ root: project.root }), /symbolic links/);
-  await assert.rejects(access(join(outside, 'projector')), { code: 'ENOENT' });
+  await assert.rejects(access(join(outside, 'conceptor')), { code: 'ENOENT' });
 });

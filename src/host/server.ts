@@ -44,7 +44,7 @@ export async function productDispatcher(config: HostSettings): Promise<Dispatche
 export interface Owner { server: Server; ownerId: string; close(): Promise<void> }
 export async function startOwner(options: Partial<HostSettings> = {}, factory: (config: HostSettings) => Dispatcher | Promise<Dispatcher> = productDispatcher): Promise<Owner> {
   const config = settings(options);
-  if (process.version !== 'v24.19.0') throw new Error(`This Projector build requires its qualified Node 24.19.0 runtime; found ${process.version}.`);
+  if (process.version !== 'v24.19.0') throw new Error(`This Conceptor build requires its qualified Node 24.19.0 runtime; found ${process.version}.`);
   const ownerId = randomUUID();
   let token = '', dispatcher: Dispatcher | undefined, closing = false, active = 0;
   const respond = (response: ServerResponse, status: number, result: unknown) => {
@@ -58,7 +58,7 @@ export async function startOwner(options: Partial<HostSettings> = {}, factory: (
     if (!dispatcher || closing) { respond(response, 503, { error: 'Owner is initializing or closing.' }); return; }
     const supplied = Buffer.from(request.headers.authorization?.replace(/^Bearer /, '') ?? '');
     const expected = Buffer.from(token);
-    if (supplied.length !== expected.length || !timingSafeEqual(supplied, expected)) { respond(response, 401, { error: 'Projector credential required.' }); return; }
+    if (supplied.length !== expected.length || !timingSafeEqual(supplied, expected)) { respond(response, 401, { error: 'Conceptor credential required.' }); return; }
     if (request.headers['content-type'] !== 'application/json') { respond(response, 415, { error: 'JSON required.' }); return; }
     if (Number(request.headers['content-length'] ?? 0) > MAX_BYTES) { respond(response, 413, { error: 'Request exceeds the payload budget.' }); return; }
     if (active >= 64) { respond(response, 429, { error: 'Owner request budget exceeded; retry after active operations settle.' }); return; }
@@ -80,7 +80,7 @@ export async function startOwner(options: Partial<HostSettings> = {}, factory: (
       deadline = setTimeout(() => response.destroy(new Error('Owner request deadline exceeded; inspect recorded results before repeating a mutation.')), timeoutMs);
       deadline.unref();
       if (input.op === 'hello') {
-        if (input.protocol !== PROTOCOL || input.version !== VERSION) { respond(response, 409, { error: 'Incompatible Projector protocol/version; stop the existing owner before upgrading.' }); return; }
+        if (input.protocol !== PROTOCOL || input.version !== VERSION) { respond(response, 409, { error: 'Incompatible Conceptor protocol/version; stop the existing owner before upgrading.' }); return; }
         respond(response, 200, { product: 'projector', protocol: PROTOCOL, version: VERSION, ownerId, pid: process.pid, runtime: process.version, platform: process.platform, architecture: process.arch }); return;
       }
       if (input.op === 'shutdown') {

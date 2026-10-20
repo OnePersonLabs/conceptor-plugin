@@ -1,5 +1,5 @@
 {
-  "name": "@onepersonlabs/projector",
+  "name": "@onepersonlabs/conceptor",
   "version": "4.2.0",
   "private": true,
   "description": "Revision-aware requirements, design and implementation reconciliation",
@@ -8,7 +8,7 @@
     "node": "24.19.0"
   },
   "bin": {
-    "projector": "dist/host/cli.js"
+    "conceptor": "dist/host/cli.js"
   },
   "exports": {
     "./documents": "./dist/documents/index.js",

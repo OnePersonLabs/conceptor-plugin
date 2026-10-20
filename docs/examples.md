@@ -16,7 +16,7 @@ These illustrative conversations show what to ask for, what to review, and where
 Your results list already supports mouse selection. You want keyboard navigation with a clear boundary rule.
 
 ```text
-You: $projector:propose Add arrow-key movement and Enter activation
+You: $conceptor:propose Add arrow-key movement and Enter activation
      to search results. Keep normal typing in the search field.
      Focus stays at the boundary instead of wrapping.
 
@@ -44,7 +44,7 @@ The selected branch now contains the reviewed implementation and accepted author
 You see focus jumping during filtering but do not know whether the cause is state ownership or rendering.
 
 ```text
-You: $projector:explore Search-result focus jumps when filtering.
+You: $conceptor:explore Search-result focus jumps when filtering.
      Investigate result identities and compare the practical fixes.
 
 Agent: I traced the focused identity and list update path.
@@ -62,7 +62,7 @@ Review the resulting behavior and design, then use apply and finish as in the fi
 The first design wraps at the ends of the list. Partway through implementation, you decide this is confusing in a long results list.
 
 ```text
-You: $projector:revise Remove wrapping. Keep the existing activation
+You: $conceptor:revise Remove wrapping. Keep the existing activation
      behavior and the tests for search-field typing.
 
 Agent: I compared the revised target with the previous one.
@@ -89,10 +89,10 @@ The previous target remains the comparison basis. Reconciliation uses both the n
 
 ## Capture existing edits
 
-You prototyped keyboard behavior before adopting Projector. Search-list edits are mixed with unrelated analytics work.
+You prototyped keyboard behavior before adopting Conceptor. Search-list edits are mixed with unrelated analytics work.
 
 ```text
-You: $projector:reconcile Capture the keyboard-navigation edits.
+You: $conceptor:reconcile Capture the keyboard-navigation edits.
      Include the search component, its styles, and its interaction tests.
      Leave analytics outside this change.
 
@@ -108,7 +108,7 @@ The selected patch stays in the enrolled checkout by default. Explicit isolated 
 If only task status is wrong, specify that:
 
 ```text
-$projector:reconcile Correct the task list for keyboard-navigation
+$conceptor:reconcile Correct the task list for keyboard-navigation
 against the actual candidate. Do not reconstruct a new change.
 ```
 
@@ -119,7 +119,7 @@ The task-only route checks performed work, leaves unverified work unchecked, and
 Your session ends while completion is materializing or archiving the candidate.
 
 ```text
-You: $projector:continue Resume keyboard-navigation.
+You: $conceptor:continue Resume keyboard-navigation.
 
 Agent: I recovered the original target, candidate, and completion state.
        Here are the remaining obligations and bookkeeping steps.
@@ -136,7 +136,7 @@ For a proposal that was never approved, continue can advance drafting but still 
 The candidate uses Enter to open a focused result. While it was being built, the working branch changed the same event registration for another interaction.
 
 ```text
-You: Use $projector:merge to integrate the selected feature branch
+You: Use $conceptor:merge to integrate the selected feature branch
      into my current working branch.
 
 Agent: I pinned both commits and constructed the merge separately.

@@ -36,7 +36,7 @@ Realizes: [[code:src/player.js#replay]]
 Evidence: A controlled replay checks the restart count and preserves caller-owned event storage.
 `;
 export async function fixture(suffix = ''): Promise<{ root: string; baseline: string; change: string }> {
-  const root = await mkdtemp(path.join(tmpdir(), `projector-change-${suffix}`));
+  const root = await mkdtemp(path.join(tmpdir(), `conceptor-change-${suffix}`));
   await put(root, '.gitignore', '.worktrees/\n');
   await put(root, 'package.json', '{"name":"playback-fixture","private":true,"type":"module"}\n');
   await put(root, 'src/player.js', 'export function replay() { return 2; }\nexport function retainEvent() { return "user"; }\n');
@@ -56,7 +56,7 @@ The player SHALL replay a preview when the user requests it.
 - **THEN** the preview restarts
 `);
   await put(root, 'openspec/designs/audio/preview/design.md', liveDesign);
-  gitFixture(root, 'init', '-b', 'main'); gitFixture(root, 'config', 'core.autocrlf', 'false'); gitFixture(root, 'config', 'user.name', 'Projector fixture'); gitFixture(root, 'config', 'user.email', 'fixture@localhost');
+  gitFixture(root, 'init', '-b', 'main'); gitFixture(root, 'config', 'core.autocrlf', 'false'); gitFixture(root, 'config', 'user.name', 'Conceptor fixture'); gitFixture(root, 'config', 'user.email', 'fixture@localhost');
   gitFixture(root, 'add', '.'); gitFixture(root, 'commit', '-m', 'Accepted playback baseline');
   const baseline = gitFixture(root, 'rev-parse', 'HEAD'), change = 'single-replay';
   const prefix = `openspec/changes/${change}`;

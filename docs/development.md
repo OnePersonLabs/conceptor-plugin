@@ -1,6 +1,6 @@
 # Development and local installation
 
-This page is for contributors and the agent preparing a local Projector package. Normal use starts with [skill invocations](skills.md).
+This page is for contributors and the agent preparing a local Conceptor package. Normal use starts with [skill invocations](skills.md).
 
 ## Build and check
 
@@ -13,13 +13,13 @@ npm run check
 
 The combined check builds TypeScript, runs ESLint, and executes the acceptance tests. Tests use real Git worktrees and installed MCP clients. Build before installed tests because the package ships compiled runtime files.
 
-Runtime modules cover documents, indexing, the observation kernel, change lifecycle, and host transport. The application being changed does not import Projector. Exact interfaces and supported source behavior are in the [runtime reference](reference/runtime.md).
+Runtime modules cover documents, indexing, the observation kernel, change lifecycle, and host transport. The application being changed does not import Conceptor. Exact interfaces and supported source behavior are in the [runtime reference](reference/runtime.md).
 
 For documentation-only work, inspect content and run bounded link, anchor, invocation, and diagram checks. The [documentation guide](documentation-guide.md) describes editorial acceptance.
 
 ## Focused checks and complete impact
 
-Use the [canonical verification procedure](../plugins/projector/skills/verify/SKILL.md) with the context that matches the work. Normal development uses repository commands and evidence notes. A prepared change uses its retained candidate and evidence APIs. Branch integration uses the pinned target-to-integration difference and normal commands; `$projector:merge` owns publication. Planning does not require a prepared checkout, but complete artifacts still need strict validation.
+Use the [canonical verification procedure](../plugins/conceptor/skills/verify/SKILL.md) with the context that matches the work. Normal development uses repository commands and evidence notes. A prepared change uses its retained candidate and evidence APIs. Branch integration uses the pinned target-to-integration difference and normal commands; `$conceptor:merge` owns publication. Planning does not require a prepared checkout, but complete artifacts still need strict validation.
 
 Select focused tests from the affected behavior, preserved invariants, boundaries, and dependencies. Run exact files directly with Node. Put Node options before file paths:
 
@@ -52,9 +52,9 @@ The local locked dependency supplies OpenSpec; no global installation is require
 
 ## Local plugin installation
 
-The checked-in marketplace points at `.plugin-build/projector`, an ignored complete bundle. For a local refresh, check the checkout, then invoke `$opl:refresh-local-plugins` for this source checkout. Its helper runs the declared `plugin:prepare-local` script before comparing and installing bundles. That script builds and assembles the package while retaining the last complete bundle if assembly fails. The helper uses the existing marketplace registration and native Codex installer; do not register the unbuilt `plugins/projector` directory. Verify skill discovery and MCP startup in a fresh actual Codex host, exercise installed initialization, and record the returned version and cache path.
+The checked-in marketplace points at `.plugin-build/conceptor`, an ignored complete bundle. For a local refresh, check the checkout, then invoke `$opl:refresh-local-plugins` for this source checkout. Its helper runs the declared `plugin:prepare-local` script before comparing and installing bundles. That script builds and assembles the package while retaining the last complete bundle if assembly fails. The helper uses the existing marketplace registration and native Codex installer; do not register the unbuilt `plugins/conceptor` directory. Verify skill discovery and MCP startup in a fresh actual Codex host, exercise installed initialization, and record the returned version and cache path.
 
-For a separate fresh external installation, build and check the checkout, then run `node dist/host/cli.js install <fresh-external-package-directory>`. The destination must be empty and outside the checkout. Point a separate local marketplace entry at that complete package, preserving other entries. Register a new marketplace with `codex plugin marketplace add <marketplace-root> --json`, then run `codex plugin add projector@<marketplace-name> --json`. Keep the identity of an existing Projector marketplace, and let Codex own its cache writes. Verify the installed plugin in a fresh host as above.
+For a separate fresh external installation, build and check the checkout, then run `node dist/host/cli.js install <fresh-external-package-directory>`. The destination must be empty and outside the checkout. Point a separate local marketplace entry at that complete package, preserving other entries. Register a new marketplace with `codex plugin marketplace add <marketplace-root> --json`, then run `codex plugin add conceptor@<marketplace-name> --json`. Keep the identity of an existing Conceptor marketplace, and let Codex own its cache writes. Verify the installed plugin in a fresh host as above.
 
 The angle-bracket arguments identify destinations and marketplace identities selected during fresh external installation. Replace them with the actual selected values. See the [official package documentation](https://developers.openai.com/plugins/build/plugins). Installed CLI help and actual results establish the local client's supported commands and cache layout.
 
@@ -64,11 +64,11 @@ A user can authorize this procedure in ordinary language, as shown in [getting s
 
 Version mismatches are rejected. Settle active operations and release clients before replacing an active owner. Use the old installed authenticated client to send the shutdown operation; let the new client start the updated owner. Do not kill unidentified processes or change the production port to bypass a conflict.
 
-For isolated checks, use a separate `PROJECTOR_HOME` and a free `PROJECTOR_PORT`. These isolate state and endpoint identity from normal user operations.
+For isolated checks, use a separate `CONCEPTOR_HOME` and a free `CONCEPTOR_PORT`. These isolate state and endpoint identity from normal user operations.
 
 ## Internal tools
 
-`initProject({root})` creates missing scaffolding and returns `ready`, `created`, and `conflicts`. Conflicting schemas return `ready: false` without writing scaffolding. Existing configuration remains; new changes explicitly select Projector.
+`initProject({root})` creates missing scaffolding and returns `ready`, `created`, and `conflicts`. Conflicting schemas return `ready: false` without writing scaffolding. Existing configuration remains; new changes explicitly select Conceptor.
 
 `syncChange({root,change})` materializes the exact target in the candidate without archive or publication. Later revisions invalidate affected evidence.
 

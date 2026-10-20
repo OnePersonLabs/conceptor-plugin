@@ -1,6 +1,6 @@
-# How Projector fits together
+# How Conceptor fits together
 
-Projector gives a change two things that chat alone loses easily: a durable statement of the intended result, and a recoverable path from that statement to checked code. The agent interprets your request; the deterministic runtime keeps the selected target, candidate, and evidence tied to one another.
+Conceptor gives a change two things that chat alone loses easily: a durable statement of the intended result, and a recoverable path from that statement to checked code. The agent interprets your request; the deterministic runtime keeps the selected target, candidate, and evidence tied to one another.
 
 ## Contents
 
@@ -45,7 +45,7 @@ openspec/
 
 This is an illustrative layout. Capability and concern paths follow your project. The agent authors the exact schema fields and references from the installed templates.
 
-Tasks name concrete work for this change, including specific verification outcomes where useful. Shared procedure belongs in skills, not a mandatory rubric in every task list. Tasks can be reordered or clarified without silently changing a requirement or decision. Use `$projector:revise` when behavior or architecture changes. Legitimate refactors can retain existing authority without fabricating new specification or design deltas.
+Tasks name concrete work for this change, including specific verification outcomes where useful. Shared procedure belongs in skills, not a mandatory rubric in every task list. Tasks can be reordered or clarified without silently changing a requirement or decision. Use `$conceptor:revise` when behavior or architecture changes. Legitimate refactors can retain existing authority without fabricating new specification or design deltas.
 
 ## The candidate holds implementation
 
@@ -70,7 +70,7 @@ Executed checks have an input basis and an explicit scope. Independent review ex
 
 A revision can change check inputs. Refresh affected successes when those inputs change; checkbox and result-bookkeeping edits do not automatically rerun application checks. Plan/review identity remains separate. Failed, intended-red, diagnostic, and superseded results stay in history without authorizing completion. A checkbox, passing build, or positive review sentence alone does not establish behavior.
 
-Projector reports unknowns when supported observation cannot establish a relationship. An empty query still depends on the population it searched; a newly added consumer can change the result.
+Conceptor reports unknowns when supported observation cannot establish a relationship. An empty query still depends on the population it searched; a newly added consumer can change the result.
 
 ## Finish and integration
 

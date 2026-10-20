@@ -3,11 +3,11 @@ projectorDesign: 1
 id: projector
 scope: src
 ---
-# Projector's concern map
+# Conceptor's concern map
 
 ## Contract
 
-Projector connects accepted requirements, prospective changes, nested explanations and ordinary implementation. It reports what its supported observation profile establishes and returns explicit obligations for semantic judgment. Its deterministic kernel makes no model calls. The host agent supplies interpretation and independent review.
+Conceptor connects accepted requirements, prospective changes, nested explanations and ordinary implementation. It reports what its supported observation profile establishes and returns explicit obligations for semantic judgment. Its deterministic kernel makes no model calls. The host agent supplies interpretation and independent review.
 
 Applies: [[spec:projector/documents#External design ownership]] | {"kind":"path","root":".","prefix":"src/"} | All implementation remains tooling rather than an application runtime requirement.
 

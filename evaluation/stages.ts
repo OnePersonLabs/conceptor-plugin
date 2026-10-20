@@ -43,9 +43,9 @@ export function functionalHistoricalWorld(trajectory: Trajectory): Record<string
   };
 }
 
-export const projectorAdapter = `import {readFile,writeFile,mkdir} from 'node:fs/promises'; import {execFileSync} from 'node:child_process'; import path from 'node:path'; import {pathToFileURL} from 'node:url';
-const root=path.resolve(process.env.PROJECTOR_TRIAL_ROOT??'.');const config=JSON.parse(await readFile(path.join(root,'trial.json'),'utf8'));const runtime=process.env.PROJECTOR_EVAL_RUNTIME;
-if(!runtime)throw new Error('PROJECTOR_EVAL_RUNTIME must name the installed dist/change/index.js entry');
+export const conceptorAdapter = `import {readFile,writeFile,mkdir} from 'node:fs/promises'; import {execFileSync} from 'node:child_process'; import path from 'node:path'; import {pathToFileURL} from 'node:url';
+const root=path.resolve(process.env.CONCEPTOR_TRIAL_ROOT??'.');const config=JSON.parse(await readFile(path.join(root,'trial.json'),'utf8'));const runtime=process.env.CONCEPTOR_EVAL_RUNTIME;
+if(!runtime)throw new Error('CONCEPTOR_EVAL_RUNTIME must name the installed dist/change/index.js entry');
 const {ChangeService}=await import(pathToFileURL(path.resolve(runtime)));const service=new ChangeService();const common={root,change:'clean-evolution'};const command=process.argv[2];const input=process.argv[3]?JSON.parse(process.argv[3]):{};
 let result;
 if(command==='advance'){
@@ -53,7 +53,7 @@ if(command==='advance'){
  const state=await service.resumeChange(common);const candidate=String(state.candidateRoot);
  const evidence=await service.recordEvidence({...common,command:process.execPath,args:['--input-type=module','-e',"import assert from 'node:assert/strict';import {createRuntime} from './src/index.js';const r=createRuntime();r.play('live');r.play('preview',{preview:true});r.play('preview2',{preview:true});assert.equal(r.previewCount(),2);assert.deepEqual(r.events().map(e=>e.provenance),['live','preview','preview']);r.retain('proof','kept');assert.equal(r.evidence('proof'),'kept');"],scope:['src/index.js','src/preview-strategy.js']});
  if(!evidence.evidence.passed)throw new Error('Intermediate behavior did not pass; target was not advanced');
- const git=(...args)=>execFileSync('git',['-C',candidate,...args],{encoding:'utf8',windowsHide:true}).trim();git('add','--all');const tree=git('write-tree');const checkpoint=git('-c','user.name=Projector trial','-c','user.email=trial@localhost','commit-tree',tree,'-p','HEAD','-m','Verified intermediate preview audit');git('update-ref','refs/projector/evaluation/intermediate',checkpoint);
+ const git=(...args)=>execFileSync('git',['-C',candidate,...args],{encoding:'utf8',windowsHide:true}).trim();git('add','--all');const tree=git('write-tree');const checkpoint=git('-c','user.name=Conceptor trial','-c','user.email=trial@localhost','commit-tree',tree,'-p','HEAD','-m','Verified intermediate preview audit');git('update-ref','refs/projector/evaluation/intermediate',checkpoint);
  for(const [file,source]of Object.entries(config.finalTarget)){await mkdir(path.dirname(path.join(root,file)),{recursive:true});await writeFile(path.join(root,file),source);}
  result=await service.reviseChange(common);await writeFile(path.join(root,'stage-evidence.json'),JSON.stringify({version:1,checkpoint,priorTarget:state.targetId,nextTarget:result.targetId,evidence:evidence.evidence,trajectory:config.trajectory})+'\\n');
 }else{

@@ -1,4 +1,4 @@
-# Your first Projector change
+# Your first Conceptor change
 
 This guide takes you from local plugin installation to a checked integrated change. You need a local Git project; see the runtime reference for built-in language providers and their limits.
 
@@ -16,18 +16,18 @@ This guide takes you from local plugin installation to a checked integrated chan
 
 If your agent has this checkout, ask:
 
-> Install this Projector checkout as a user-level Codex plugin. Handle prerequisites and local registration, then verify installed skills, MCP startup, and initialization.
+> Install this Conceptor checkout as a user-level Codex plugin. Handle prerequisites and local registration, then verify installed skills, MCP startup, and initialization.
 
 The agent follows [local plugin installation](development.md#local-plugin-installation). It builds a complete package and registers it through Codex. This repository documents local delivery, not a public marketplace listing.
 
-Start a fresh Codex session after installation or refresh. Check that the Projector skills are available. Skill discovery and successful tool execution are separate checks; registration alone does not establish readiness.
+Start a fresh Codex session after installation or refresh. Check that the Conceptor skills are available. Skill discovery and successful tool execution are separate checks; registration alone does not establish readiness.
 
 ## Initialize the project
 
 Open the repository you want to change and invoke this in chat:
 
 ```text
-$projector:init
+$conceptor:init
 ```
 
 The agent inspects Git status, existing configuration, schemas, active changes, and archives. Initialization adds missing scaffolding and reports conflicts before replacing customized schema files. Repeating setup preserves existing configuration.
@@ -41,7 +41,7 @@ If you already use OpenSpec, read [existing projects](existing-projects.md).
 For an application with a search results list:
 
 ```text
-$projector:propose Add keyboard navigation to search results.
+$conceptor:propose Add keyboard navigation to search results.
 Arrow Up and Arrow Down move focus. Enter opens the focused result.
 Focus stays at the ends instead of wrapping.
 Typing in the search field must keep working.
@@ -55,16 +55,16 @@ The proposal explains why and what changes. Requirements state observable behavi
 
 Open the linked artifacts and check whether the behavior matches your request. Consider empty results and a focused item that disappears after filtering. Ask for the handling you want rather than assuming the agent chose it.
 
-The agent writes the files; you review their meaning. Use ordinary language or `$projector:revise` for corrections. [Reviewing a change](reviewing-a-change.md) explains what to inspect.
+The agent writes the files; you review their meaning. Use ordinary language or `$conceptor:revise` for corrections. [Reviewing a change](reviewing-a-change.md) explains what to inspect.
 
-For one artifact at a time, request incremental planning. Use `$projector:continue` to advance the next requested layer. Otherwise, propose drafts the complete plan.
+For one artifact at a time, request incremental planning. Use `$conceptor:continue` to advance the next requested layer. Otherwise, propose drafts the complete plan.
 
 ## Implement in the candidate
 
 Once the plan is ready:
 
 ```text
-$projector:apply
+$conceptor:apply
 ```
 
 The agent pins the baseline and target, enrolls the selected checkout, validates obligations, and implements there. You can request isolated workspace mode when useful. It reports the implementation location. Changes to intended behavior route through revision.
@@ -76,13 +76,13 @@ The original working directory and the candidate have different roles. Use the c
 For a progress check without archive:
 
 ```text
-$projector:verify
+$conceptor:verify
 ```
 
 To verify and complete:
 
 ```text
-$projector:finish
+$conceptor:finish
 ```
 
 Finish requires current checks and independent review. It assembles the exact result in temporary isolation, runs normal hooks, and integrates code and accepted specifications together with recoverable checkout/index installation. Repeated settled finish is a no-op.
@@ -91,12 +91,12 @@ Read the report: actual checks, review provenance, integrated commit, archive, a
 
 If you want the agent to carry the whole lifecycle without stopping at proposal review, explicitly authorize it:
 
-> Use Projector to add keyboard navigation. Draft the plan, implement it, run the checks, and finish the change.
+> Use Conceptor to add keyboard navigation. Draft the plan, implement it, run the checks, and finish the change.
 
 Material uncertainty still requires clarification. That request does not include integration unless you also ask for it.
 
 ## Integrate when ready
 
-Finish already integrates the selected change. Ask for `$projector:merge` with another source branch when needed. The agent checks and reviews the combined result in temporary isolation and preserves unrelated staging and working changes during publication. An uncertain conflict or moved target preserves the integration and produces a concrete next step.
+Finish already integrates the selected change. Ask for `$conceptor:merge` with another source branch when needed. The agent checks and reviews the combined result in temporary isolation and preserves unrelated staging and working changes during publication. An uncertain conflict or moved target preserves the integration and produces a concrete next step.
 
 [Integration](integration.md) explains the prerequisites. [Practical stories](examples.md) shows revisions and interruptions. [Troubleshooting](troubleshooting.md) covers setup or completion failures.

@@ -6,7 +6,7 @@ Enable agents to turn conversational requests into coherent reviewed plans and v
 ## Requirements
 
 ### Requirement: Installed repository setup
-The installed plugin SHALL initialize a local Git repository's OpenSpec directories and bundled Projector schema idempotently, preserving configuration and artifacts. Setup SHALL upgrade exact recognized previous bundled files, preserve customized files, and report conflicts before replacing any schema. Setup SHALL not require a global OpenSpec CLI.
+The installed plugin SHALL initialize a local Git repository's OpenSpec directories and bundled Conceptor schema idempotently, preserving configuration and artifacts. Setup SHALL upgrade exact recognized previous bundled files, preserve customized files, and report conflicts before replacing any schema. Setup SHALL not require a global OpenSpec CLI.
 
 #### Scenario: Existing project
 - **WHEN** initialization encounters existing requirements and configuration
@@ -17,14 +17,14 @@ The installed plugin SHALL initialize a local Git repository's OpenSpec director
 - **THEN** setup reports the custom conflict without partially upgrading stock files
 
 ### Requirement: Agent owned conversational workflow
-Projector SHALL provide discoverable skills for setup, exploration, proposals, continuation, revision, implementation, verification, synchronization, finish, integration, audit, and reconciliation. The agent SHALL author artifacts and operate tools. Planning SHALL stop for review by default, while explicit end-to-end authorization permits continuation.
+Conceptor SHALL provide discoverable skills for setup, exploration, proposals, continuation, revision, implementation, verification, synchronization, finish, integration, audit, and reconciliation. The agent SHALL author artifacts and operate tools. Planning SHALL stop for review by default, while explicit end-to-end authorization permits continuation.
 
 #### Scenario: Natural language feature
 - **WHEN** a person describes a feature
 - **THEN** the agent drafts coherent artifacts and presents a review summary unless implementation is already authorized
 
 ### Requirement: Safe workflow continuity
-Projector SHALL preserve unrelated edits, distinguish observed behavior from approved intent, and require eligible checks and independent review for completion. Bulk finish SHALL use explicit selections, detect overlaps and prerequisites, and report each outcome. Synchronization SHALL materialize the exact target without archive or publication and preserve compatibility with revision and finish.
+Conceptor SHALL preserve unrelated edits, distinguish observed behavior from approved intent, and require eligible checks and independent review for completion. Bulk finish SHALL use explicit selections, detect overlaps and prerequisites, and report each outcome. Synchronization SHALL materialize the exact target without archive or publication and preserve compatibility with revision and finish.
 
 #### Scenario: Synchronize then revise
 - **WHEN** a synchronized target is revised
@@ -38,7 +38,7 @@ The README SHALL explain benefit, installation, and invocation concisely, with i
 - **THEN** they can initialize and request a change without manually writing artifacts or runtime commands
 
 ### Requirement: Reviewed branch integration
-Projector SHALL integrate a pinned selected source into the intended target through isolated construction, applicable checks, normal hooks, independent review, and recoverable selected-change publication. Unrelated staged and working edits SHALL survive, including disjoint changes in one file. Actual overlaps, target drift, failed checks, and unresolved review SHALL leave publication incomplete. Unresolved semantic conflicts SHALL produce a self-contained decision brief.
+Conceptor SHALL integrate a pinned selected source into the intended target through isolated construction, applicable checks, normal hooks, independent review, and recoverable selected-change publication. Unrelated staged and working edits SHALL survive, including disjoint changes in one file. Actual overlaps, target drift, failed checks, and unresolved review SHALL leave publication incomplete. Unresolved semantic conflicts SHALL produce a self-contained decision brief.
 
 #### Scenario: Reviewed integration succeeds
 - **WHEN** the isolated integration is checked and independently reviewed and the target remains compatible
@@ -46,7 +46,7 @@ Projector SHALL integrate a pinned selected source into the intended target thro
 
 #### Scenario: Human decision is required
 - **WHEN** evidence cannot establish one conflict resolution
-- **THEN** Projector preserves isolated work and explains the branch intents, viable choices, and consequences
+- **THEN** Conceptor preserves isolated work and explains the branch intents, viable choices, and consequences
 
 ### Requirement: Artifact responsibilities
 Proposals SHALL explain intended outcomes and scope; specifications SHALL state observable requirements; designs SHALL explain decisions and ownership; tasks SHALL describe concrete change-specific work. Shared workflow procedure SHALL live in skills. Legitimate changes without requirement deltas SHALL preserve existing authority without inventing specifications.

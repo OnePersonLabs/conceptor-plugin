@@ -77,7 +77,7 @@ test('committed archive receipts establish prerequisites in a fresh clone', asyn
   const input = await fixture(); const service = new ChangeService();
   const state = await service.prepareChange(input); await planAndEvidence(service, state);
   const finished = await service.finishChange(input); assert.equal(finished.complete, true);
-  const clone = path.join(await mkdtemp(path.join(tmpdir(), 'projector-clone-')), 'repository');
+  const clone = path.join(await mkdtemp(path.join(tmpdir(), 'conceptor-clone-')), 'repository');
   gitFixture(input.root, 'clone', '--no-local', input.root, clone);
   gitFixture(clone, 'config', 'user.name', 'Fresh clone'); gitFixture(clone, 'config', 'user.email', 'fixture@localhost');
   const change = 'followup-replay'; const active = `openspec/changes/${change}`;

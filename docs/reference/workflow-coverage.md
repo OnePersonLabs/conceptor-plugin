@@ -1,23 +1,23 @@
 # OpenSpec workflow replacement map
 
-Projector replaces the local `opl-openspec` user workflow while retaining bundled OpenSpec requirement semantics.
+Conceptor replaces the local `opl-openspec` user workflow while retaining bundled OpenSpec requirement semantics.
 
-| Previous capability | Projector owner |
+| Previous capability | Conceptor owner |
 | --- | --- |
-| Explore | `$projector:explore` |
-| New change; propose; fast-forward | `$projector:propose`, incremental or complete |
-| Continue artifact creation | `$projector:continue` |
-| Update a change | `$projector:revise` |
-| Apply | `$projector:apply` |
-| Verify | `$projector:verify` |
-| Sync without archive | `$projector:sync`, specs and designs in the candidate |
-| Archive; end-to-end finish | `$projector:finish` |
-| Bulk archive | `$projector:finish` with explicit selection/dependency checks |
-| Integrate a finished branch | `$projector:merge` with isolated review and conflict escalation |
-| Semantic audit | `$projector:audit` |
-| Reverse tasks | `$projector:reconcile` task mode |
-| Reverse uncommitted edits | `$projector:reconcile` patch mode |
-| Repository setup | `$projector:init` |
+| Explore | `$conceptor:explore` |
+| New change; propose; fast-forward | `$conceptor:propose`, incremental or complete |
+| Continue artifact creation | `$conceptor:continue` |
+| Update a change | `$conceptor:revise` |
+| Apply | `$conceptor:apply` |
+| Verify | `$conceptor:verify` |
+| Sync without archive | `$conceptor:sync`, specs and designs in the candidate |
+| Archive; end-to-end finish | `$conceptor:finish` |
+| Bulk archive | `$conceptor:finish` with explicit selection/dependency checks |
+| Integrate a finished branch | `$conceptor:merge` with isolated review and conflict escalation |
+| Semantic audit | `$conceptor:audit` |
+| Reverse tasks | `$conceptor:reconcile` task mode |
+| Reverse uncommitted edits | `$conceptor:reconcile` patch mode |
+| Repository setup | `$conceptor:init` |
 
 Sync targets the candidate instead of changing accepted requirements ahead of implementation. Finish owns validation, archive, and integrated publication; there is no second generic archive pipeline. Merge handles another selected source branch through the same recoverable publication path, preserving unrelated local edits.
 

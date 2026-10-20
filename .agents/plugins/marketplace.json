@@ -1,14 +1,14 @@
 {
-  "name": "projector",
+  "name": "conceptor",
   "interface": {
-    "displayName": "Projector"
+    "displayName": "Conceptor"
   },
   "plugins": [
     {
-      "name": "projector",
+      "name": "conceptor",
       "source": {
         "source": "local",
-        "path": "./.plugin-build/projector"
+        "path": "./.plugin-build/conceptor"
       },
       "policy": {
         "installation": "AVAILABLE",

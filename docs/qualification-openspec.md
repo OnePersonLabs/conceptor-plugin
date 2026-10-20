@@ -1,24 +1,24 @@
 # OpenSpec and lifecycle qualification
 
-Tested on Windows with Node **24.19.0** and `@fission-ai/openspec` **1.13.1**. The production dependency pins that version. Projector checks the actual CLI version before projecting a target.
+Tested on Windows with Node **24.19.0** and `@fission-ai/openspec` **1.13.1**. The production dependency pins that version. Conceptor checks the actual CLI version before projecting a target.
 
 The bounded qualification established these concrete seams:
 
 | Probe | Observed result |
 | --- | --- |
-| `openspec schema validate projector-probe --json` | A project-local schema with separate `specs/**/spec.md` and `designs/**/design.md` artifacts validates. |
+| `openspec schema validate conceptor-probe --json` | A project-local schema with separate `specs/**/spec.md` and `designs/**/design.md` artifacts validates. |
 | `openspec status --change nested-probe --json` | Both nested requirements and nested designs appear in their respective `artifactPaths.*.existingOutputPaths`; two spec paths and one design path were discovered. |
 | `openspec instructions designs --change nested-probe --json` | The custom nested design artifact is addressable through the supported instructions command. |
 | `openspec validate nested-probe --strict --json` | The nested add/modify fixture validates. |
 | `openspec archive nested-probe --yes --json` | OpenSpec merges one nested added requirement and one modified requirement, archives the whole change, and preserves its design delta. It does not merge designs into live designs. |
 | `openspec validate --specs --strict --json` | Resulting live nested requirements validate. |
-| Repeat CLI archive | Returns failure for the missing active change. Projector supplies exact publication/archive recovery rather than claiming the CLI is idempotent. |
+| Repeat CLI archive | Returns failure for the missing active change. Conceptor supplies exact publication/archive recovery rather than claiming the CLI is idempotent. |
 
-The package's public exports expose its root CLI/configuration, references, stores, and planning-home APIs. `specs-apply` and `ArchiveCommand` are internal files, not exported library APIs. Projector therefore invokes the pinned CLI with an argument array inside isolated target staging and the candidate, and verifies the resulting exact live document inventory and bytes. It does not reproduce OpenSpec requirement merging or import private merge modules.
+The package's public exports expose its root CLI/configuration, references, stores, and planning-home APIs. `specs-apply` and `ArchiveCommand` are internal files, not exported library APIs. Conceptor therefore invokes the pinned CLI with an argument array inside isolated target staging and the candidate, and verifies the resulting exact live document inventory and bytes. It does not reproduce OpenSpec requirement merging or import private merge modules.
 
-The archive JSON result uses `archive.change`, `archive.archivedAs`, `archive.path`, `archive.specsUpdated`, and `archive.totals`. The adapter validates the selected change identity. Design deltas are applied by Projector's document module, and their exact final state is checked independently after archive.
+The archive JSON result uses `archive.change`, `archive.archivedAs`, `archive.path`, `archive.specsUpdated`, and `archive.totals`. The adapter validates the selected change identity. Design deltas are applied by Conceptor's document module, and their exact final state is checked independently after archive.
 
-An inspection of the previously installed `opl-openspec` 0.9.0 guard confirmed that `openspec-x-*` is its explicit stock-skill extension namespace. A bounded guard probe permitted `$openspec-x-projector` and rejected editing the stock apply skill. Its archive hooks recognized shell archive moves, but not the OpenSpec CLI archive command; those hooks were never a complete mutation boundary. The user subsequently disabled that companion plugin. The shipped Projector extension and lifecycle therefore do not invoke or depend on its hooks, cache, or workflow skills.
+An inspection of the previously installed `opl-openspec` 0.9.0 guard confirmed that `openspec-x-*` is its explicit stock-skill extension namespace. A bounded guard probe permitted `$openspec-x-conceptor` and rejected editing the stock apply skill. Its archive hooks recognized shell archive moves, but not the OpenSpec CLI archive command; those hooks were never a complete mutation boundary. The user subsequently disabled that companion plugin. The shipped Conceptor extension and lifecycle therefore do not invoke or depend on its hooks, cache, or workflow skills.
 
 Windows qualification found that a Git checkout's automatic line-ending conversion can differ from the exact accepted Git bytes used by a design delta's baseline hash. Candidate allocation uses Git's canonical bytes for its authority documents and disables automatic line-ending conversion for that allocation command only. It does not change repository or user Git configuration.
 

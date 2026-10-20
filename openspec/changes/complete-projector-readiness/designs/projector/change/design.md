@@ -3,7 +3,7 @@ designDelta: 1
 target: projector/change
 baseline: a04d615925b7795315878f196a4304bf066002ae7b5639c60149c0901438317c
 ---
-# Projector readiness design delta
+# Conceptor readiness design delta
 
 ## Replace: contract
 

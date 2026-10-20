@@ -10,7 +10,7 @@ export function changeArtifact(change: string, name: string): boolean {
 }
 
 export async function withIndex<T>(root: string, tree: string, operation: (env: NodeJS.ProcessEnv, file: string) => Promise<T>): Promise<T> {
-  const directory = path.join(await git(root, ['rev-parse', '--absolute-git-dir']), 'projector-indexes');
+  const directory = path.join(await git(root, ['rev-parse', '--absolute-git-dir']), 'conceptor-indexes');
   await mkdir(directory, { recursive: true });
   const file = path.join(directory, randomUUID());
   const env = { GIT_INDEX_FILE: file };

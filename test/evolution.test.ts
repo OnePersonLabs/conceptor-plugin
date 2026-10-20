@@ -7,7 +7,7 @@ import { createTrial, comparePair, evaluateTrial } from '../evaluation/index.ts'
 import { installAuthoredControl, seedBadCandidate, seedNames, expectedCode } from '../evaluation/qualification.ts';
 
 test('coupled evaluator accepts authored controls across three pairs; these are oracle qualification, not hosted evidence', async () => {
-  const directory = await mkdtemp(path.join(tmpdir(), 'projector-evolution-controls-'));
+  const directory = await mkdtemp(path.join(tmpdir(), 'conceptor-evolution-controls-'));
   try {
     for (const trajectory of ['preview', 'shared', 'ownership'] as const) {
       const evolved = await createTrial(path.join(directory, `${trajectory}-evolved`), trajectory, 'evolved');
@@ -25,7 +25,7 @@ test('coupled evaluator accepts authored controls across three pairs; these are 
 });
 
 test('seeded bad candidates are rejected for their intended causes before hosted trials count', async () => {
-  const directory = await mkdtemp(path.join(tmpdir(), 'projector-evolution-seeds-'));
+  const directory = await mkdtemp(path.join(tmpdir(), 'conceptor-evolution-seeds-'));
   try {
     for (const [index, seed] of seedNames.entries()) {
       const trial = await createTrial(path.join(directory, String(index)), 'preview', 'direct'); await installAuthoredControl(trial.root); await seedBadCandidate(trial.root, seed);

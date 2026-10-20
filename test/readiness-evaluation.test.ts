@@ -6,7 +6,7 @@ import path from 'node:path';
 import { createReadinessTrial, evaluateReadiness, installReadinessControl, readinessVariants, seedReadinessVariant } from '../evaluation/readiness.ts';
 
 test('portable Psychord-shaped authored control qualifies mechanisms without claiming native execution', async () => {
-  const directory = await mkdtemp(path.join(tmpdir(), 'projector-readiness-'));
+  const directory = await mkdtemp(path.join(tmpdir(), 'conceptor-readiness-'));
   try {
     const trial = await createReadinessTrial(path.join(directory, 'control')); await installReadinessControl(trial.root);
     const result = await evaluateReadiness(trial.root, { authoredControl: true });
@@ -26,7 +26,7 @@ test('portable Psychord-shaped authored control qualifies mechanisms without cla
 });
 
 test('adversarial controls fail observable ownership, contract or evidence obligations', async () => {
-  const directory = await mkdtemp(path.join(tmpdir(), 'projector-readiness-negative-'));
+  const directory = await mkdtemp(path.join(tmpdir(), 'conceptor-readiness-negative-'));
   const expected = ['hidden-new-consumer', 'invented-justification', 'unused-dependency', 'obsolete-route', 'obsolete-route', 'platform-contract'];
   try {
     for (const [index, variant] of readinessVariants.entries()) {

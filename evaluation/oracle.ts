@@ -56,8 +56,8 @@ export async function evaluateTrial(root: string, trajectory: Trajectory, option
       const originalCommon = (await execute('git', ['rev-parse', '--path-format=absolute', '--git-common-dir'], { cwd: original, windowsHide: true })).stdout.trim();
       const candidateCommon = (await execute('git', ['rev-parse', '--path-format=absolute', '--git-common-dir'], { cwd: state.candidateRoot, windowsHide: true })).stdout.trim();
       if (candidateCommon !== originalCommon) throw new Error('Candidate is not a worktree of this trial repository');
-      if (!state.plan || state.plan.targetId !== state.targetId) fail('projector-plan', 'No current Projector plan supports the final target.');
-      if (!state.evidence.some(evidence => evidence.passed && evidence.command && evidence.outputHash)) fail('projector-evidence', 'The real Projector candidate lacks executed final evidence.');
+      if (!state.plan || state.plan.targetId !== state.targetId) fail('conceptor-plan', 'No current Conceptor plan supports the final target.');
+      if (!state.evidence.some(evidence => evidence.passed && evidence.command && evidence.outputHash)) fail('conceptor-evidence', 'The real Conceptor candidate lacks executed final evidence.');
       if (config.mode === 'evolved') {
         const stage = JSON.parse(await readFile(path.join(root, 'stage-evidence.json'), 'utf8')) as { checkpoint: string; priorTarget: string; nextTarget: string; evidence: { passed: boolean; command: string; outputHash: string } };
         if (!stage.evidence.passed || !stage.evidence.command || !stage.evidence.outputHash || stage.priorTarget === stage.nextTarget) fail('staged-history', 'Intermediate executed evidence and distinct target revisions were not preserved.');
@@ -74,8 +74,8 @@ export async function evaluateTrial(root: string, trajectory: Trajectory, option
           await execute('git', ['cat-file', '-e', `${stage.checkpoint}:src/preview-strategy.js`], { cwd: root, windowsHide: true });
         }
       }
-      root = state.candidateRoot; checks.push('real Projector target, plan, executed evidence and staged checkpoint');
-    } catch (error) { fail('projector-lifecycle', String(error)); return { passed: false, findings, checks }; }
+      root = state.candidateRoot; checks.push('real Conceptor target, plan, executed evidence and staged checkpoint');
+    } catch (error) { fail('conceptor-lifecycle', String(error)); return { passed: false, findings, checks }; }
   }
   let files: string[], decisions: Decision[], consumers: { name: string; path: string }[];
   try {

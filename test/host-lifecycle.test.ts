@@ -24,7 +24,7 @@ async function invoke(client: Client, name: string, arguments_: Record<string, u
 
 test('T9 installed nested target plan, managed apply, revision, evidence, archive and settled repeat through two MCP clients', { timeout: 180000 }, async t => {
   const input = await fixture();
-  const directory = await mkdtemp(join(tmpdir(), 'projector-lifecycle-install-'));
+  const directory = await mkdtemp(join(tmpdir(), 'conceptor-lifecycle-install-'));
   const config = settings({ home: join(directory, 'state'), port: await freePort() });
   const clients: Client[] = []; let ownerStarted = false;
   t.after(async () => {
@@ -36,13 +36,13 @@ test('T9 installed nested target plan, managed apply, revision, evidence, archiv
     }
   });
   const plugin = join(directory, 'plugin'); await install(plugin);
-  const launch = JSON.parse(await readFile(join(plugin, 'mcp.json'), 'utf8')).mcpServers.projector as { type: string; command: string; args: string[] };
+  const launch = JSON.parse(await readFile(join(plugin, 'mcp.json'), 'utf8')).mcpServers.conceptor as { type: string; command: string; args: string[] };
   assert.equal(launch.type, 'stdio'); assert.equal(launch.command, 'node');
   const launchArgs = launch.args.map(value => value.replaceAll('${PLUGIN_ROOT}', plugin));
   const environment = Object.fromEntries(Object.entries(process.env).filter((entry): entry is [string, string] => entry[1] !== undefined));
   const connect = async (name: string) => {
     const client = new Client({ name, version: '1.0.0' }); clients.push(client);
-    await client.connect(new StdioClientTransport({ command: process.execPath, args: launchArgs, cwd: directory, env: { ...environment, PROJECTOR_HOME: config.home, PROJECTOR_PORT: String(config.port) }, stderr: 'pipe' }));
+    await client.connect(new StdioClientTransport({ command: process.execPath, args: launchArgs, cwd: directory, env: { ...environment, CONCEPTOR_HOME: config.home, CONCEPTOR_PORT: String(config.port) }, stderr: 'pipe' }));
     return client;
   };
   const [a, b] = await Promise.all([connect('planner'), connect('implementer')]);

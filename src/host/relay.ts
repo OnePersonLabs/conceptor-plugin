@@ -5,11 +5,11 @@ import { call } from './client.ts';
 import { MAX_BYTES, VERSION } from './config.ts';
 
 export async function relay(): Promise<McpServer> {
-  const server = new McpServer({ name: 'projector', version: VERSION });
+  const server = new McpServer({ name: 'conceptor', version: VERSION });
   const root = { rootId: z.string() };
   const change = { root: z.string(), change: z.string() };
   const definitions: { name: string; description: string; schema: z.ZodObject; readOnly?: boolean }[] = [
-    { name: 'initProject', description: 'Initialize a local Git repository with the bundled Projector schema, preserving existing configuration and reporting conflicts.', schema: z.object({ root: z.string() }) },
+    { name: 'initProject', description: 'Initialize a local Git repository with the bundled Conceptor schema, preserving existing configuration and reporting conflicts.', schema: z.object({ root: z.string() }) },
     { name: 'openRoot', description: 'Open an exact-revision root or an enrolled managed implementation checkout.', schema: z.object({ root: z.string(), profile: z.enum(['revision', 'managed']).optional(), candidate: z.string().optional() }) },
     { name: 'read', description: 'Query one coherent revision or qualified working-current view. Pending and unavailable responses contain no current payload. Explicit adoption acknowledges the exact proposed binding.', readOnly: true, schema: z.object({ ...root, view: z.enum(['revision', 'current']), revision: z.string().optional(), reference: z.string().optional(), selector: z.record(z.string(), z.unknown()).optional(), fromPath: z.string().min(1).optional(), scope: z.string().min(1).optional(), edge: z.enum(['dependency', 'observation']).optional(), adoptBinding: z.string().min(1).optional(), limit: z.number().int().positive().optional(), cursor: z.string().optional() }) },
     { name: 'inspectStatus', description: 'Inspect observation, pending work and operation counters.', readOnly: true, schema: z.object(root) },

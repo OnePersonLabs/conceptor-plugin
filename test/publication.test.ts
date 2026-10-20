@@ -8,14 +8,14 @@ import { git } from '../src/change/io.ts';
 import type { PublicationTransaction } from '../src/change/types.ts';
 
 async function scenario() {
-  const root = await mkdtemp(path.join(tmpdir(), 'projector-publication-test-'));
+  const root = await mkdtemp(path.join(tmpdir(), 'conceptor-publication-test-'));
   const baselineText = ['before', ...Array.from({ length: 12 }, (_, i) => `context ${i}`), 'user'].join('\n') + '\n';
   await writeFile(path.join(root, 'file.txt'), baselineText);
   await git(root, ['init', '-b', 'main']); await git(root, ['config', 'user.name', 'Publication test']);
   await git(root, ['config', 'user.email', 'publication@example.test']); await git(root, ['config', 'core.autocrlf', 'false']);
   await git(root, ['add', '.']); await git(root, ['commit', '-m', 'Baseline']);
   const targetHead = await git(root, ['rev-parse', 'HEAD']);
-  const directory = path.join(await mkdtemp(path.join(tmpdir(), 'projector-publication-final-')), 'worktree');
+  const directory = path.join(await mkdtemp(path.join(tmpdir(), 'conceptor-publication-final-')), 'worktree');
   await git(root, ['worktree', 'add', '--detach', directory, targetHead]);
   await writeFile(path.join(directory, 'file.txt'), baselineText.replace('before', 'after'));
   await mkdir(path.join(directory, 'specs')); await writeFile(path.join(directory, 'specs', 'accepted.md'), 'Accepted with code\n');

@@ -21,7 +21,7 @@ test('T6/T7: exact nested target, executed evidence, integrated publication, rec
   assert.match(await read(candidate, 'openspec/specs/audio/preview/spec.md'), /exactly once/);
   assert.match(await read(candidate, 'src/player.js'), /retainEvent/);
   assert.match(await read(candidate, path.relative(candidate, String(before.archivePath)) + '/implementation-state.json'), /previousSupport/);
-  const disposable = path.join(input.root, '.projector-cache'); await mkdir(disposable); await writeFile(path.join(disposable, 'broken.sqlite'), 'corrupt');
+  const disposable = path.join(input.root, '.conceptor-cache'); await mkdir(disposable); await writeFile(path.join(disposable, 'broken.sqlite'), 'corrupt');
   await rm(disposable, { recursive: true });
   const resumed = await new ChangeService().resumeChange(input);
   assert.equal(resumed.publication, before.publication); assert.equal(resumed.reused, true);

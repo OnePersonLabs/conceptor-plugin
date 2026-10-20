@@ -7,10 +7,10 @@ import { install } from '../dist/host/install.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const buildRoot = join(root, '.plugin-build');
-const bundle = join(buildRoot, 'projector');
+const bundle = join(buildRoot, 'conceptor');
 const id = randomUUID();
-const incoming = join(buildRoot, `.projector-incoming-${id}`);
-const previous = join(buildRoot, `.projector-previous-${id}`);
+const incoming = join(buildRoot, `.conceptor-incoming-${id}`);
+const previous = join(buildRoot, `.conceptor-previous-${id}`);
 
 function assertWithin(parent, target) {
   const path = relative(resolve(parent), resolve(target));
@@ -29,7 +29,7 @@ async function exists(path) {
   catch (error) { if (error.code === 'ENOENT') return false; throw error; }
 }
 
-const temporaryRoot = await mkdtemp(join(tmpdir(), 'projector-plugin-'));
+const temporaryRoot = await mkdtemp(join(tmpdir(), 'conceptor-plugin-'));
 let movedPrevious = false;
 let published = false;
 try {

@@ -1,15 +1,15 @@
 # Integrated finish and branch merges
 
-Finish integrates the selected change into your working branch, including accepted specifications and the archive. Use `$projector:merge` when you want to bring another source branch into that branch.
+Finish integrates the selected change into your working branch, including accepted specifications and the archive. Use `$conceptor:merge` when you want to bring another source branch into that branch.
 
 ## Before you start
 
-Name the source branch you want to merge. The target must be attached and free of another Git operation. Unrelated staged, unstaged, and untracked work can remain; Projector preserves it, including disjoint edits within a shared file. Actual overlaps need reconciliation.
+Name the source branch you want to merge. The target must be attached and free of another Git operation. Unrelated staged, unstaged, and untracked work can remain; Conceptor preserves it, including disjoint edits within a shared file. Actual overlaps need reconciliation.
 
 A typical request is:
 
 ```text
-Use $projector:merge to integrate the keyboard-navigation feature
+Use $conceptor:merge to integrate the keyboard-navigation feature
 branch into my current working branch.
 ```
 

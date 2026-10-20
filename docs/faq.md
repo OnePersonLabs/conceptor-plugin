@@ -8,21 +8,21 @@ The agent writes the proposal, requirements, design, and tasks. You review the b
 
 ### Where do I type a skill invocation?
 
-In your Codex chat, in the repository you want to work on. Use `$projector:propose` or select the skill. The terminal CLI is an internal runtime interface. See [skill invocations](skills.md).
+In your Codex chat, in the repository you want to work on. Use `$conceptor:propose` or select the skill. The terminal CLI is an internal runtime interface. See [skill invocations](skills.md).
 
-### Is Projector available in a public marketplace?
+### Is Conceptor available in a public marketplace?
 
 This checkout documents local Codex plugin installation. Ask the agent to install and verify it; do not assume a public listing. See [development](development.md#local-plugin-installation).
 
 ### What if I do not know the solution yet?
 
-Use `$projector:explore` with the problem, constraints, and a concrete example. Exploration reads and compares alternatives. It authors artifacts only when a proposal is also authorized.
+Use `$conceptor:explore` with the problem, constraints, and a concrete example. Exploration reads and compares alternatives. It authors artifacts only when a proposal is also authorized.
 
 ## Plans and implementation
 
 ### Can I review one artifact at a time?
 
-Ask `$projector:propose` for incremental planning. The next layer is authored and later layers stay absent. `$projector:continue` can advance that frontier.
+Ask `$conceptor:propose` for incremental planning. The next layer is authored and later layers stay absent. `$conceptor:continue` can advance that frontier.
 
 ### Can I authorize the whole run?
 
@@ -30,21 +30,21 @@ Yes. Explicitly request the plan, implementation, checks, and finish together. T
 
 ### Can I change the plan after implementation starts?
 
-Use `$projector:revise`. The agent preserves still-applicable requirements and accounts for contributions to retain, remove, replace, or revise. Relevant evidence can become stale.
+Use `$conceptor:revise`. The agent preserves still-applicable requirements and accounts for contributions to retain, remove, replace, or revise. Relevant evidence can become stale.
 
 ### Are checked tasks proof that the feature works?
 
 They record performed work. Executed evidence and an independent review establish the bounded checks used for completion. A task cannot substitute for them or override a requirement.
 
-### Can I bring code I already wrote into Projector?
+### Can I bring code I already wrote into Conceptor?
 
-Use `$projector:reconcile` and identify a coherent patch. It preserves your original worktree and staging state while importing the selected implementation into a candidate for verification.
+Use `$conceptor:reconcile` and identify a coherent patch. It preserves your original worktree and staging state while importing the selected implementation into a candidate for verification.
 
 ## Candidates and completion
 
 ### Why is my original checkout unchanged after finish?
 
-Finish integrates the result into the selected branch. Use `$projector:merge` for another selected source branch. See [integration](integration.md).
+Finish integrates the result into the selected branch. Use `$conceptor:merge` for another selected source branch. See [integration](integration.md).
 
 ### What is the difference between verify, sync, and finish?
 
@@ -52,7 +52,7 @@ Verify gathers current evidence and independent review. Sync materializes the ta
 
 ### What happens if finish is interrupted?
 
-Use `$projector:continue` or request finish for the same change. Durable state identifies the candidate, target, and remaining obligations. Moved refs or mismatched targets are reported, not overwritten.
+Use `$conceptor:continue` or request finish for the same change. Durable state identifies the candidate, target, and remaining obligations. Moved refs or mismatched targets are reported, not overwritten.
 
 ### Can I finish several changes at once?
 
@@ -60,7 +60,7 @@ Name them or explicitly request all eligible changes. A dependent candidate need
 
 ## Boundaries
 
-### Does Projector make its own model calls?
+### Does Conceptor make its own model calls?
 
 The deterministic runtime makes zero model calls. Your host agent supplies interpretation and independent review. The full workflow therefore includes host-agent work.
 
@@ -70,7 +70,7 @@ Local Git repositories with built-in Markdown, JavaScript/TypeScript, C#, Rust, 
 
 ### Does setup replace my OpenSpec configuration?
 
-Initialization preserves existing configuration and reports customized schema conflicts. Each new Projector change selects its schema explicitly. See [existing projects](existing-projects.md).
+Initialization preserves existing configuration and reports customized schema conflicts. Each new Conceptor change selects its schema explicitly. See [existing projects](existing-projects.md).
 
 ### Does a merge publish or deploy my software?
 

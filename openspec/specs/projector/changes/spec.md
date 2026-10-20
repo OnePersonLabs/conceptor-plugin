@@ -1,4 +1,4 @@
-# Projector managed changes
+# Conceptor managed changes
 
 ## Purpose
 
@@ -7,7 +7,7 @@ Keep requirements, decisions, implementation and executed evidence coherent thro
 ## Requirements
 
 ### Requirement: Separate accepted proposed and actual views
-Projector SHALL pin an accepted baseline and durable prospective target, implement in the selected checkout by default, and offer explicit isolated mode. Existing isolated sessions SHALL retain their work and identity. Checked tasks SHALL NOT override authority or prove completion. Revision SHALL preserve partial implementation, expose scoped plan changes, and reconcile divergent artifacts before overwriting or sealing them.
+Conceptor SHALL pin an accepted baseline and durable prospective target, implement in the selected checkout by default, and offer explicit isolated mode. Existing isolated sessions SHALL retain their work and identity. Checked tasks SHALL NOT override authority or prove completion. Revision SHALL preserve partial implementation, expose scoped plan changes, and reconcile divergent artifacts before overwriting or sealing them.
 
 #### Scenario: Revision during partial implementation
 - **WHEN** a target withdraws one reason from a shared file

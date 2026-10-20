@@ -56,7 +56,7 @@ export class OpenSpecAdapter {
   }
   async target(root: string, change: string, baseline: string, previousTarget?: string): Promise<{ targetId: string; previousSupport: Support[]; requirements: string[]; renames: Record<string, string> }> {
     await this.version(root);
-    const temporary = await mkdtemp(path.join(tmpdir(), 'projector-target-'));
+    const temporary = await mkdtemp(path.join(tmpdir(), 'conceptor-target-'));
     try {
       const originalPaths = (await git(root, ['ls-tree', '-r', '--name-only', baseline, '--', 'openspec/specs', 'openspec/designs', 'openspec/terms', 'openspec/config.yaml', 'openspec/config.yml'])).split('\n').filter(Boolean);
       for (const name of originalPaths) {
@@ -65,7 +65,7 @@ export class OpenSpecAdapter {
       }
       await this.copyInputs(root, temporary, change);
       const status = await this.invoke(temporary, ['status', '--change', change, '--json']);
-      if (status.schemaName !== 'projector') throw new Error('Projector custom schema was not selected');
+      if (status.schemaName !== 'projector') throw new Error('Conceptor custom schema was not selected');
       await this.invoke(temporary, ['validate', change, '--strict', '--json']);
       const requirements: string[] = [];
       for (const name of await files(safePath(temporary, `openspec/changes/${change}/specs`))) {
@@ -90,14 +90,14 @@ export class OpenSpecAdapter {
       const tree = await git(root, ['write-tree'], { env: environment });
       let targetId = previousTarget;
       if (!previousTarget || tree !== await git(root, ['rev-parse', `${previousTarget}^{tree}`])) {
-        targetId = await git(root, ['commit-tree', tree, '-p', baseline, '-m', `Projector target: ${change}`], { env: {
-          GIT_AUTHOR_NAME: 'Projector', GIT_AUTHOR_EMAIL: 'projector@localhost', GIT_COMMITTER_NAME: 'Projector', GIT_COMMITTER_EMAIL: 'projector@localhost'
+        targetId = await git(root, ['commit-tree', tree, '-p', baseline, '-m', `Conceptor target: ${change}`], { env: {
+          GIT_AUTHOR_NAME: 'Conceptor', GIT_AUTHOR_EMAIL: 'conceptor@localhost', GIT_COMMITTER_NAME: 'Conceptor', GIT_COMMITTER_EMAIL: 'conceptor@localhost'
         } });
       }
       return { targetId: targetId!, previousSupport: await this.support(root, previousTarget ?? baseline), requirements: [...new Set(requirements)], renames };
     } finally {
       // This directory is allocated above, and containment is rechecked before removal.
-      if (path.dirname(temporary) !== tmpdir() || !path.basename(temporary).startsWith('projector-target-')) throw new Error('Target staging containment failed');
+      if (path.dirname(temporary) !== tmpdir() || !path.basename(temporary).startsWith('conceptor-target-')) throw new Error('Target staging containment failed');
       await rm(temporary, { recursive: true, force: true });
     }
   }

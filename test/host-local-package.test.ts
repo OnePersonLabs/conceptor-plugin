@@ -13,14 +13,14 @@ test('declared local marketplace bundle has a runnable MCP entry', { timeout: 12
   await execute(process.execPath, ['scripts/prepare-local.mjs'], { cwd: root, windowsHide: true });
   const marketplace = JSON.parse(await readFile(resolve(root, '.agents/plugins/marketplace.json'), 'utf8'));
   const packageVersion = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8')).version;
-  const source = marketplace.plugins.find((plugin: { name: string }) => plugin.name === 'projector').source.path;
+  const source = marketplace.plugins.find((plugin: { name: string }) => plugin.name === 'conceptor').source.path;
   const bundle = resolve(root, source);
-  const mcp = JSON.parse(await readFile(resolve(bundle, 'mcp.json'), 'utf8')).mcpServers.projector;
+  const mcp = JSON.parse(await readFile(resolve(bundle, 'mcp.json'), 'utf8')).mcpServers.conceptor;
   assert.equal(mcp.type, 'stdio');
   assert.equal(mcp.command, 'node');
   const [entry, operation] = mcp.args.map((arg: string) => arg.replaceAll('${PLUGIN_ROOT}', bundle));
   await access(entry);
   assert.equal(operation, 'relay');
   const { stdout } = await execute(process.execPath, [entry, '--version'], { cwd: bundle, windowsHide: true });
-  assert.equal(stdout.trim(), `projector ${packageVersion}`);
+  assert.equal(stdout.trim(), `conceptor ${packageVersion}`);
 });

@@ -185,7 +185,7 @@ export class ChangeService {
       const initialIndex = await git(root, ['write-tree']);
       const projected = await this.adapter.target(root, change, baseline);
       const candidateId = randomUUID(); const branch = `projector/${change}-${candidateId.slice(0, 8)}`;
-      const candidateRoot = mode === 'checkout' ? root : path.join(await mkdtemp(path.join(tmpdir(), 'projector-checkout-')), 'worktree');
+      const candidateRoot = mode === 'checkout' ? root : path.join(await mkdtemp(path.join(tmpdir(), 'conceptor-checkout-')), 'worktree');
       if (mode === 'isolated') await git(root, ['-c', 'core.autocrlf=false', 'worktree', 'add', '-b', branch, candidateRoot, baseline]);
       // Revision design hashes name Git bytes. Checkout EOL filters are not part of that identity.
       const authorityPaths = (await git(root, ['ls-tree', '-r', '--name-only', baseline, '--', 'openspec/specs', 'openspec/designs', 'openspec/terms'])).split('\n').filter(Boolean);
@@ -646,7 +646,7 @@ export class ChangeService {
         state.candidateInputsHash = await this.adapter.inputHash(state.candidateRoot, state.change);
         state.verifiedTasksHash = (await this.tasks(state)).hash;
         const selected = await selectedTree(state);
-        const directory = path.join(await mkdtemp(path.join(tmpdir(), 'projector-finish-')), 'worktree');
+        const directory = path.join(await mkdtemp(path.join(tmpdir(), 'conceptor-finish-')), 'worktree');
         await git(state.root, ['-c', 'core.autocrlf=false', 'worktree', 'add', '--detach', directory, integrationHead]);
         await git(directory, ['read-tree', '--reset', '-u', selected.tree]);
         await this.adapter.copyInputs(state.root, directory, state.change);
@@ -719,7 +719,7 @@ export class ChangeService {
         await git(directory, ['add', '--all']);
         state.finalizationExpectedTree ??= await git(directory, ['write-tree']); await this.save(state);
         const head = await git(directory, ['rev-parse', 'HEAD']);
-        if (head === integrationHead) await git(directory, ['commit', '-m', `Complete Projector change: ${state.change}`], { timeoutMs: 600_000 });
+        if (head === integrationHead) await git(directory, ['commit', '-m', `Complete Conceptor change: ${state.change}`], { timeoutMs: 600_000 });
         else if (await git(directory, ['rev-parse', 'HEAD^']) !== integrationHead || await git(directory, ['rev-parse', 'HEAD^{tree}']) !== state.finalizationExpectedTree) throw new Error('Finalization branch changed outside its recorded commit');
         state.finalizationCommit = await git(directory, ['rev-parse', 'HEAD']); await this.save(state);
       }

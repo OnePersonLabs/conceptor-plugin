@@ -33,7 +33,7 @@ async function port(): Promise<number> {
   await new Promise<void>((done, reject) => socket.close(error => error ? reject(error) : done())); return address.port;
 }
 async function workspace() {
-  const path = await mkdtemp(join(tmpdir(), 'projector-host-'));
+  const path = await mkdtemp(join(tmpdir(), 'conceptor-host-'));
   return { path, async dispose() {
     assert(resolve(path).startsWith(resolve(tmpdir()) + sep));
     await rm(path, { recursive: true, force: true, maxRetries: 4, retryDelay: 100 });
@@ -66,8 +66,8 @@ test('exclusive loopback bind admits exactly one owner and authenticates before 
   assert.equal(dispatches, 0);
   assert.deepEqual(await send(config, { op: 'inspectStatus' }, token), { count: 1 });
   if (process.platform === 'win32') {
-    const command = '$a=[System.IO.Directory]::GetAccessControl($env:PROJECTOR_CHECK_DIRECTORY); [Console]::WriteLine($a.Access.Count); [Console]::WriteLine($a.Access[0].IsInherited); [Console]::WriteLine($a.Access[0].IdentityReference.Translate([System.Security.Principal.SecurityIdentifier]).Value -eq [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value)';
-    const { stdout } = await execute('powershell.exe', ['-NoProfile', '-NonInteractive', '-EncodedCommand', Buffer.from(command, 'utf16le').toString('base64')], { windowsHide: true, env: { ...process.env, PROJECTOR_CHECK_DIRECTORY: config.home } });
+    const command = '$a=[System.IO.Directory]::GetAccessControl($env:CONCEPTOR_CHECK_DIRECTORY); [Console]::WriteLine($a.Access.Count); [Console]::WriteLine($a.Access[0].IsInherited); [Console]::WriteLine($a.Access[0].IdentityReference.Translate([System.Security.Principal.SecurityIdentifier]).Value -eq [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value)';
+    const { stdout } = await execute('powershell.exe', ['-NoProfile', '-NonInteractive', '-EncodedCommand', Buffer.from(command, 'utf16le').toString('base64')], { windowsHide: true, env: { ...process.env, CONCEPTOR_CHECK_DIRECTORY: config.home } });
     assert.deepEqual(stdout.trim().split(/\r?\n/), ['1', 'False', 'True']);
   } else assert.equal((await lstat(config.home)).mode & 0o077, 0);
 });
@@ -115,7 +115,7 @@ test('canonical Git identity separates real linked candidates and preserves alia
   const fixture = await workspace(); t.after(() => fixture.dispose());
   const repository = join(fixture.path, 'source'), candidate = join(fixture.path, 'candidate'); await mkdir(repository);
   const git = (...args: string[]) => execute('git', args, { cwd: repository, windowsHide: true });
-  await git('init', '--initial-branch=main'); await git('config', 'core.autocrlf', 'false'); await writeFile(join(repository, 'source.txt'), 'before\n'); await git('add', '.'); await git('-c', 'user.name=Projector Test', '-c', 'user.email=projector@example.invalid', 'commit', '-m', 'baseline');
+  await git('init', '--initial-branch=main'); await git('config', 'core.autocrlf', 'false'); await writeFile(join(repository, 'source.txt'), 'before\n'); await git('add', '.'); await git('-c', 'user.name=Conceptor Test', '-c', 'user.email=conceptor@example.invalid', 'commit', '-m', 'baseline');
   await git('worktree', 'add', '--detach', candidate, 'HEAD');
   assert.equal(await realpath(candidate), await realpath(join(candidate, '..', 'candidate')));
   const rootGit = (await git('rev-parse', '--absolute-git-dir')).stdout.trim();

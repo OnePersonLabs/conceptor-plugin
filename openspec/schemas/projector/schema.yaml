@@ -14,7 +14,7 @@ artifacts:
     requires: [proposal]
   - id: designs
     generates: designs/**/design.md
-    description: Exact nested Projector design deltas
+    description: Exact nested Conceptor design deltas
     template: design.md
     requires: [specs]
   - id: tasks
@@ -26,4 +26,4 @@ artifacts:
 apply:
   requires: [tasks]
   tracks: tasks.md
-  instruction: Use the installed $projector:apply skill to implement the reviewed plan in the selected checkout, then $projector:verify and $projector:finish for executed evidence, independent review and integrated completion. Request isolated workspace mode only when isolation is useful.
+  instruction: Use the installed $conceptor:apply skill to implement the reviewed plan in the selected checkout, then $conceptor:verify and $conceptor:finish for executed evidence, independent review and integrated completion. Request isolated workspace mode only when isolation is useful.

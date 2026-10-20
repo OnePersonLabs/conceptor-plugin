@@ -1,6 +1,6 @@
 # Hosted clean-evolution evidence
 
-These trials use the installed Projector **4.0.0** runtime on the qualified
+These trials use the installed Conceptor **4.0.0** runtime on the qualified
 Windows profile. Native Codex participants inherit the parent task's configured
 model; no model override, external inference API or separate paid-credit call
 is used. Each participant receives only its assigned trial, legitimate
@@ -35,7 +35,7 @@ Participants stop before independent review and finish. The parent agent, which
 did not implement their candidates, examines the exact target, baseline diff,
 source, current ownership, retired contributions, executed checks and credible
 simpler alternatives. It runs the held-out evaluator and records the actual
-review with the current basis. Projector executes the independent verification
+review with the current basis. Conceptor executes the independent verification
 again with the complete changed-artifact scope before publication. Review records
 are attributed observations, not cryptographic proof of independence.
 
@@ -46,13 +46,13 @@ marked the two actually verified tasks complete, refreshed their basis and
 reran evidence. Neither result was bypassed with a fabricated pass.
 
 The published candidates are archived by the real pinned OpenSpec adapter. A
-second Projector finish must return the same publication and leave a clean
+second Conceptor finish must return the same publication and leave a clean
 candidate worktree. Every trial's accepted `main` remains at its initial commit.
-Application checks also execute with Projector environment variables removed;
+Application checks also execute with Conceptor environment variables removed;
 application source does not import the tool runtime.
 
 The corrected evolved preview reached the archived phase before Git rejected a
-long Windows archive filename during staging. Projector now passes
+long Windows archive filename during staging. Conceptor now passes
 `core.longPaths=true` to its internal Git invocations on Windows, preserving user
 Git configuration. The installed runtime resumed the same sealed archive and
 published it without discarding the candidate or rebuilding its implementation.
@@ -66,7 +66,7 @@ All three final pairs pass the strengthened evaluator after publication, with
 matching observed behavior. Every candidate has executed evidence, an actual
 independent review, a verified archive, unchanged accepted `main`, a clean
 candidate worktree and a repeated-finish no-op. Application checks pass without
-Projector environment variables.
+Conceptor environment variables.
 
 | Trajectory | Evolved publication / application tests | Direct publication / application tests |
 | --- | --- | --- |
@@ -78,7 +78,7 @@ The [machine-readable evidence](evidence/clean-evolution.json) records full
 publication, baseline and target hashes, intermediate checkpoints, review
 reasons and alternatives, executed evidence hashes and scopes, final oracle
 traces, excluded diagnostic cases and the local artifact location. These are
-trial-repository commits, separate from the Projector implementation branch.
+trial-repository commits, separate from the Conceptor implementation branch.
 
 ## What is compared
 
@@ -111,7 +111,7 @@ quota claims are inferred. The explicit controls are the assigned repository
 and task, ten-minute participant ceilings, a fixed initial six-run campaign and
 the two affected-case repairs. Deterministic runtime and oracle model calls are
 zero. Trial repositories and publication records remain in the user-local
-Projector evaluation directory for inspection.
+Conceptor evaluation directory for inspection.
 
 These are bounded observations in a coupled evaluation world. They establish
 the tested cleanup, ownership, recovery and no-op outcomes, not universal

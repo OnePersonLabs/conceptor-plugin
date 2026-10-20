@@ -1,25 +1,25 @@
 ## MODIFIED Requirements
 
 ### Requirement: External design ownership
-Projector SHALL keep explanations in nested designs that refer to ordinary source. Source SHALL NOT require Projector annotations, IDs, imports, decorators, or runtime dependencies. OpenSpec live specifications own accepted requirements; active deltas remain prospective.
+Conceptor SHALL keep explanations in nested designs that refer to ordinary source. Source SHALL NOT require Conceptor annotations, IDs, imports, decorators, or runtime dependencies. OpenSpec live specifications own accepted requirements; active deltas remain prospective.
 
 #### Scenario: Removing integration
-- **WHEN** Projector tooling is removed
+- **WHEN** Conceptor tooling is removed
 - **THEN** the ordinary application build and execution remain usable
 
 ### Requirement: Exact references
-Projector SHALL preserve existing code, specification, and design reference identities. Bracket references SHALL use Unicode case-folding and removal of spaces and underscores only. A unique Markdown H1 owns a bare key before a globally unique logical top-level code declaration. Duplicate Markdown owners are errors; duplicate code names are legal but ambiguous. Qualified references SHALL obey public boundaries and configured policy. Non-code semantic units SHALL use domain-qualified artifact addresses and SHALL NOT enter bare code-symbol lookup. Logical declarations SHALL retain owner/signature identity where needed; incomplete inventories SHALL NOT prove uniqueness. Ownership changes SHALL require explicit rebinding.
+Conceptor SHALL preserve existing code, specification, and design reference identities. Bracket references SHALL use Unicode case-folding and removal of spaces and underscores only. A unique Markdown H1 owns a bare key before a globally unique logical top-level code declaration. Duplicate Markdown owners are errors; duplicate code names are legal but ambiguous. Qualified references SHALL obey public boundaries and configured policy. Non-code semantic units SHALL use domain-qualified artifact addresses and SHALL NOT enter bare code-symbol lookup. Logical declarations SHALL retain owner/signature identity where needed; incomplete inventories SHALL NOT prove uniqueness. Ownership changes SHALL require explicit rebinding.
 
 #### Scenario: A new owner appears
 - **WHEN** a Markdown definition owns a previously code-bound bare reference
-- **THEN** Projector requires qualification or adoption
+- **THEN** Conceptor requires qualification or adoption
 
 #### Scenario: Domain-separated styles
 - **WHEN** a style entry has the same name as a code declaration
 - **THEN** its artifact address remains distinct and cannot silently take bare code ownership
 
 ### Requirement: Exact design deltas
-Projector SHALL apply complete addressed additions, replacements, removals, and renames with exact baseline preconditions; reject duplicate, ambiguous, overlapping, and stale operations; preserve untouched formatting; and accept retries only against exact receipts. Narrative sections SHALL coexist with structural Contract, Decision, Realization, and Subdesign parts without changing existing addresses.
+Conceptor SHALL apply complete addressed additions, replacements, removals, and renames with exact baseline preconditions; reject duplicate, ambiguous, overlapping, and stale operations; preserve untouched formatting; and accept retries only against exact receipts. Narrative sections SHALL coexist with structural Contract, Decision, Realization, and Subdesign parts without changing existing addresses.
 
 #### Scenario: Overlapping replacements
 - **WHEN** a batch replaces a part and its subheading
@@ -30,7 +30,7 @@ Projector SHALL apply complete addressed additions, replacements, removals, and 
 - **THEN** addressed operations preserve them unless explicitly changed
 
 ### Requirement: Explicit semantic limits
-Projector SHALL report unsupported syntax, unresolved topology, missing terms, unsupported selectors, and unadapted dependency policy as explicit unknown or drift. Completeness SHALL be capability-specific. Empty memberships SHALL retain population dependencies. Initialization, packaging, ABI, and programming failures SHALL be actionable errors rather than opaque success.
+Conceptor SHALL report unsupported syntax, unresolved topology, missing terms, unsupported selectors, and unadapted dependency policy as explicit unknown or drift. Completeness SHALL be capability-specific. Empty memberships SHALL retain population dependencies. Initialization, packaging, ABI, and programming failures SHALL be actionable errors rather than opaque success.
 
 #### Scenario: A previously empty scope gains implementation
 - **WHEN** an acknowledged batch adds an artifact in an empty scope
@@ -57,7 +57,7 @@ Built-in Tauri intelligence SHALL distinguish Rust commands and actual registrat
 
 #### Scenario: Native declaration without wiring
 - **WHEN** a frontend declares a native operation without proven registration
-- **THEN** Projector reports incomplete wiring rather than native runtime qualification
+- **THEN** Conceptor reports incomplete wiring rather than native runtime qualification
 
 ### Requirement: Universal artifact inventory
 Every tracked artifact SHALL have raw-byte identity and ownership metadata, including binary and generated outputs. Untracked inventory SHALL respect Git ignores. Binary and large artifacts SHALL NOT be decoded as semantic text or rejected solely by text parsing budgets. Parsing and retained text SHALL remain bounded; unavailable semantics SHALL be explicit.

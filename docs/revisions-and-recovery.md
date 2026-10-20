@@ -1,6 +1,6 @@
 # Revisions and recovery
 
-A change can outlive its first design and its first chat session. Projector retains the target and implementation accounting so the agent can resume the same work with the current intent.
+A change can outlive its first design and its first chat session. Conceptor retains the target and implementation accounting so the agent can resume the same work with the current intent.
 
 ## Contents
 
@@ -13,10 +13,10 @@ A change can outlive its first design and its first chat session. Projector reta
 
 ## Change direction
 
-Use `$projector:revise` with the new behavior and any commitments that must survive:
+Use `$conceptor:revise` with the new behavior and any commitments that must survive:
 
 ```text
-$projector:revise Keep focus at the search-list boundary instead of
+$conceptor:revise Keep focus at the search-list boundary instead of
 wrapping. Preserve Enter activation and normal search-field typing.
 ```
 
@@ -52,10 +52,10 @@ A prior success remains evidence about its prior inputs. It cannot authorize fin
 
 ## Resume
 
-Use `$projector:continue`, naming the change when several could match:
+Use `$conceptor:continue`, naming the change when several could match:
 
 ```text
-$projector:continue Resume keyboard-navigation.
+$conceptor:continue Resume keyboard-navigation.
 ```
 
 The agent reads artifacts and durable state, discovers the original candidate, and identifies the next authorized action. That may be drafting, review, implementation, evidence, or completion recovery.
@@ -64,7 +64,7 @@ Existing authorization survives interruption. Time elapsed does not approve an u
 
 ## Recover interrupted completion
 
-Projector recognizes the existing archive and publication and resumes journaled bookkeeping or checkout/index installation. Its private Git-directory state and active artifact mirror preserve recovery identity. Unexpected edits remain visible; recovery does not overwrite them or allocate a replacement checkout merely because the session ended.
+Conceptor recognizes the existing archive and publication and resumes journaled bookkeeping or checkout/index installation. Its private Git-directory state and active artifact mirror preserve recovery identity. Unexpected edits remain visible; recovery does not overwrite them or allocate a replacement checkout merely because the session ended.
 
 ```mermaid
 flowchart LR

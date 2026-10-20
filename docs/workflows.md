@@ -18,18 +18,18 @@ Start with the outcome you need. Skill invocations are actions requested in chat
 
 | Situation | Use |
 | --- | --- |
-| Set up or adopt a repository | `$projector:init` |
-| Investigate an idea or problem | `$projector:explore` |
-| Draft a plan | `$projector:propose` |
-| Advance incomplete drafting or resume work | `$projector:continue` |
-| Change intended behavior or design | `$projector:revise` |
-| Implement reviewed work | `$projector:apply` |
-| Gather current evidence and independent review | `$projector:verify` |
-| Materialize the target in the implementation checkout | `$projector:sync` |
-| Verify, archive, and integrate the selected change | `$projector:finish` |
-| Assess drift | `$projector:audit` |
-| Reconstruct edits or correct task accounting | `$projector:reconcile` |
-| Integrate a selected branch | `$projector:merge` |
+| Set up or adopt a repository | `$conceptor:init` |
+| Investigate an idea or problem | `$conceptor:explore` |
+| Draft a plan | `$conceptor:propose` |
+| Advance incomplete drafting or resume work | `$conceptor:continue` |
+| Change intended behavior or design | `$conceptor:revise` |
+| Implement reviewed work | `$conceptor:apply` |
+| Gather current evidence and independent review | `$conceptor:verify` |
+| Materialize the target in the implementation checkout | `$conceptor:sync` |
+| Verify, archive, and integrate the selected change | `$conceptor:finish` |
+| Assess drift | `$conceptor:audit` |
+| Reconstruct edits or correct task accounting | `$conceptor:reconcile` |
+| Integrate a selected branch | `$conceptor:merge` |
 
 The [skill guide](skills.md) defines each result and its boundary.
 
@@ -38,7 +38,7 @@ The [skill guide](skills.md) defines each result and its boundary.
 Use exploration when the problem is clear but the solution is not. The agent reads relevant code and accepted artifacts, compares alternatives, and explains consequences.
 
 ```text
-$projector:explore Focus jumps after filtering search results.
+$conceptor:explore Focus jumps after filtering search results.
 Investigate the cause and compare the smallest practical fixes.
 ```
 
@@ -47,7 +47,7 @@ Exploration does not author artifacts or implement on its own. Request a proposa
 ## Review incrementally
 
 ```text
-$projector:propose Add keyboard navigation.
+$conceptor:propose Add keyboard navigation.
 Draft one artifact layer at a time for review.
 ```
 
@@ -58,7 +58,7 @@ This path is useful when a design boundary needs discussion before detailed task
 ## Authorize the whole run
 
 ```text
-Use Projector to fix duplicate replay. Draft the plan, implement it,
+Use Conceptor to fix duplicate replay. Draft the plan, implement it,
 run the checks, and finish the change.
 ```
 

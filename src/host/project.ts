@@ -24,7 +24,7 @@ async function inspect(root: string, name: string, directory: boolean): Promise<
     const file = join(root, ...parts.slice(0, index));
     try {
       const info = await lstat(file);
-      if (info.isSymbolicLink()) throw new Error(`Projector setup refuses symbolic links: ${file}`);
+      if (info.isSymbolicLink()) throw new Error(`Conceptor setup refuses symbolic links: ${file}`);
       if ((index < parts.length || directory) ? !info.isDirectory() : !info.isFile()) throw new Error(`Unexpected file type during setup: ${file}`);
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false;
@@ -39,7 +39,7 @@ export async function initProject(input: { root: string }): Promise<Record<strin
   if (typeof input.root !== 'string' || !input.root.trim()) throw new Error('root must be a nonempty string');
   const root = await realpath(resolve(input.root));
   const top = await execute('git', ['rev-parse', '--show-toplevel'], { cwd: root, windowsHide: true });
-  if (await realpath(top.stdout.trim()) !== root) throw new Error('Select the Git repository root for Projector setup');
+  if (await realpath(top.stdout.trim()) !== root) throw new Error('Select the Git repository root for Conceptor setup');
   const previous = queues.get(root) ?? Promise.resolve();
   const operation = previous.catch(() => undefined).then(() => initialize(root));
   queues.set(root, operation);
@@ -77,7 +77,7 @@ async function initialize(root: string): Promise<Record<string, unknown>> {
     if (mapping.store !== undefined) throw new Error('This repository points to an OpenSpec store. Select its owning local Git repository explicitly; setup does not redirect or replace store configuration.');
     configuredSchema = mapping.schema ?? 'spec-driven';
   } else pending.set(configPath, 'schema: projector\n');
-  if (conflicts.length) return { root, ready: false, conflicts, created: [], instruction: 'Existing Projector schema differs from the bundled schema. Review these files and preserve customizations before retrying setup.' };
+  if (conflicts.length) return { root, ready: false, conflicts, created: [], instruction: 'Existing Conceptor schema differs from the bundled schema. Review these files and preserve customizations before retrying setup.' };
   const ignoreExists = await inspect(root, '.gitignore', false);
   const ignore = ignoreExists ? await readFile(join(root, '.gitignore'), 'utf8') : '';
   const hasWorktrees = /^(?:\/)?\.worktrees\/(?:\r)?$/m.test(ignore);
@@ -110,5 +110,5 @@ async function initialize(root: string): Promise<Record<string, unknown>> {
     } else await writeFile(join(root, '.gitignore'), suffix, { flag: 'wx' });
     created.push('.gitignore');
   }
-  return { root, ready: true, created, upgraded, conflicts: [], schema: 'projector', configuredSchema, instruction: 'Use the bundled projector schema explicitly for new Projector changes; existing configuration and history are preserved.' };
+  return { root, ready: true, created, upgraded, conflicts: [], schema: 'projector', configuredSchema, instruction: 'Use the bundled OpenSpec schema ID "projector" explicitly for new Conceptor changes; existing configuration and history are preserved.' };
 }

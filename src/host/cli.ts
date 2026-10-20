@@ -7,7 +7,7 @@ import { VERSION } from './config.ts';
 
 async function main(): Promise<void> {
   const [operation, ...args] = process.argv.slice(2);
-  if (operation === '--version') { process.stdout.write(`projector ${VERSION}\n`); return; }
+  if (operation === '--version') { process.stdout.write(`conceptor ${VERSION}\n`); return; }
   if (operation === 'serve') {
     try {
       const owner = await startOwner();
@@ -17,15 +17,15 @@ async function main(): Promise<void> {
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === 'EADDRINUSE') {
         if (process.send) { process.send({ occupied: true }); return; }
-        throw new Error('The configured Projector endpoint is occupied; use a client command to authenticate with its owner or inspect the conflicting process.');
+        throw new Error('The configured Conceptor endpoint is occupied; use a client command to authenticate with its owner or inspect the conflicting process.');
       }
       process.send?.({ error: error instanceof Error ? error.message : String(error) }); throw error;
     }
     return;
   }
   if (operation === 'relay') { await relay(); return; }
-  if (operation === 'install') { if (!args[0]) throw new Error('Usage: projector install <fresh-plugin-directory>'); process.stdout.write(`${JSON.stringify(await install(args[0]))}\n`); return; }
-  if (!operation || operation === '--help') { process.stdout.write('projector <operation> --json <request-object>\nprojector relay | serve | install <fresh-plugin-directory> | --version\n'); return; }
+  if (operation === 'install') { if (!args[0]) throw new Error('Usage: conceptor install <fresh-plugin-directory>'); process.stdout.write(`${JSON.stringify(await install(args[0]))}\n`); return; }
+  if (!operation || operation === '--help') { process.stdout.write('conceptor <operation> --json <request-object>\nconceptor relay | serve | install <fresh-plugin-directory> | --version\n'); return; }
   const index = args.indexOf('--json');
   const input: unknown = index < 0 ? {} : JSON.parse(args[index + 1] ?? '');
   if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('--json must be an object.');

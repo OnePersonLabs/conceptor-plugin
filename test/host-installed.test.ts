@@ -28,7 +28,7 @@ function result(value: Awaited<ReturnType<Client['callTool']>>): Record<string, 
   return JSON.parse(content[0]!.text) as Record<string, unknown>;
 }
 test('fresh installed runtime serves two actual MCP clients and qualified managed interleaving', { timeout: 120000 }, async t => {
-  const directory = await mkdtemp(join(tmpdir(), 'projector-installed-'));
+  const directory = await mkdtemp(join(tmpdir(), 'conceptor-installed-'));
   const repository = join(directory, 'source'), candidate = join(directory, 'candidate'), plugin = join(directory, 'plugin');
   const config = settings({ home: join(directory, 'user-state'), port: await freePort() });
   const clients: Client[] = []; let ownerStarted = false;
@@ -41,20 +41,20 @@ test('fresh installed runtime serves two actual MCP clients and qualified manage
   const git = (...args: string[]) => execute('git', args, { cwd: repository, windowsHide: true });
   await git('init', '--initial-branch=main'); await git('config', 'core.autocrlf', 'false');
   await writeFile(join(repository, 'source.ts'), 'export function Before() { return 1; }\n'); await git('add', '.');
-  await git('-c', 'user.name=Projector Test', '-c', 'user.email=projector@example.invalid', 'commit', '-m', 'baseline');
+  await git('-c', 'user.name=Conceptor Test', '-c', 'user.email=conceptor@example.invalid', 'commit', '-m', 'baseline');
   const revision = (await git('rev-parse', 'HEAD')).stdout.trim(); await git('worktree', 'add', '--detach', candidate, revision);
   const candidateGit = (await execute('git', ['rev-parse', '--absolute-git-dir'], { cwd: candidate })).stdout.trim();
   const canonical = await realpath(candidate);
   await writeFile(join(candidateGit, 'projector-candidate.json'), JSON.stringify({ version: 1, root: canonical, candidate: 'installed-test', writerContract: 'acknowledged-batches' }));
   const start = performance.now(); await install(plugin);
-  const launch = JSON.parse(await readFile(join(plugin, 'mcp.json'), 'utf8')).mcpServers.projector as { type: string; command: string; args: string[] };
+  const launch = JSON.parse(await readFile(join(plugin, 'mcp.json'), 'utf8')).mcpServers.conceptor as { type: string; command: string; args: string[] };
   assert.equal(launch.type, 'stdio'); assert.equal(launch.command, 'node');
   const launchArgs = launch.args.map(value => value.replaceAll('${PLUGIN_ROOT}', plugin));
   t.diagnostic(JSON.stringify({ installedVersion: VERSION, node: process.version, installMs: performance.now() - start, installedBytes: await bytes(plugin), nativePackaging: 'node:sqlite bundled with Node; no addon build' }));
   const environment = Object.fromEntries(Object.entries(process.env).filter((entry): entry is [string, string] => entry[1] !== undefined));
   const connect = async (name: string) => {
     const client = new Client({ name, version: '1.0.0' }); clients.push(client);
-    await client.connect(new StdioClientTransport({ command: process.execPath, args: launchArgs, cwd: directory, env: { ...environment, PROJECTOR_HOME: config.home, PROJECTOR_PORT: String(config.port) }, stderr: 'pipe' }));
+    await client.connect(new StdioClientTransport({ command: process.execPath, args: launchArgs, cwd: directory, env: { ...environment, CONCEPTOR_HOME: config.home, CONCEPTOR_PORT: String(config.port) }, stderr: 'pipe' }));
     return client;
   };
   const [a, b] = await Promise.all([connect('client-a'), connect('client-b')]);
@@ -69,7 +69,7 @@ test('fresh installed runtime serves two actual MCP clients and qualified manage
   const skills = (await readdir(join(plugin, 'skills'))).sort();
   assert.deepEqual(skills, ['apply', 'audit', 'continue', 'explore', 'finish', 'init', 'merge', 'propose', 'reconcile', 'revise', 'sync', 'verify'].sort());
   assert.equal(await readFile(join(plugin, 'skills', 'verify', 'SKILL.md'), 'utf8'),
-    await readFile(new URL('../plugins/projector/skills/verify/SKILL.md', import.meta.url), 'utf8'));
+    await readFile(new URL('../plugins/conceptor/skills/verify/SKILL.md', import.meta.url), 'utf8'));
   assert.equal(openedA.rootId, openedB.rootId); assert.equal(openedA.kernel, openedB.kernel);
   const rootId = String(openedA.rootId);
   const current = async () => result(await b.callTool({ name: 'read', arguments: { rootId, view: 'current', reference: '[[Before]]' } }));

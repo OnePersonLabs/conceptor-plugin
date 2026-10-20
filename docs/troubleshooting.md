@@ -13,7 +13,7 @@ Start from the reported symptom and preserve the relevant candidate and artifact
 
 ## Skills are missing
 
-Ask the agent to inspect installed and enabled plugin state. After installation or refresh, start a fresh Codex session. Confirm that the actual installed package contains the expected skills, including `$projector:propose` and `$projector:merge`.
+Ask the agent to inspect installed and enabled plugin state. After installation or refresh, start a fresh Codex session. Confirm that the actual installed package contains the expected skills, including `$conceptor:propose` and `$conceptor:merge`.
 
 Do not keep issuing the same invocation to a session that has not discovered the package. [Installation](getting-started.md#install-the-plugin) and [development](development.md#local-plugin-installation) describe the supported route.
 
@@ -41,7 +41,7 @@ Recognized previous bundled schemas upgrade automatically. A customized file rem
 | Symptom | Useful action |
 | --- | --- |
 | Several active changes could match | Name the intended change. |
-| Task status does not match code | Use `$projector:reconcile` for task-only accounting. |
+| Task status does not match code | Use `$conceptor:reconcile` for task-only accounting. |
 | Evidence is stale | Execute affected checks again against the final basis and refresh independent review. |
 | A check failed | Trace the cause and repair it within scope; preserve the failed result. |
 | Previous contributions remain unresolved | Inspect retain/remove/replace/revise accounting and actual ownership. |
@@ -50,7 +50,7 @@ Recognized previous bundled schemas upgrade automatically. A customized file rem
 
 Checked tasks, narrative test claims, and simulated review cannot settle these obligations. If a check covers only compilation, the report must leave unexercised behavior visible.
 
-If a long check disconnects, inspect its persisted evidence before repeating it. Projector permits the selected execution deadline plus settlement time, but MCP caller timeouts belong to the host. Configure that caller deadline or use the installed CLI. Do not mistake a disconnected response for a failed or absent execution.
+If a long check disconnects, inspect its persisted evidence before repeating it. Conceptor permits the selected execution deadline plus settlement time, but MCP caller timeouts belong to the host. Configure that caller deadline or use the installed CLI. Do not mistake a disconnected response for a failed or absent execution.
 
 Use [revisions and recovery](revisions-and-recovery.md) to resume the original change. Repeating the same failed finish without changed inputs does not resolve its cause.
 

@@ -9,7 +9,7 @@ function moduleResolution(specifier: string, from: FileRecord, files: FileRecord
     return paths.length === 1 ? { file: files.find(file => file.path === paths[0]) } : { reason: paths.length ? 'The repository dependency is ambiguous.' : 'The repository dependency is unresolved.' };
   }
   const fileMap = options.fileMap ?? new Map(files.map(file => [file.path, file]));
-  const base = '/projector';
+  const base = '/conceptor';
   const aliases = Object.entries(options.packages ?? {}).map(([name, pkg]) => ({ prefix: `node_modules/${name}`, ...pkg }));
   const physical = (fileName: string): string => {
     const relative = posix.relative(base, slash(fileName));

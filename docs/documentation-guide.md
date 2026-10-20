@@ -1,4 +1,4 @@
-# Writing Projector documentation
+# Writing Conceptor documentation
 
 This guide is for contributors updating the README and docs. The documentation structure adapts OpenSpec's reader journey: show a practical result, route readers by their task, explain concepts, then provide exact reference and help.
 
@@ -14,7 +14,7 @@ This guide is for contributors updating the README and docs. The documentation s
 
 ## Choose the page role
 
-| Page role | Reader question | Projector home |
+| Page role | Reader question | Conceptor home |
 | --- | --- | --- |
 | README | What does this do, and can I picture using it? | Repository entry point |
 | Documentation home | Where should I start for my situation? | `docs/README.md` |
@@ -38,7 +38,7 @@ The search-navigation story should explain list boundaries and text input. A rec
 
 ## Use precise invocation terms
 
-Call `$projector:propose` and its peers skill invocations. They belong in host-agent chat. Call terminal runtime requests CLI operations; call MCP requests tools.
+Call `$conceptor:propose` and its peers skill invocations. They belong in host-agent chat. Call terminal runtime requests CLI operations; call MCP requests tools.
 
 Use exact installed skill names. Do not borrow another product's command namespace or assume a CLI executable has the same user role as a skill. Keep internal selectors and evidence fields in reference material unless they help the reader make a concrete decision.
 
@@ -48,7 +48,7 @@ Use Mermaid when a workflow, ownership boundary, or state change needs a picture
 
 Use quoted node labels, as in `C["Managed candidate"]`. Use words as well as arrows to distinguish branches. Avoid color-only meaning, host-specific features, and large diagrams that require zooming.
 
-Useful Projector diagrams show proposed versus accepted authority, selected-checkout implementation, check-input freshness during revision, and recoverable publication after temporary finalization. They must reflect implemented behavior.
+Useful Conceptor diagrams show proposed versus accepted authority, selected-checkout implementation, check-input freshness during revision, and recoverable publication after temporary finalization. They must reflect implemented behavior.
 
 ## Provide navigation
 

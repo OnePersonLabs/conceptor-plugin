@@ -1,16 +1,16 @@
 # Runtime and tool reference
 
-Projector connects OpenSpec requirements, nested designs, and ordinary application artifacts. It provides exact revision queries, enrolled implementation checkouts, and a recoverable change loop. Source applications do not import Projector.
+Conceptor connects OpenSpec requirements, nested designs, and ordinary application artifacts. It provides exact revision queries, enrolled implementation checkouts, and a recoverable change loop. Source applications do not import Conceptor.
 
 Node **24.19.0** is the tested runtime. OpenSpec **1.13.1** and the MCP SDK are pinned in the lockfile. The deterministic runtime makes **zero model calls**; the host agent supplies interpretation and independent review.
 
 ```powershell
 npm ci
 npm run check
-node dist/host/cli.js install C:/tools/projector-v4
+node dist/host/cli.js install C:/tools/conceptor-v4
 ```
 
-The installer creates a self-contained plugin in a fresh directory outside this checkout. Register that directory through your host's local plugin marketplace. Its MCP configuration launches a thin stdio relay. CLI commands use the same authenticated user-local owner as MCP clients. The owner starts on demand; closing one relay does not stop other clients. `PROJECTOR_HOME` selects an isolated state directory, and `PROJECTOR_PORT` explicitly selects its fixed loopback port. A foreign or incompatible endpoint is an error. Windows credentials use an owner-only ACL; browser origins and unauthenticated requests are rejected.
+The installer creates a self-contained plugin in a fresh directory outside this checkout. Register that directory through your host's local plugin marketplace. Its MCP configuration launches a thin stdio relay. CLI commands use the same authenticated user-local owner as MCP clients. The owner starts on demand; closing one relay does not stop other clients. `CONCEPTOR_HOME` selects an isolated state directory, and `CONCEPTOR_PORT` explicitly selects its fixed loopback port. A foreign or incompatible endpoint is an error. Windows credentials use an owner-only ACL; browser origins and unauthenticated requests are rejected.
 
 The package uses native Agent Plugins schema 1.0.0 in root `plugin.json` and `mcp.json`. Codex expands `${PLUGIN_ROOT}` in its stdio launch arguments. [Codex qualification](../qualification-codex.md) records actual marketplace registration and host discovery.
 
@@ -43,7 +43,7 @@ For failed or hook-mutated finalization, `resumeChange({root,change,reconcileFin
 
 Hook changes to authority or change artifacts remain listed in `pendingFinalizationArtifacts`. Incorporate the retained bytes into the prospective target or authored change inputs. To discard a specific hook edit, pass `finalizationDispositions:[{path,reason}]` to `validatePlan`. The disposition becomes part of the independent review basis. Merely validating again does not clear unresolved edits.
 
-For a separately selected source branch, `$projector:merge` constructs and reviews the pinned merge in temporary isolation. The installed `./change` module exports `preparePublication({root,targetBranch,targetHead,commit,directory,change?})` and `publishPublication(root,transaction,{save?,fault?})`. The directory must contain the exact reviewed commit in a detached linked worktree. These helpers preserve residual staged/working changes and journal publication; they do not establish semantic correctness or independent review. Merge uses the default Git-directory `projector-publications/` journal. Lifecycle supplies its state-saving callback.
+For a separately selected source branch, `$conceptor:merge` constructs and reviews the pinned merge in temporary isolation. The installed `./change` module exports `preparePublication({root,targetBranch,targetHead,commit,directory,change?})` and `publishPublication(root,transaction,{save?,fault?})`. The directory must contain the exact reviewed commit in a detached linked worktree. These helpers preserve residual staged/working changes and journal publication; they do not establish semantic correctness or independent review. Merge uses the default Git-directory `projector-publications/` journal. Lifecycle supplies its state-saving callback.
 
 ## Verification and execution
 

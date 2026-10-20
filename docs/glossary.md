@@ -1,6 +1,6 @@
 # Glossary
 
-These terms describe Projector 4's workflow. Exact runtime fields and operations are in the [runtime reference](reference/runtime.md).
+These terms describe Conceptor 4's workflow. Exact runtime fields and operations are in the [runtime reference](reference/runtime.md).
 
 | Term | Meaning |
 | --- | --- |
@@ -29,7 +29,7 @@ These terms describe Projector 4's workflow. Exact runtime fields and operations
 | Publication | Conditional branch advancement and recoverable checkout/index installation of the reviewed commit. |
 | Integration | Landing a reviewed result on the selected branch; finish includes this, while merge handles another selected source branch. |
 | Settled no-op | Repeating a completed operation reuses its exact result without a substantive document or code change. |
-| Skill invocation | A request to the host agent to follow a named workflow, such as `$projector:propose`. |
+| Skill invocation | A request to the host agent to follow a named workflow, such as `$conceptor:propose`. |
 | CLI operation | A terminal request to the deterministic runtime, such as `openRoot --json ...`. |
 
 Start with [the overview](overview.md) to see these relationships, or [skill invocations](skills.md) to choose an action.

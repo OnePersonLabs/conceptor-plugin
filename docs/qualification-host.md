@@ -2,7 +2,7 @@
 
 Measured on 2026-09-22 with Node **24.19.0**, Windows **10.0.26200.0**, NTFS,
 PowerShell **7.6.6**, Git **2.55.0.windows.5**, Codex CLI **0.155.1**, and OpenSpec
-**1.13.1**. Projector package/runtime version is **4.0.0**. The installed MCP SDK
+**1.13.1**. Conceptor package/runtime version is **4.0.0**. The installed MCP SDK
 is **1.30.0**. These results qualify this Windows profile; other operating systems
 and simultaneous Windows/WSL ownership remain unverified.
 
@@ -130,7 +130,7 @@ semantic evidence that the deterministic installed lifecycle fixture does not.
 
 The installed OPL 0.2.0 manifest was inspected read-only. Its compatibility
 layout declares `skills`, `hooks`, and `mcpServers`; its MCP configuration uses
-named server objects with `command`, `args`, and optional `env_vars`. Projector
+named server objects with `command`, `args`, and optional `env_vars`. Conceptor
 now uses native Agent Plugins schema 1.0.0 with root `plugin.json`, `mcp.json`,
 and `${PLUGIN_ROOT}` expansion. Actual Codex qualification exposed that the
 legacy MCP launch left `${CLAUDE_PLUGIN_ROOT}` literal and failed its handshake;
@@ -144,21 +144,21 @@ Official documentation confirms [stdio MCP command configuration](https://learn.
 and [the limits of tool-hook coverage](https://learn.chatgpt.com/docs/hooks).
 Some specialized/hosted tool paths bypass hooks; background hook completion is
 not a synchronous mutation boundary. Plugin hook installation also does not
-automatically grant trust. Projector therefore does not rely on hooks to enroll
+automatically grant trust. Conceptor therefore does not rely on hooks to enroll
 an ordinary working tree. The SDK client tests do not assert that a user has
 registered or trusted a plugin in an existing Codex desktop session; the separate
 Codex qualification records supported installation and actual host discovery.
 
 This machine's LocalAppData directory grants additional inherited access,
 including a sandbox-users group. POSIX file modes do not provide the necessary
-Windows credential privacy. Projector replaces the application directory DACL
+Windows credential privacy. Conceptor replaces the application directory DACL
 with current-user-only access before writing credentials. The operation needs
-ordinary ownership of the selected Projector home, not elevation. Nonempty
+ordinary ownership of the selected Conceptor home, not elevation. Nonempty
 unrecognized directories are refused. Windows PowerShell's built-in .NET ACL
 APIs avoid dependence on the caller's PowerShell module search path.
 
-The endpoint is fixed for the configured user namespace; `PROJECTOR_PORT` is an
-explicit override and never an occupied-port fallback. `PROJECTOR_HOME` selects
+The endpoint is fixed for the configured user namespace; `CONCEPTOR_PORT` is an
+explicit override and never an occupied-port fallback. `CONCEPTOR_HOME` selects
 the private application state location. An immutable port setting in that home
 rejects attempts to create a second owner on another port against the same state;
 the setting is not a lifetime lock. Owners bind only `127.0.0.1`; losers do

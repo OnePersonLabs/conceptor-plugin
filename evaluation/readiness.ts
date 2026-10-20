@@ -53,7 +53,7 @@ export async function createReadinessTrial(directory: string) {
     'platform/probe.mjs': probe,
     'platform/CONTRACT.md': '# Platform boundary rehearsal\n\nImplement model.mjs with createUnwiredRuntime, createConsumer and qualifyAudio. Availability resolves false when unwired; load, infer, warmUp and unload name missing runtime wiring. Consumer note dispatches immediately while readiness is pending and reports unavailable. Dispatch observations without native capture do not qualify audio playback. Native fixture relationships must preserve command registration and invocation, imported styles, and asset ownership. These fixtures do not provide a real model or native playback implementation.\n' });
   await execute('git', ['add', '--', 'platform'], { cwd: directory, windowsHide: true });
-  await execute('git', ['-c', 'user.name=Projector evaluation', '-c', 'user.email=evaluation@localhost', 'commit', '-m', 'Platform boundary starting world'], { cwd: directory, windowsHide: true });
+  await execute('git', ['-c', 'user.name=Conceptor evaluation', '-c', 'user.email=evaluation@localhost', 'commit', '-m', 'Platform boundary starting world'], { cwd: directory, windowsHide: true });
   return trial;
 }
 export async function installReadinessControl(root: string): Promise<void> {

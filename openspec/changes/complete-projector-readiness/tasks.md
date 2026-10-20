@@ -1,4 +1,4 @@
-# Projector readiness work
+# Conceptor readiness work
 
 ## Artifact authoring and verification
 

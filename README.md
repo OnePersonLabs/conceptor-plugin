@@ -1,6 +1,6 @@
-# Projector
+# Conceptor
 
-Describe a change, review its requirements and design, and let your coding agent carry it through implementation and checks. Projector keeps the plan and the code together when the work changes direction.
+Describe a change, review its requirements and design, and let your coding agent carry it through implementation and checks. Conceptor keeps the plan and the code together when the work changes direction.
 
 Implementation happens in your selected checkout. You can request an isolated worktree when useful. Finish integrates the reviewed code and accepted specifications together while preserving unrelated local work.
 
@@ -10,7 +10,7 @@ Implementation happens in your selected checkout. You can request an isolated wo
 - [How the work moves](#how-the-work-moves)
 - [Get started](#get-started)
 - [When the plan changes](#when-the-plan-changes)
-- [What Projector checks](#what-projector-checks)
+- [What Conceptor checks](#what-conceptor-checks)
 - [Documentation](#documentation)
 - [Related projects](#related-projects)
 - [Development](#development)
@@ -23,7 +23,7 @@ Your application has a search results list. Mouse selection works, but people us
 This is an illustrative conversation. The agent inspects your actual application before choosing files or checks.
 
 ```text
-You: $projector:propose Add keyboard navigation to search results.
+You: $conceptor:propose Add keyboard navigation to search results.
      Arrow keys move between results; Enter opens the focused result.
      Typing in the search field must keep working.
 
@@ -33,10 +33,10 @@ Agent: The proposal, requirements, design, and tasks are ready to review.
 You: Keep focus on the last result at the end of the list. Don't wrap.
 Agent: Updated the requirement and design. The tasks now reflect that choice.
 
-You: $projector:apply
+You: $conceptor:apply
 Agent: Implementing the reviewed plan in your selected checkout.
 
-You: $projector:finish
+You: $conceptor:finish
 Agent: Ran the relevant checks, obtained independent review, and archived
        the change and integrated the result. Here is the commit and what was verified.
 ```
@@ -62,31 +62,31 @@ Git checkpoints preserve partial implementation when requirements change. Checks
 
 ## Get started
 
-Install the Projector plugin in Codex. If you have this checkout, ask your agent:
+Install the Conceptor plugin in Codex. If you have this checkout, ask your agent:
 
-> Install this Projector checkout as a user-level Codex plugin and verify its installed skills and tools.
+> Install this Conceptor checkout as a user-level Codex plugin and verify its installed skills and tools.
 
 The agent handles the build and local registration. This repository does not claim a public marketplace listing. [Installation details](docs/getting-started.md#install-the-plugin).
 
 Open the Git repository you want to change. In your agent's chat, use:
 
 ```text
-$projector:init
-$projector:propose Add keyboard navigation to search results.
+$conceptor:init
+$conceptor:propose Add keyboard navigation to search results.
 ```
 
 Read the generated plan and request any corrections. When it is ready:
 
 ```text
-$projector:apply
-$projector:finish
+$conceptor:apply
+$conceptor:finish
 ```
 
-The agent reports the integrated commit and archive. Use `$projector:merge` for a separately selected source branch. These are skill invocations in chat; internal CLI and MCP tools are described in the [runtime reference](docs/reference/runtime.md).
+The agent reports the integrated commit and archive. Use `$conceptor:merge` for a separately selected source branch. These are skill invocations in chat; internal CLI and MCP tools are described in the [runtime reference](docs/reference/runtime.md).
 
 To authorize planning, implementation, verification, and finish together, say:
 
-> Use Projector to add keyboard navigation. Draft the plan, implement it, run the checks, and finish the change.
+> Use Conceptor to add keyboard navigation. Draft the plan, implement it, run the checks, and finish the change.
 
 Otherwise, planning pauses for your review. Material ambiguities still need a decision. [Your first change](docs/getting-started.md) walks through the full path.
 
@@ -94,22 +94,24 @@ Otherwise, planning pauses for your review. Material ambiguities still need a de
 
 | Situation | Skill invocation |
 | --- | --- |
-| You need to investigate alternatives | `$projector:explore` |
-| You are returning after an interruption | `$projector:continue` |
-| The requested behavior or design changed | `$projector:revise` |
-| You want to inspect drift | `$projector:audit` |
-| Existing edits or task status need reconstruction | `$projector:reconcile` |
-| A finished branch is ready to integrate | `$projector:merge` |
+| You need to investigate alternatives | `$conceptor:explore` |
+| You are returning after an interruption | `$conceptor:continue` |
+| The requested behavior or design changed | `$conceptor:revise` |
+| You want to inspect drift | `$conceptor:audit` |
+| Existing edits or task status need reconstruction | `$conceptor:reconcile` |
+| A finished branch is ready to integrate | `$conceptor:merge` |
 
-Projector preserves still-applicable commitments during revision. Task checkboxes describe work performed; they cannot override requirements or substitute for executed evidence. [Workflows](docs/workflows.md) explains the choices.
+Conceptor preserves still-applicable commitments during revision. Task checkboxes describe work performed; they cannot override requirements or substitute for executed evidence. [Workflows](docs/workflows.md) explains the choices.
 
-## What Projector checks
+## What Conceptor checks
 
 Finish requires current executed evidence and independent review. Revisions can invalidate affected evidence. Interrupted completion resumes from durable state; repeating a settled finish reuses its publication.
 
 Built-in providers cover JavaScript/TypeScript, Markdown, C#, Rust, Python, HTML, CSS, and SCSS, with static Tauri and React Native relationships. Indented Sass, dynamic relationships, and unproven native wiring remain explicit unknowns. Every tracked artifact can have ownership, including binary assets. Managed current queries require enrolled, cooperating writers; OpenSpec stores remain outside this workflow. Qualification records establish their stated conditions, not complete understanding of an application. [Limits and evidence](docs/reference/runtime.md).
 
-Projector includes its workflow skills and OpenSpec tooling. You do not need the old OpenSpec plugin alongside it. Existing project instructions can still select another workflow; [adoption guidance](docs/existing-projects.md) explains how to inspect that overlap.
+Conceptor includes its workflow skills and OpenSpec tooling. You do not need the old OpenSpec plugin alongside it. Existing project instructions can still select another workflow; [adoption guidance](docs/existing-projects.md) explains how to inspect that overlap.
+
+The plugin and package are named Conceptor. Existing OpenSpec schema and design identifiers, change IDs, Git checkpoint refs and branch prefixes, candidate marker filenames, service wire product IDs, and private Git recovery journals retain their `projector` spelling so saved V4 artifacts and interrupted work remain addressable.
 
 ## Documentation
 
@@ -124,7 +126,7 @@ Projector includes its workflow skills and OpenSpec tooling. You do not need the
 
 ## Related projects
 
-[Projector 3](https://github.com/OnePersonLabs/projector/tree/v3) centers on persistent accepted project meaning and focused context during ordinary coding. [Kerf](https://github.com/OnePersonLabs/kerf) uses a smaller Markdown concept model with bounded focus and project-defined lenses. This checkout, Projector 4, manages reviewed changes through implementation, verification, and integrated completion. Their artifact formats and workflows differ.
+[Conceptor 3](https://github.com/OnePersonLabs/conceptor/tree/v3) centers on persistent accepted project meaning and focused context during ordinary coding. [Kerf](https://github.com/OnePersonLabs/kerf) uses a smaller Markdown concept model with bounded focus and project-defined lenses. This checkout, Conceptor 4, manages reviewed changes through implementation, verification, and integrated completion. Their artifact formats and workflows differ.
 
 ## Development
 

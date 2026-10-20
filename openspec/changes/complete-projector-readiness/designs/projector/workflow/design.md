@@ -3,7 +3,7 @@ designDelta: 1
 target: projector/workflow
 baseline: 30cf99cf89e9db63d87a0eeae329f3db8c643dbc43e8901d5d052890b25886d2
 ---
-# Projector readiness design delta
+# Conceptor readiness design delta
 
 ## Replace: contract
 
@@ -13,10 +13,10 @@ baseline: 30cf99cf89e9db63d87a0eeae329f3db8c643dbc43e8901d5d052890b25886d2
 Own the user's journey from setup and reviewed artifacts through implementation, verification, and integrated completion. Proposed artifacts remain distinct from accepted authority. Preserve unrelated work.
 
 Applies: [[spec:projector/workflow#Installed repository setup]] | {"kind":"path","root":".","prefix":"src/host/"} | Setup must evolve without replacing user-owned authoring rules.
-Applies: [[spec:projector/workflow#Agent owned conversational workflow]] | {"kind":"path","root":".","prefix":"plugins/projector/"} | Tasks describe the selected work; shared skills own repeatable procedure.
+Applies: [[spec:projector/workflow#Agent owned conversational workflow]] | {"kind":"path","root":".","prefix":"plugins/conceptor/"} | Tasks describe the selected work; shared skills own repeatable procedure.
 Applies: [[spec:projector/workflow#Safe workflow continuity]] | {"kind":"path","root":".","prefix":"src/change/"} | Requirement revisions and task bookkeeping must preserve partial implementation and valid check results.
 Applies: [[spec:projector/workflow#Usable installed entry points]] | {"kind":"path","root":".","prefix":"docs/"} | The installed product must operate independently of the development checkout.
-Applies: [[spec:projector/workflow#Reviewed branch integration]] | {"kind":"path","root":".","prefix":"plugins/projector/"} | Code and accepted authority must land together without discarding unrelated staged or working changes.
+Applies: [[spec:projector/workflow#Reviewed branch integration]] | {"kind":"path","root":".","prefix":"plugins/conceptor/"} | Code and accepted authority must land together without discarding unrelated staged or working changes.
 ```
 
 ## Add: decision:repository-setup
@@ -45,7 +45,7 @@ Requires: [[spec:projector/workflow#Agent owned conversational workflow]]
 Consequential: boundary
 Alternative: Put a mandatory workflow rubric in every change task list.
 Tradeoff: Shared procedure avoids repeated boilerplate but installed skill routing must remain coherent.
-Realizes: [[code:plugins/projector/skills/apply/SKILL.md]] [[code:plugins/projector/skills/apply/references/runtime.md]] [[code:plugins/projector/skills/audit/SKILL.md]] [[code:plugins/projector/skills/continue/SKILL.md]] [[code:plugins/projector/skills/explore/SKILL.md]] [[code:plugins/projector/skills/finish/SKILL.md]] [[code:plugins/projector/skills/finish/references/bulk.md]] [[code:plugins/projector/skills/init/SKILL.md]] [[code:plugins/projector/skills/propose/SKILL.md]] [[code:plugins/projector/skills/propose/references/artifacts.md]] [[code:plugins/projector/skills/reconcile/SKILL.md]] [[code:plugins/projector/skills/reconcile/references/import.md]] [[code:plugins/projector/skills/revise/SKILL.md]] [[code:plugins/projector/skills/sync/SKILL.md]] [[code:plugins/projector/skills/verify/SKILL.md]]
+Realizes: [[code:plugins/conceptor/skills/apply/SKILL.md]] [[code:plugins/conceptor/skills/apply/references/runtime.md]] [[code:plugins/conceptor/skills/audit/SKILL.md]] [[code:plugins/conceptor/skills/continue/SKILL.md]] [[code:plugins/conceptor/skills/explore/SKILL.md]] [[code:plugins/conceptor/skills/finish/SKILL.md]] [[code:plugins/conceptor/skills/finish/references/bulk.md]] [[code:plugins/conceptor/skills/init/SKILL.md]] [[code:plugins/conceptor/skills/propose/SKILL.md]] [[code:plugins/conceptor/skills/propose/references/artifacts.md]] [[code:plugins/conceptor/skills/reconcile/SKILL.md]] [[code:plugins/conceptor/skills/reconcile/references/import.md]] [[code:plugins/conceptor/skills/revise/SKILL.md]] [[code:plugins/conceptor/skills/sync/SKILL.md]] [[code:plugins/conceptor/skills/verify/SKILL.md]]
 Evidence: Exercise fresh behavior, pure refactor, changed impact, and installed routed completion.
 ```
 
@@ -75,7 +75,7 @@ Requires: [[spec:projector/workflow#Usable installed entry points]]
 Consequential: boundary
 Alternative: Make users install a global CLI and author artifact syntax manually.
 Tradeoff: Bundling increases installation size but fixes runtime and schema ownership.
-Realizes: [[code:README.md]] [[code:package-lock.json]] [[code:package.json]] [[code:plugins/projector/plugin.json]] [[code:plugins/projector/.codex-plugin/plugin.json]] [[code:src/host/config.ts]] [[code:src/host/index.ts]] [[code:test/host-installed.test.ts]] [[code:docs/README.md]] [[code:docs/development.md]] [[code:docs/existing-projects.md]] [[code:docs/getting-started.md]] [[code:docs/qualification-workflow.md]] [[code:docs/reference/runtime.md]] [[code:docs/reference/workflow-coverage.md]] [[code:docs/revisions-and-recovery.md]] [[code:docs/troubleshooting.md]] [[code:docs/workflows.md]]
+Realizes: [[code:README.md]] [[code:package-lock.json]] [[code:package.json]] [[code:plugins/conceptor/plugin.json]] [[code:plugins/conceptor/.codex-plugin/plugin.json]] [[code:src/host/config.ts]] [[code:src/host/index.ts]] [[code:test/host-installed.test.ts]] [[code:docs/README.md]] [[code:docs/development.md]] [[code:docs/existing-projects.md]] [[code:docs/getting-started.md]] [[code:docs/qualification-workflow.md]] [[code:docs/reference/runtime.md]] [[code:docs/reference/workflow-coverage.md]] [[code:docs/revisions-and-recovery.md]] [[code:docs/troubleshooting.md]] [[code:docs/workflows.md]]
 Evidence: Run installed discovery and realistic usage outside the development checkout.
 ```
 
@@ -90,7 +90,7 @@ Requires: [[spec:projector/workflow#Reviewed branch integration]]
 Consequential: boundary
 Alternative: Require a clean user checkout or automatically stash it before integration.
 Tradeoff: Prepared index and checkout installation add recovery steps but preserve the user index and disjoint edits.
-Realizes: [[code:plugins/projector/skills/merge/SKILL.md]] [[code:plugins/projector/skills/merge/references/conflict-review.md]] [[code:src/change/publication.ts]]
+Realizes: [[code:plugins/conceptor/skills/merge/SKILL.md]] [[code:plugins/conceptor/skills/merge/references/conflict-review.md]] [[code:src/change/publication.ts]]
 Evidence: Exercise actual overlap, disjoint edits in one file, hooks, target drift, and interrupted installation.
 ```
 

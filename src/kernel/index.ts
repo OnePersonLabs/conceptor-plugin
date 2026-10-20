@@ -87,7 +87,7 @@ export class Kernel {
   constructor(options: KernelOptions = {}) {
     this.options = options;
     this.backend = options.backend ?? new IndexPool();
-    this.stateDir = options.stateDir ?? path.join(process.env.LOCALAPPDATA ?? homedir(), 'Projector', 'indexes');
+    this.stateDir = options.stateDir ?? path.join(process.env.LOCALAPPDATA ?? homedir(), 'Conceptor', 'indexes');
     this.now = options.now ?? Date.now;
   }
   async invalidateRoot(root: string, reason: string): Promise<void> {
@@ -385,7 +385,7 @@ export class Kernel {
     try {
       await command(['read-tree', 'HEAD']); await command(['add', '--all']); const tree = await command(['write-tree']);
       const parent = await command(['rev-parse', 'HEAD']);
-      revision = await command(['-c', 'user.name=Projector checkpoint', '-c', 'user.email=checkpoint@localhost', 'commit-tree', tree, '-p', parent, '-m', 'Projector sealed implementation checkpoint']);
+      revision = await command(['-c', 'user.name=Conceptor checkpoint', '-c', 'user.email=checkpoint@localhost', 'commit-tree', tree, '-p', parent, '-m', 'Conceptor sealed implementation checkpoint']);
       await command(['update-ref', `refs/projector/checkpoints/${session.id}`, revision]);
     } finally { await rm(indexPath, { force: true }); }
     if (session.generation !== generation || session.epoch !== epoch) return this.unavailable(session, 'pending', 'Mutation or observation basis changed while sealing checkpoint');

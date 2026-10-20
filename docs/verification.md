@@ -1,4 +1,4 @@
-# Projector V4 verification
+# Conceptor V4 verification
 
 The supported profile is Windows on NTFS, Node 24.19.0, Git 2.55.0.windows.5,
 OpenSpec 1.13.1 and Codex 0.155.1. Runtime and plugin version: **4.0.0**.
@@ -100,5 +100,5 @@ Unsupported CommonJS export inference, destructured declarations, inherited or
 project-reference TypeScript configurations and unadapted dependency policies
 return explicit unknowns. Arbitrary external editors, disconnected shell writers,
 other operating systems and simultaneous Windows/WSL ownership are not qualified
-for working-current reads. The ordinary application has no Projector runtime
+for working-current reads. The ordinary application has no Conceptor runtime
 imports; authored specifications and designs remain ordinary files.
