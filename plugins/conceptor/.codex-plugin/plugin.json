@@ -1,6 +1,6 @@
 {
   "name": "conceptor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Recover shared meaning, carry out native work, and reconcile scoped evidence.",
   "skills": "./skills/",
   "interface": {
@@ -8,5 +8,6 @@
     "shortDescription": "Shared meaning and scoped reconciliation",
     "longDescription": "Concepts, typed Relations, Projection Units, Pattern Candidates, and Projection Lenses for native agent work. Optional helpers preserve reasons, exceptions, evidence gaps, and recovery state."
   },
-  "hooks": "./hooks/hooks.json"
+  "hooks": "./hooks/hooks.json",
+  "repository": "https://github.com/OnePersonLabs/conceptor-plugin"
 }

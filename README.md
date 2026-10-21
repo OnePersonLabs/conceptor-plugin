@@ -16,6 +16,13 @@ Meaning lives in `.conceptor/meaning/` as Markdown with YAML frontmatter. A dire
 
 ## Use it in a project
 
+Install from the [Conceptor marketplace repository](https://github.com/OnePersonLabs/conceptor-plugin):
+
+```sh
+codex plugin marketplace add https://github.com/OnePersonLabs/conceptor-plugin
+codex plugin add conceptor@conceptor
+```
+
 In a fresh Codex session with the plugin installed, say **"Enable Conceptor in this project."** The agent uses `$conceptor:enable-conceptor` to create `.conceptor/active`. Then describe work normally. The agent selects the relevant skills and prepares helper requests; you do not need to remember a workflow or command names.
 
 Say **"Turn Conceptor off in this project"** to remove the marker. Meaning and recovery records remain. Inactive projects receive no hook guidance or runtime observations. A nested Git repository needs its own activation.
@@ -53,7 +60,7 @@ The plugin is in [plugins/conceptor](plugins/conceptor). It contains project-sco
 - `$conceptor:carry-out-directive`: carry out native work with explicit ownership and useful recovery state.
 - `$conceptor:reconcile-and-learn`: investigate discrepancies and retain learning that could change future action.
 
-Create a portable package with `npm.cmd run pack:plugin` after `setup:plugin`. The plugin's own lockfile and dependency directory supply the bundled runtime. The root package supplies test tooling. Unpack the archive and use its `package` directory as the plugin root. Its CLI is `runtime/cli.mjs`. The local marketplace uses a prepared bundle under `.plugin-build/conceptor`. `$opl:refresh-local-plugins` runs `plugin:prepare-local`, then installs and enables `conceptor@conceptor` and trusts its hooks in reachable Windows and WSL user homes. Preparation requires Node.js 24+, npm, and `tar`. Use the source checkout for this workflow. A raw GitHub marketplace checkout needs this preparation before its plugin source is installable.
+Create a portable package with `npm.cmd run pack:plugin` after `setup:plugin`. The plugin's own lockfile and dependency directory supply the bundled runtime. The root package supplies test tooling. Unpack the archive and use its `package` directory as the plugin root. Its CLI is `runtime/cli.mjs`. The local marketplace uses a prepared bundle under `.plugin-build/conceptor`. `$onepersonlabs:refresh-local-plugins` runs `plugin:prepare-local`, then installs and enables `conceptor@conceptor` and trusts its hooks in reachable Windows and WSL user homes. Preparation requires Node.js 24+, npm, and `tar`. Use the source checkout for this workflow. A raw GitHub marketplace checkout needs this preparation before its plugin source is installable.
 
 ## Language evidence
 

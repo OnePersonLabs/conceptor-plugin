@@ -1,6 +1,6 @@
 {
   "name": "conceptor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Focused memory for adaptive convergence in native agent workflows.",
   "type": "module",
   "engines": {
@@ -32,5 +32,6 @@
     "vscode-languageserver-textdocument",
     "vscode-html-languageservice",
     "vscode-css-languageservice"
-  ]
+  ],
+  "repository": "https://github.com/OnePersonLabs/conceptor-plugin"
 }
