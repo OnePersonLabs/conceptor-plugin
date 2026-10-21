@@ -2,6 +2,26 @@
 
 Conceptor helps an agent recover the reason for a change, find its current implementations, and compare selected behavior with that meaning. The native harness still runs the work and coordinates agents. The plugin stores readable meaning and offers optional evidence and recovery helpers.
 
+## Start with one change
+
+Use Conceptor when an agent needs to carry a project's reasons and constraints
+through implementation and later revisions. You describe the work in ordinary
+language; the agent recovers relevant meaning, follows its implementation, and
+reports what the available evidence supports.
+
+For example, ask it to improve an export while preserving the existing file when
+a write fails. The useful result is a connected change, its checks, and retained
+reasoning about that failure boundary. A stored requirement alone does not prove
+the export preserves data.
+
+Follow [the first-use guide](docs/getting-started.md) to prepare and install the
+plugin, enable it in one project, and make that first request. Installation is
+currently a source-checkout workflow; the marketplace needs its prepared bundle.
+Conceptor is experimental, and its maintenance cost and benefit still need evidence
+from use. It does not establish whole-application correctness or authorize a push.
+
+## Vocabulary when you need it
+
 The original vocabulary has work to do:
 
 | Term | Purpose |
@@ -16,14 +36,22 @@ Meaning lives in `.conceptor/meaning/` as Markdown with YAML frontmatter. A dire
 
 ## Use it in a project
 
-Install from the [Conceptor marketplace repository](https://github.com/OnePersonLabs/conceptor-plugin):
+Clone the [Conceptor repository](https://github.com/OnePersonLabs/conceptor-plugin)
+into a permanent directory. With Node.js 24+, npm, Git, `tar`, and Codex available,
+run these commands from the checkout in PowerShell:
 
-```sh
-codex plugin marketplace add https://github.com/OnePersonLabs/conceptor-plugin
+```powershell
+npm.cmd run plugin:prepare-local
+codex plugin marketplace add .
 codex plugin add conceptor@conceptor
 ```
 
-In a fresh Codex session with the plugin installed, say **"Enable Conceptor in this project."** The agent uses `$conceptor:enable-conceptor` to create `.conceptor/active`. Then describe work normally. The agent selects the relevant skills and prepares helper requests; you do not need to remember a workflow or command names.
+Keep the checkout available. Preparation installs the runtime dependencies and
+creates `.plugin-build/conceptor`, the directory selected by the marketplace.
+If preparation fails, resolve that error before installation; a raw remote checkout
+does not contain this generated bundle. See [first-use recovery](docs/getting-started.md#if-something-does-not-work).
+
+In a fresh Codex session opened in the project you want to work on, say **"Enable Conceptor in this project."** The agent uses `$conceptor:enable-conceptor` to create `.conceptor/active`. Then describe work normally. The agent selects the relevant skills and prepares helper requests; you do not need to remember a workflow or command names.
 
 Say **"Turn Conceptor off in this project"** to remove the marker. Meaning and recovery records remain. Inactive projects receive no hook guidance or runtime observations. A nested Git repository needs its own activation.
 

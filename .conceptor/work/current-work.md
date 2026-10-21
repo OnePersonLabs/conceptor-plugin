@@ -23,6 +23,22 @@ issues:
 ---
 # Current work
 
+## Documentation first use -- 2026-10-21
+
+[Issue #7](https://github.com/OnePersonLabs/conceptor-plugin/issues/7) owns the
+approved documentation-only application of OnePersonLabs write-docs. README and
+docs/getting-started.md now lead with a user task and describe preparation before
+local marketplace installation, activation, results, and recovery. Sources checked:
+scripts/prepare-plugin.mjs, .agents/plugins/marketplace.json, runtime activation,
+enable-conceptor and carry-out-directive skills. No product behavior changed.
+All changed-page links resolve; source review adjudicates the evidence checker's
+path flags as project-created meaning and package-relative runtime paths, not
+missing repository citations. Prose review retains the product title and four
+scannable failure labels. No install/model trial or runtime-benefit claim.
+One root, no helpers; existing .temp/ remains untouched. Publication is deferred:
+this task ends at checked local commits. Reconsider on a changed installation
+contract or first-use failure; no failed repair cycle. Product issue #2 is not resumed.
+
 ## Shared workflow and live references
 
 Completed maintenance is recorded in [issue #6](https://github.com/OnePersonLabs/conceptor-plugin/issues/6). The active root entry is `AGENTS.md`; resume from this checkpoint and inspect Git state before changes. Use `$onepersonlabs:github-workflow` for issue status. Conceptor owns accepted meaning and evidence; the issue owns actionable status.
