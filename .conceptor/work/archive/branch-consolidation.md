@@ -1,0 +1,1 @@
+Completed 2026-10-20: published original HEAD 58cdee8 to main without rewrite; GitHub default main; remote v5 deleted after ancestry verification; local main tracks origin/main. All 61 deterministic tests passed. V3/V4 preserved. Untracked .temp/ and assessment records excluded from publication. GitHub migration issue #3.
