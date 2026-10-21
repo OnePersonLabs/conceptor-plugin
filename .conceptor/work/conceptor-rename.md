@@ -39,3 +39,18 @@ trust passed, configuration is compliant, and shared global instructions are now
 revision 59. This supersedes the dated configuration observations above. Full
 refreshed-plugin loading still requires a fresh session. Product setup checkpoints
 remain local and do not authorize product continuation or publication.
+
+### Checkout move completed
+
+The user restarted Codex and moved the checkout to `C:/dev/projects/conceptor`.
+The old directory is absent. Root verified the same HEAD and preserved dirty work,
+repaired nested worktrees `.temp/cn3` and `.temp/cn4` with native `git worktree repair`,
+and checked that each resolves its new root. Native marketplace add rebound the
+existing `conceptor` source in Windows and WSL to the new directory. Marketplace
+inventory and installed Conceptor status pass in both environments. Config backups
+preceded both native updates. Codex's saved project and current project trust already
+point to the new path. The earlier sharing-violation blocker is resolved.
+
+The user-reported restart and this turn's available installed skill catalog establish
+fresh discovery of the plugin packages. Exact hook invocation/complete per-session
+loaded bytes are not independently observable here; no stronger claim is made.
