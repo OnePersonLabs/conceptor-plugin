@@ -217,7 +217,7 @@ test("native generation and the lifecycle writer coordinate while independent ch
 });
 test("generation refuses canonical and Git-owned outputs including aliases before launching", async () => {
   const { root, request, service } = await fixture("require('node:fs').writeFileSync('started.txt','launched')");
-  for (const path of [".conceptor/model/x", ".PROJECTOR/config.toml", ".git/config", ".GIT/config"]) {
+  for (const path of [".conceptor/model/x", ".CONCEPTOR/config.toml", ".git/config", ".GIT/config"]) {
     await expect(service.execute({ ...request, outputs: [{ path, ownership: "retained" }] })).rejects.toThrow(/cannot authorize/u);
   }
   await mkdir(join(root, ".conceptor/model"), { recursive: true });

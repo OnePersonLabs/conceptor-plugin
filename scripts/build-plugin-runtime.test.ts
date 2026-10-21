@@ -49,7 +49,7 @@ describe("standalone plugin assembly", () => {
     const result = await buildPluginRuntime(plugin);
     expect(result.root).toBe(plugin);
     expect(result.nodeRuntime).toEqual({ executable: "node", resolution: "host-path" });
-    expect(await readdir(join(plugin, "runtime"))).toEqual(["projector"]);
+    expect(await readdir(join(plugin, "runtime"))).toEqual(["conceptor"]);
     expect(JSON.parse(await readFile(join(plugin, "runtime/conceptor/package.json"), "utf8"))).toMatchObject({ name: "@onepersonlabs/conceptor", version: releaseVersion });
     expect(JSON.parse(await readFile(join(plugin, "runtime/conceptor/node_modules/typescript/package.json"), "utf8"))).toMatchObject({name:"typescript",version:"5.9.3"});
     expect(await readFile(join(plugin, "runtime/conceptor/node_modules/typescript/lib/typescript.js"), "utf8")).toBe(await readFile(resolve("node_modules/typescript/lib/typescript.js"),"utf8"));

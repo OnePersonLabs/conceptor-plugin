@@ -131,10 +131,10 @@ test("recursive runtime ancestors are refused before execution instead of observ
   const { root, request } = await fixture();
   await writeFile(join(root, "check.cjs"), "require('node:fs').writeFileSync('executed.txt','executed')");
   const service = await VerificationService.create(root);
-  for (const directory of [".", ".conceptor", ".PROJECTOR"]) {
+  for (const directory of [".", ".conceptor", ".CONCEPTOR"]) {
     await expect(service.execute({ ...request, populations: [{ directory, recursive: true }] })).rejects.toThrow(/runtime evidence/u);
   }
-  await expect(service.execute({ ...request, inputPaths: [".PROJECTOR/runtime/receipt.json"] })).rejects.toThrow(/runtime evidence/u);
+  await expect(service.execute({ ...request, inputPaths: [".CONCEPTOR/runtime/receipt.json"] })).rejects.toThrow(/runtime evidence/u);
   await expect(readFile(join(root, "executed.txt"))).rejects.toMatchObject({ code: "ENOENT" });
   expect((await service.inspect()).records).toHaveLength(0);
 });

@@ -39,7 +39,7 @@ describe("WriterLeaseManager", () => {
     const root = await mkdtemp(join(tmpdir(), "projector-generation-lease-")); const manager = await leaseManager(root);
     const generationId = "generated_11111111-1111-4111-8111-111111111111";
     const reservation = { generationId, sessionId: generationId, processId: process.pid, requestHash: hash, writePaths: ["output.txt"] };
-    for (const path of [".conceptor/config.toml", ".PROJECTOR/model/x", ".GIT/config", "../escape"]) await expect(manager.acquireGeneration({ ...reservation, writePaths: [path] })).rejects.toThrow();
+    for (const path of [".conceptor/config.toml", ".CONCEPTOR/model/x", ".GIT/config", "../escape"]) await expect(manager.acquireGeneration({ ...reservation, writePaths: [path] })).rejects.toThrow();
     await expect(manager.acquireGeneration({ ...reservation, leaseId: "forged" } as typeof reservation)).rejects.toThrow(/unexpected keys/u);
     const lease = await manager.acquireGeneration(reservation); await lease.release();
   });
