@@ -1,21 +1,36 @@
 ---
 id: current-work
-goal: Align Conceptor repository maintenance with the shared issue-based workflow and plugin rename
+goal: Align Conceptor maintenance with the shared issue workflow while preserving accepted product meaning
 status: in_progress
+concepts: []
+lenses: []
+ownership:
+  - owner: root
+    paths:
+      - AGENTS.md
+      - .conceptor/work/current-work.md
+      - .conceptor/work/archive/conceptor-rename.md
+boundaries:
+  - AGENTS.md
+  - .conceptor/work/**
+completed:
+  - The checkout and repository are at C:/dev/projects/conceptor-plugin; plugin identity remains conceptor.
+  - The historical checkout-move blocker is resolved and its record is archived.
+questions: []
+uncertainMutations: []
 issues:
   - https://github.com/OnePersonLabs/conceptor-plugin/issues/6
-uncertainMutations: []
 ---
 # Current work
 
-## OnePersonLabs workflow and repository transition -- 2026-10-21
+## Shared workflow and live references
 
-Owner: root task `01a15e17-c95f-7b52-80d6-213372dc7fcc`; this bounded worker owns Conceptor and Psychord source guidance. Maintenance status: [issue #6](https://github.com/OnePersonLabs/conceptor-plugin/issues/6).
+Maintenance is tracked in [issue #6](https://github.com/OnePersonLabs/conceptor-plugin/issues/6). The active root entry is `AGENTS.md`; resume from this checkpoint and inspect Git state before changes. Use `$onepersonlabs:github-workflow` for issue status. Conceptor owns accepted meaning and evidence; the issue owns actionable status.
 
-Work agreement: update live OnePersonLabs plugin references, align Conceptor's repository instructions with the existing Psychord issue workflow, and preserve Conceptor meaning, Psychord's pause, product requirements, private records, and nested worktrees. Do not resume product implementation, experiments, or qualification. Acceptance is consistent issue ownership, current command/path references, one concise checkpoint, and no competing active work route. Reuse existing policy and evidence; no new scheduler, guard, backlog, skill-invocation test, or AI evaluation.
+The current repository and checkout are `OnePersonLabs/conceptor-plugin` and `C:/dev/projects/conceptor-plugin`. The plugin and marketplace slug remains `conceptor`. Current command namespace is `$onepersonlabs:*`. Completed rename history is in [archive/conceptor-rename.md](archive/conceptor-rename.md); its original full text is recoverable with `git show 70cb772:.conceptor/work/conceptor-rename.md`.
 
-Conceptor's active marker is `.conceptor/active`. Its governing product design remains in `docs/approved-plan.md`; issue #2 owns the separate purpose-reassessment and Steady Helm consumer work. Psychord keeps its existing R1-R9 issues, issue #15 as the next authorized player phase, and the paused receiver decision in issue #8. This maintenance changes neither product ordering nor authorization.
+This checkout is `main` at `a754a1d`, three commits ahead of `origin/main`. Preserve the existing untracked `.conceptor/work/branch-consolidation.json`, `branch-consolidation.md`, `conceptor-rename-comparison.json`, `version-branch-names.md`, and `.temp/` (including nested worktrees `.temp/cn3` and `.temp/cn4`). Do not publish these records as part of maintenance.
 
-The original names and paths in dated receipts remain historical evidence. Current namespace is `$onepersonlabs:*`; Conceptor's plugin slug remains `conceptor` while its repository is being renamed to `conceptor-plugin`.
+Conceptor's product meaning remains in `docs/approved-plan.md`; issue [#2](https://github.com/OnePersonLabs/conceptor-plugin/issues/2) owns its separate purpose-reassessment and Steady Helm consumer work. This maintenance changes no product behavior, authorization, release, or qualification.
 
-Next safe operation: reconcile the root-created maintenance issue URL, review the integrated task-owned changes, and verify the live-reference cleanup without touching preserved untracked records or nested worktrees.
+Next: root verifies the integrated live-reference and navigation changes, then reconciles issue #6. Keep this record as the sole active checkpoint; use the archive only for historical evidence. The physical checkout rename and nested-worktree repair are complete; native plugin replacement and authorized source publication remain pending. No product work is authorized.
