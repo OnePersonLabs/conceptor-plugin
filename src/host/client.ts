@@ -30,7 +30,7 @@ export async function send(config: HostSettings, body: Record<string, unknown>, 
 }
 async function handshake(config: HostSettings): Promise<Record<string, unknown>> {
   const result = await send(config, { op: 'hello', protocol: PROTOCOL, version: VERSION }, await readCredential(config)) as Record<string, unknown>;
-  if (result.product !== 'conceptor' || result.protocol !== PROTOCOL || result.version !== VERSION || typeof result.ownerId !== 'string') throw new EndpointError('Configured endpoint belongs to a foreign or incompatible process.');
+  if (result.product !== 'projector' || result.protocol !== PROTOCOL || result.version !== VERSION || typeof result.ownerId !== 'string') throw new EndpointError('Configured endpoint belongs to a foreign or incompatible process.');
   return result;
 }
 function refused(error: unknown): boolean { return (error as NodeJS.ErrnoException).code === 'ECONNREFUSED'; }
