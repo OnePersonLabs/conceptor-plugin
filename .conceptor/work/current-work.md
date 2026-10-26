@@ -1,6 +1,6 @@
 ---
 id: current-work
-goal: Remove obsolete temporary artifacts and completed work records
+goal: Keep the repository issue list clear, current and actionable
 status: complete
 concepts: []
 lenses: []
@@ -9,49 +9,40 @@ ownership:
     paths: [.conceptor/work]
 boundaries: [.conceptor/work/**]
 completed:
-  - Retired temporary worktrees and dependencies, then 11 completed work records.
-  - Preserved original records in Git and retained unique local release evidence.
+  - Rewrote and closed issue 2 after checking its original scope against delivered evidence.
 questions: []
 uncertainMutations: []
 issues:
-  - https://github.com/OnePersonLabs/conceptor-plugin/issues/8
+  - https://github.com/OnePersonLabs/conceptor-plugin/issues/2
 ---
 # Current work
 
-[Issue #8](https://github.com/OnePersonLabs/conceptor-plugin/issues/8) owns the
-user-requested cleanup, including the follow-up removal of completed records.
-Only this checkpoint and the [active comparison](transient-cleanup-comparison.json)
-remain in this directory. The active session requires that saved comparison.
+The user requested a clear, current issue list. The only open issue was
+[#2](https://github.com/OnePersonLabs/conceptor-plugin/issues/2). It now explains
+what the plan-check feature does, what was verified, and why the work is complete.
+The [current comparison](transient-cleanup-comparison.json) records the disposition.
 
-The 11 removed checkpoints/comparisons and the archive retain their original bytes
-in commit `c623cee`. Recover any record with `git show c623cee:<original-path>`;
-for example, `git show c623cee:.conceptor/work/archive/version-branch-names.md`.
-This preserves the previously requested migration-record publication and its
-conditions without retaining completed task files in the live work directory.
+The original scope is delivered: the procedure and edit gate, reviewed source and
+61 passing deterministic checks, installed fresh-session evidence, and a supervised
+trial with recorded behavior, costs and limits. October 21 Windows/WSL verification
+in issue #6 supersedes the old WSL blocker. Unspecified broader validation is not
+an unfinished implementation task. No replacement issue was justified.
 
-The earlier cleanup in `c623cee` removed 710.6 MiB of obsolete worktrees and
-verification dependencies. Unique release receipts, transcript and tested archive
-remain in `.temp/version-verification/release-check-v3-e82002c/`; investigation and
-workflow-review evidence remain in their existing locations. Current plugin
-resources and main dependencies remain intact. No external checkout was changed.
+The trials did not establish better plans, autonomy or time/token savings.
+Steady Helm's candidate failed its resource limit and remains unaccepted; its
+product work stays with Steady Helm. The [first report](../../docs/purpose-reassessment-trial-20261009.md)
+and [repeat report](../../docs/comparison-before-code-trial-20261009.md) retain the
+failed evidence and limits. Closing #2 does not waive those product requirements
+or authorize another trial. Historical issue comments remain intact.
 
-Acceptance: all retired records are recoverable from Git; live work links resolve;
-native resume reads this checkpoint. The 61 passing deterministic checks from the
-same session remain applicable because runtime and test inputs did not change.
-Root owned both cleanup units; one read-only helper reviewed each boundary, with
-zero reported compactions. Exact aggregate tokens are unavailable. No failed
-repair cycle or AI trial occurred. Reopen on a concrete missing live consumer.
+Root owned issue writes and local records. One reused read-only helper checked
+completion independently and reported zero compactions. No code, tests, installed
+plugins, external project records or trial evidence changed. The existing 61-test
+result remains applicable. Exact aggregate tokens are unavailable; no failed repair
+cycle occurred. Reopen for a concrete current failure with reproducible behavior.
 
-Current checkout: `C:/dev/projects/conceptor-plugin`, branch `main`; plugin identity
-is `conceptor`. The user authorized publication of documentation `716e179` and
-cleanup `c623cee`/`873ac9f` to `origin/main`. Issue #8 records verified delivery;
-check Git ancestry when resuming. Migration status and dated Windows/WSL evidence
-remain in issue #6 and Git history. No refresh or installed-state requalification ran.
-
-Product authority remains in [the approved plan](../../docs/approved-plan.md).
-[Issue #2](https://github.com/OnePersonLabs/conceptor-plugin/issues/2) is separate:
-the [first trial](../../docs/purpose-reassessment-trial-20261009.md) and
-[repeat trial](../../docs/comparison-before-code-trial-20261009.md) retain failures,
-cost and unresolved acceptance. The isolated Steady Helm candidate remains
-unaccepted; its raw evidence and both trial worktrees stay preserved. Cleanup
-does not resume that product work or its experiments.
+This task ends with the verified GitHub issue update and a local record commit;
+source push is not part of this issue-editing request. Earlier documentation and
+cleanup are published through `8b59864`. Issue #8 and Git history retain cleanup
+recovery; removed records remain available at `c623cee:<original-path>`. The unique
+local release evidence and other retained `.temp/` material remain unchanged.
