@@ -3,6 +3,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import YAML from 'yaml';
+import { projectRoot } from './activation.mjs';
 
 export const APPLY_PLAN_LIMIT_BYTES = 64 * 1024;
 export const APPLY_PLAN_PATH = '.conceptor/APPLY_PLAN.md';
@@ -124,7 +125,9 @@ function parsePlan(serialized) {
   }
   const units = normalizeUnits(tasks);
   const canonical = serializePlan(metadata, units);
-  if (canonical !== serialized) fail('APPLY_PLAN.md is not in canonical format; reconcile it before updating');
+  // Git may check out Markdown as CRLF. Keep CAS bound to the actual bytes while
+  // accepting that representation of the same canonical document.
+  if (canonical !== serialized.replaceAll('\r\n', '\n')) fail('APPLY_PLAN.md is not in canonical format; reconcile it before updating');
   return { metadata: clone(metadata), units, revision: sha256(serialized), serialized };
 }
 
@@ -139,6 +142,7 @@ async function validateRoot(root) {
   const conceptor = path.join(realRoot, '.conceptor');
   const stat = await fs.lstat(conceptor).catch(error => error.code === 'ENOENT' ? null : Promise.reject(error));
   if (!stat || !stat.isDirectory() || stat.isSymbolicLink()) fail('Expected a physical .conceptor directory at the selected repository root');
+  if (await projectRoot(realRoot) !== realRoot) fail('root must identify the selected repository or worktree root, not a nested directory');
   if (await fs.realpath(conceptor) !== conceptor) fail('.conceptor must not resolve outside or away from the selected repository root');
   return { realRoot, conceptor, plan: path.join(conceptor, 'APPLY_PLAN.md'), pending: path.join(conceptor, 'APPLY_PLAN.md.pending') };
 }
@@ -152,9 +156,15 @@ async function readRegular(file, label) {
   try {
     const opened = await handle.stat();
     if (!opened.isFile() || opened.dev !== stat.dev || opened.ino !== stat.ino) fail(`${label} changed while being opened`);
-    const content = await handle.readFile();
-    if (content.byteLength > APPLY_PLAN_LIMIT_BYTES) fail(`${label} exceeds ${APPLY_PLAN_LIMIT_BYTES} bytes`);
-    return content.toString('utf8');
+    const content = Buffer.alloc(APPLY_PLAN_LIMIT_BYTES + 1);
+    let length = 0;
+    while (length < content.length) {
+      const { bytesRead } = await handle.read(content, length, content.length - length, length);
+      if (!bytesRead) break;
+      length += bytesRead;
+    }
+    if (length > APPLY_PLAN_LIMIT_BYTES) fail(`${label} exceeds ${APPLY_PLAN_LIMIT_BYTES} bytes`);
+    return content.subarray(0, length);
   } finally { await handle.close(); }
 }
 
@@ -163,11 +173,13 @@ async function inspect(locations) {
     readRegular(locations.plan, 'APPLY_PLAN.md'),
     readRegular(locations.pending, 'APPLY_PLAN.md.pending')
   ]);
-  const plan = serialized === null ? null : parsePlan(serialized);
+  // Do not silently strip a BOM: every accepted record revision binds its bytes.
+  const decode = bytes => new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
+  const plan = serialized === null ? null : parsePlan(decode(serialized));
   let pending = null;
   if (pendingText !== null) {
     try {
-      const candidate = parsePlan(pendingText);
+      const candidate = parsePlan(decode(pendingText));
       pending = { valid: true, baseRevision: candidate.metadata.basedOn ?? null, candidateRevision: candidate.revision, pendingRevision: candidate.revision, bytes: Buffer.byteLength(pendingText) };
     } catch (error) {
       pending = { valid: false, baseRevision: null, candidateRevision: null, pendingRevision: sha256(pendingText), bytes: Buffer.byteLength(pendingText), error: error.message };
@@ -181,7 +193,7 @@ async function requireIgnoredPending(root) {
   if (insideGit.error?.code === 'ENOENT') return;
   if (insideGit.error) fail(`Could not verify Git state before changing the apply plan: ${insideGit.error.message}`);
   if (insideGit.status !== 0) return;
-  const ignored = spawnSync('git', ['check-ignore', '--no-index', '--quiet', '--', APPLY_PLAN_PENDING_PATH], { cwd: root, windowsHide: true });
+  const ignored = spawnSync('git', ['check-ignore', '--quiet', '--', APPLY_PLAN_PENDING_PATH], { cwd: root, windowsHide: true });
   if (ignored.error) fail(`Could not verify the pending-file ignore rule: ${ignored.error.message}`);
   if (ignored.status !== 0) fail(`Add ${APPLY_PLAN_PENDING_PATH} to the repository .gitignore before changing the apply plan`);
 }

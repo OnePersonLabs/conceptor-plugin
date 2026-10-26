@@ -4,15 +4,21 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { hash, projectPath, discover, captureScope } from './state.mjs';
-import { readCache, writeCache } from './storage.mjs';
 import { loadMeaning, conditionOf, selectLenses } from './meaning.mjs';
 import { observe } from './providers/index.mjs';
+
+const evidenceFormat = 'conceptor-evidence/1';
+
+function priorEvidence(root, request) {
+  const prior = request.previous;
+  return prior?.format === evidenceFormat && prior.project === root ? prior : undefined;
+}
 
 export async function focus(root, request = {}) {
   const activatedProject = await activeRoot(root);
   if (!activatedProject) return inactive(root);
   root = activatedProject;
-  if (request.work !== undefined) throw new Error("Conceptor task checkpoints were removed; keep task state in the native workflow and omit work");
+  if (request.work !== undefined) throw new Error("Legacy work checkpoints are unsupported; use the apply-plan interface and omit work");
   const records = await loadMeaning(root);
   const active = records.filter(item => item.status !== 'retired');
   if (!request.concepts?.length && !request.query && !request.paths?.length && !request.lenses?.length) return { index: active.map(({ id, kind, title, file }) => ({ id, kind, title, file })), instruction: 'Select relevant identities, words, or paths; no global graph was loaded into the packet' };
@@ -48,18 +54,18 @@ export async function revisit(root, request = {}) {
   const activatedProject = await activeRoot(root);
   if (!activatedProject) return inactive(root);
   root = activatedProject;
-  if (request.work !== undefined) throw new Error("Conceptor task checkpoints were removed; keep task state in the native workflow and omit work");
+  if (request.work !== undefined) throw new Error("Legacy work checkpoints are unsupported; use the apply-plan interface and omit work");
   if (!request.lenses?.length && !request.concepts?.length) throw new Error('Revisit needs explicit Lens or Concept identities');
   const records = await loadMeaning(root);
   const results = [];
   for (const lens of selectLenses(records, request)) {
-    const previous = await readCache(root, `selection:${lens.id}`);
+    const priorPacket = priorEvidence(root, request);
+    const previous = (priorPacket?.selections ?? priorPacket?.discovery?.selections)?.find(item => item.lens === lens.id);
     const current = await selections(root, lens);
     const prior = new Set(previous?.selectors?.flatMap(selector => selector.units.map(unit => unit.path)) ?? []);
     const now = new Set(current.flatMap(selector => selector.units.map(unit => unit.path)));
     const baseline = previous && previous.lensHash === lens.hash ? 'available' : 'missing';
     const result = { lens: lens.id, lensHash: lens.hash, selectors: current, baseline, added: baseline === 'available' ? [...now].filter(file => !prior.has(file)) : [], removed: baseline === 'available' ? [...prior].filter(file => !now.has(file)) : [], coverage: 'Declared source population only; runtime/external completeness is unclaimed' };
-    await writeCache(root, `selection:${lens.id}`, result);
     results.push(result);
   }
   const boundaryPatterns = [...new Set(request.paths ?? [])];
@@ -67,20 +73,20 @@ export async function revisit(root, request = {}) {
   let boundary;
   const discoveryQuestions = [];
   if (boundaryPatterns.length) {
-    const cacheKey = `boundary:${hash(boundaryPatterns)}`;
-    const previous = await readCache(root, cacheKey);
+    const priorPacket = priorEvidence(root, request);
+    const supplied = (priorPacket?.boundary ?? priorPacket?.discovery?.boundary)?.scope;
+    const previous = supplied && hash(supplied.patterns) === hash(boundaryPatterns) ? supplied : undefined;
     const current = await captureScope(root, boundaryPatterns);
     const before = new Map((previous?.inputs ?? []).map(input => [input.path, input.hash]));
     const after = new Map(current.inputs.map(input => [input.path, input.hash]));
     const changed = previous ? [...new Set([...before.keys(), ...after.keys()])].filter(file => before.get(file) !== after.get(file)) : [];
     boundary = { scope: current, baseline: previous ? 'available' : 'missing', changed };
     for (const file of changed.filter(file => !selectedPaths.has(file))) discoveryQuestions.push({ path: file, reason: 'Changed within the directive boundary but outside current Lens selection; investigate relevance and check coverage' });
-    await writeCache(root, cacheKey, current);
   }
   const observations = [];
   for (const lens of selectLenses(records, request)) for (const providerRequest of lens.observations ?? []) observations.push(await observe(root, providerRequest));
   if (request.query) observations.push(await observe(root, { provider: 'inventory', operation: 'relationships', files: [...new Set([...selectedPaths, ...(boundary?.scope.inputs.map(input => input.path) ?? [])])], literal: request.query }));
-  return { selections: results, boundary, discoveryQuestions, observations };
+  return { format: evidenceFormat, project: root, selections: results, boundary, discoveryQuestions, observations };
 }
 
 async function checkScope(root, lens, check) {
@@ -94,13 +100,13 @@ async function checkScope(root, lens, check) {
   return captureScope(root, patterns, files);
 }
 
-function checkBinding(lens, concept, check) {
-  return hash({ lens: lens.hash, concept: concept.hash, check, node: process.version, platform: process.platform, environment: hash(process.env) });
+function checkBinding(root, lens, concept, check) {
+  return hash({ format: evidenceFormat, project: root, lens: lens.hash, concept: concept.hash, check, node: process.version, platform: process.platform, environment: hash(process.env) });
 }
 
 async function executeCheck(root, lens, concept, check) {
   const before = await checkScope(root, lens, check);
-  const binding = checkBinding(lens, concept, check);
+  const binding = checkBinding(root, lens, concept, check);
   const id = randomUUID();
   const capture = () => ({ chunks: [], bytes: 0, truncated: false });
   const stdout = capture();
@@ -123,16 +129,22 @@ async function executeCheck(root, lens, concept, check) {
   const after = await checkScope(root, lens, check);
   const current = before.fingerprint === after.fingerprint;
   const receipt = { id, lens: lens.id, check: check.id, binding, scope: before, target: check.target ?? process.platform, evidence: check.evidence, conditions: check.conditions, selectors: check.selectors, coverage: check.coverage, ...outcome, current, status: !current || outcome.error || outcome.signal || outcome.exitCode === null ? 'unresolved' : outcome.exitCode === 0 ? 'supported' : 'mismatch', output: { stdout: Buffer.concat(stdout.chunks).toString('utf8'), stderr: Buffer.concat(stderr.chunks).toString('utf8'), stdoutTruncated: stdout.truncated, stderrTruncated: stderr.truncated } };
-  await writeCache(root, `check:${lens.id}/${check.id}`, receipt);
   return receipt;
 }
 
-async function obtainCheck(root, lens, concept, check, run) {
-  if (run) return executeCheck(root, lens, concept, check);
-  const previous = await readCache(root, `check:${lens.id}/${check.id}`);
+async function obtainCheck(root, lens, concept, check, request) {
+  if (request.runChecks === true) return executeCheck(root, lens, concept, check);
+  const supplied = priorEvidence(root, request)?.receipts?.find(item => item.lens === lens.id && item.check === check.id);
+  // Revalidation may invalidate this call's copy, never the caller's original observation.
+  const previous = supplied ? structuredClone(supplied) : undefined;
   if (!previous) return { check: check.id, status: 'unresolved', reason: 'No check receipt; use runChecks to execute an applicable native check' };
   const current = await checkScope(root, lens, check);
-  if (previous.binding !== checkBinding(lens, concept, check) || previous.scope.fingerprint !== current.fingerprint || !previous.current) return { ...previous, status: 'unresolved', current: false, reason: 'Source, membership, condition, Lens/check, environment, or target changed' };
+  const outcomeMatches = !previous.error && !previous.signal && Number.isInteger(previous.exitCode) && previous.exitCode >= 0
+    && previous.status === (previous.exitCode === 0 ? 'supported' : 'mismatch');
+  const contractMatches = previous.evidence === check.evidence && previous.target === (check.target ?? process.platform)
+    && hash(previous.conditions ?? null) === hash(check.conditions) && hash(previous.selectors ?? null) === hash(check.selectors)
+    && hash(previous.coverage ?? null) === hash(check.coverage ?? null);
+  if (previous.binding !== checkBinding(root, lens, concept, check) || previous.scope?.fingerprint !== current.fingerprint || !previous.current || !outcomeMatches || !contractMatches) return { ...previous, observedStatus: previous.observedStatus ?? previous.status, status: 'unresolved', current: false, reason: 'Source, membership, condition, Lens/check, environment, target, or receipt validity changed' };
   return previous;
 }
 
@@ -146,7 +158,7 @@ export async function reconcile(root, request = {}) {
   const activatedProject = await activeRoot(root);
   if (!activatedProject) return inactive(root);
   root = activatedProject;
-  if (request.work !== undefined) throw new Error("Conceptor task checkpoints were removed; keep task state in the native workflow and omit work");
+  if (request.work !== undefined) throw new Error("Legacy work checkpoints are unsupported; use the apply-plan interface and omit work");
   if (!request.lenses?.length && !request.concepts?.length) throw new Error('Reconcile needs explicit Lens or Concept identities');
   const records = await loadMeaning(root);
   const lenses = selectLenses(records, request);
@@ -161,7 +173,7 @@ export async function reconcile(root, request = {}) {
     const lensCheckResults = [];
     for (const check of lens.checks ?? []) {
       const binding = { hash: hash(check.conditions.map(reference => conditionOf(records, reference).concept.hash)) };
-      const receipt = await obtainCheck(root, lens, binding, check, request.runChecks === true);
+      const receipt = await obtainCheck(root, lens, binding, check, request);
       receipts.push(receipt);
       lensCheckResults.push({ check, receipt });
     }
@@ -224,7 +236,7 @@ export async function reconcile(root, request = {}) {
       verdicts.push({ condition: reference, lens: lens.id, meaningHash: concept.hash, lensHash: lens.hash, participants, status, scope: 'Only this condition and selected participants; no whole-Concept or application certificate' });
     }
   }
-  const result = { verdicts, receipts, observations, discovery, independentSource: independent, status: !verdicts.length || verdicts.some(item => item.status === 'unresolved') ? 'unresolved' : verdicts.some(item => item.status === 'mismatch') ? 'mismatch' : 'supported' };
+  const result = { format: evidenceFormat, project: root, verdicts, receipts, observations, discovery, independentSource: independent, status: !verdicts.length || verdicts.some(item => item.status === 'unresolved') ? 'unresolved' : verdicts.some(item => item.status === 'mismatch') ? 'mismatch' : 'supported' };
   if (verdicts.some(item => item.status === 'mismatch')) result.status = 'mismatch';
   if (!verdicts.length) result.reason = 'No accepted Lens observes the selected meaning';
   result.observedMismatches = observedMismatches;

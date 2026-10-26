@@ -28,11 +28,19 @@ function run(command, args, capture = false) {
   return result.stdout;
 }
 
-// npm owns the portable dependency closure; the installer copies this bundle.
-run(process.execPath, [npm, 'ci', '--prefix', source, '--ignore-scripts']);
 await fs.mkdir(build, { recursive: true });
-const stage = await fs.mkdtemp(path.join(build, 'prepare-'));
+if (await fs.realpath(build) !== build) throw new Error('Build directory must stay inside this checkout.');
+// One fixed staging slot prevents repeated interrupted builds accumulating folders.
+// An existing slot requires the caller to establish ownership before removing it.
+const stage = path.join(build, 'prepare');
+try { await fs.mkdir(stage); }
+catch (error) {
+  if (error.code === 'EEXIST') throw new Error(`Preparation is already running or was interrupted. Inspect and reconcile ${stage} before retrying.`);
+  throw error;
+}
 try {
+  // npm owns the portable dependency closure; the installer copies this bundle.
+  run(process.execPath, [npm, 'ci', '--prefix', source, '--ignore-scripts']);
   const result = JSON.parse(run(process.execPath, [npm, 'pack', source, '--ignore-scripts', '--json', '--pack-destination', stage], true));
   // npm 12 keys JSON by package name; earlier versions return an array.
   const packed = Array.isArray(result) ? result[0] : result['conceptor'];

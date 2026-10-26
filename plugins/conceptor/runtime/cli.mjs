@@ -3,12 +3,12 @@ import path from 'node:path';
 import { focus, revisit, reconcile } from './conceptor.mjs';
 import { observe } from './providers/index.mjs';
 import { readJson } from './state.mjs';
-import { activate, deactivate, activationStatus, projectRoot, activeRoot, inactive } from './activation.mjs';
+import { projectRoot, activeRoot, inactive } from './activation.mjs';
 
 async function main() {
   const [command, ...args] = process.argv.slice(2);
   if (!command || command === '--help' || command === 'help') {
-    console.log('Conceptor -- Concept Projector\nCommands: activate, deactivate, status, focus, revisit, reconcile, observe\nUsage: conceptor COMMAND [--root PATH] [--request REQUEST.json]\nConceptor runs only in activated projects. The agent handles ordinary requests through the installed skills.');
+    console.log('Conceptor\nCommands: focus, revisit, reconcile, observe, apply-plan\nUsage: conceptor COMMAND [--root PATH] [--request -|REQUEST.json]\nUse --request - for JSON on stdin. A root .conceptor directory makes a project active.');
     return;
   }
   const options = {};
@@ -16,17 +16,24 @@ async function main() {
     if (!['--root', '--request'].includes(args[index]) || !args[index + 1]) throw new Error(`Unknown or incomplete option: ${args[index]}`);
     options[args[index].slice(2)] = args[index + 1];
   }
-  const root = options.root ? path.resolve(options.root) : await projectRoot(process.cwd());
-  const operations = { activate, deactivate, status: activationStatus, focus, revisit, reconcile, observe };
+  const root = await projectRoot(options.root ? path.resolve(options.root) : process.cwd());
+  const operations = { focus, revisit, reconcile, observe, 'apply-plan': async (root, request) => (await import('./apply-plan.mjs')).applyPlan(root, request) };
   if (!operations[command]) throw new Error(`Unknown command: ${command}`);
-  if (!['activate', 'deactivate', 'status'].includes(command) && !await activeRoot(root)) {
+  if (!await activeRoot(root)) {
     console.log(JSON.stringify(inactive(root), null, 2));
     return;
   }
-  const request = options.request ? await readJson(path.resolve(options.request)) : {};
+  let request = {};
+  if (options.request === '-') {
+    let input = '';
+    process.stdin.setEncoding('utf8');
+    for await (const chunk of process.stdin) input += chunk;
+    request = JSON.parse(input);
+  } else if (options.request) request = await readJson(path.resolve(options.request));
+  if (!request || typeof request !== 'object' || Array.isArray(request)) throw new Error('Request must be a JSON object');
   const result = await operations[command](root, request);
   console.log(JSON.stringify(result, null, 2));
   if (result.status === 'mismatch') process.exitCode = 1;
-  else if (['unresolved', 'unavailable'].includes(result.status)) process.exitCode = 2;
+  else if (['unresolved', 'unavailable', 'recovery-required'].includes(result.status)) process.exitCode = 2;
 }
 main().catch(error => { console.error(`Conceptor: ${error.message}`); process.exitCode = 2; });

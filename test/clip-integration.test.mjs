@@ -1,5 +1,3 @@
-import './user-state.mjs';
-import { activate } from '../plugins/conceptor/runtime/activation.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -19,7 +17,7 @@ async function copyFixture(t) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'conceptor-clip-'));
   await fs.cp(fixture, root, { recursive: true });
   t.after(() => fs.rm(root, { recursive: true, force: true }));
-  await activate(root);
+  await fs.mkdir(path.join(root, '.conceptor'), {recursive:true});
   await editLens(root, lens => {
     for (const check of lens.checks) if (check.command === 'node') check.command = process.execPath;
   });
@@ -71,7 +69,7 @@ test('new handwritten export refreshes Units and requires explicit evidence cove
   const original = first.selections[0].selectors.find(item => item.id === 'js-playback').units;
   await fs.writeFile(path.join(root, 'js/handwritten-export.mjs'),
     'export function exportNotes(clip, offset) { return clip.notes.map(({pitch, ...timing}) => ({...timing, pitch: pitch + offset})); }\n');
-  const refreshed = await revisit(root, { lenses: ['clip-playback'] });
+  const refreshed = await revisit(root, { lenses: ['clip-playback'], previous: first });
   assert.ok(refreshed.selections[0].added.includes('js/handwritten-export.mjs'));
   assert.equal(refreshed.selections[0].selectors.find(item => item.id === 'js-playback').units.length, original.length + 1);
   const uncovered = await reconcile(root, { lenses: ['clip-playback'], runChecks: true });
@@ -95,7 +93,7 @@ console.log('New handwritten export verified');\n`);
   const unit = changed.selections[0].selectors.flatMap(item => item.units).find(item => item.path === 'js/handwritten-export.mjs');
   assert.equal(unit.sourceHash, hash(await fs.readFile(file)));
   assert.notEqual(unit.sourceHash, covered.discovery.selections[0].selectors.flatMap(item => item.units).find(item => item.path === unit.path).sourceHash);
-  const stale = await reconcile(root, { lenses: ['clip-playback'] });
+  const stale = await reconcile(root, { lenses: ['clip-playback'], previous: covered });
   assert.equal(participant(stale, 'clip#playback-isolation', unit.path).status, 'unresolved');
 });
 

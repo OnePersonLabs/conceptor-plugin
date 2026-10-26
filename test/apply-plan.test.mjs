@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { applyPlan, APPLY_PLAN_PATH, APPLY_PLAN_PENDING_PATH, APPLY_PLAN_LIMIT_BYTES } from '../plugins/conceptor/runtime/apply-plan.mjs';
 
 async function project(t, { git = true, ignorePending = true } = {}) {
@@ -28,6 +29,41 @@ const requestA = {
     { id: 'implementation', text: 'Implement endpoint.', dependsOn: ['contract'] }
   ]
 };
+
+test('Git CRLF checkout remains readable and revision checks bind the actual bytes', async t => {
+  const root = await project(t);
+  const first = await applyPlan(root, requestA);
+  const file = path.join(root, APPLY_PLAN_PATH);
+  const crlf = first.plan.serialized.replaceAll('\n', '\r\n');
+  await fs.writeFile(file, crlf);
+  const read = await applyPlan(root);
+  assert.equal(read.revision, createHash('sha256').update(crlf).digest('hex'));
+  assert.deepEqual(read.plan.units, first.plan.units);
+  await assert.rejects(applyPlan(root, { action: 'update', expectedRevision: first.revision, units: [] }), /Stale/);
+  const updated = await applyPlan(root, { action: 'update', expectedRevision: read.revision, units: [] });
+  assert.deepEqual(updated.plan.units, []);
+  await fs.writeFile(file, '\uFEFF' + updated.plan.serialized);
+  await assert.rejects(applyPlan(root), /invalid YAML frontmatter/);
+});
+
+test('interrupted UTF-8 pending bytes retain exact recovery identity', async t => {
+  const root = await project(t);
+  const partial = Buffer.from([0xe2, 0x82]);
+  await fs.writeFile(path.join(root, APPLY_PLAN_PENDING_PATH), partial);
+  const read = await applyPlan(root);
+  assert.equal(read.pending.valid, false);
+  assert.equal(read.pending.pendingRevision, createHash('sha256').update(partial).digest('hex'));
+  await applyPlan(root, { action: 'recover', mode: 'discard', expectedRevision: null, expectedPendingRevision: read.pending.pendingRevision, ownedCheckout: true, soleRecoveryActor: true, reconciled: true });
+  assert.equal((await applyPlan(root)).status, 'absent');
+});
+
+test('apply-plan cannot treat an example directory as a separate Git root', async t => {
+  const root = await project(t);
+  const nested = path.join(root, 'example');
+  await fs.mkdir(path.join(nested, '.conceptor'), { recursive: true });
+  await assert.rejects(applyPlan(nested, requestA), /repository or worktree root/);
+  assert.equal((await applyPlan(root)).status, 'absent');
+});
 
 test('accept records an ordered readable plan and replay is idempotent', async t => {
   const root = await project(t);
@@ -293,6 +329,16 @@ test('completed units and the final plan removal can share their implementation 
     units: [{ id: 'verify', text: 'Verify endpoint behavior.' }]
   });
   execFileSync('git', ['add', 'endpoint.mjs', APPLY_PLAN_PATH], { cwd: root });
+  const beforeCompletion = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' });
+  const failedCommit = spawnSync('git', ['-c', 'user.name=', '-c', 'user.email=', 'commit', '-qm', 'Implement endpoint'], { cwd: root, encoding: 'utf8' });
+  assert.notEqual(failedCommit.status, 0);
+  assert.equal(execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }), beforeCompletion);
+  // A fresh reader sees removed work in the live plan, but HEAD still records it.
+  // Recovery must inspect the staged code and both records, not replay implementation.
+  assert.deepEqual((await applyPlan(root)).plan.units.map(unit => unit.id), ['verify']);
+  assert.match(execFileSync('git', ['show', `HEAD:${APPLY_PLAN_PATH}`], { cwd: root, encoding: 'utf8' }), /`implement`/);
+  assert.doesNotMatch(execFileSync('git', ['show', `:${APPLY_PLAN_PATH}`], { cwd: root, encoding: 'utf8' }), /`implement`/);
+  assert.equal(await fs.readFile(path.join(root, 'endpoint.mjs'), 'utf8'), 'export const endpoint = true;\n');
   execFileSync('git', ['commit', '-qm', 'Implement endpoint'], { cwd: root });
   const implementationCommit = execFileSync('git', ['show', '--pretty=format:', '--name-status', 'HEAD'], { cwd: root, encoding: 'utf8' });
   assert.match(implementationCommit, /A\s+endpoint\.mjs/);
@@ -303,16 +349,28 @@ test('completed units and the final plan removal can share their implementation 
   await fs.writeFile(path.join(root, 'verification.txt'), 'endpoint behavior verified\n');
   await applyPlan(root, { action: 'finish', expectedRevision: complete.revision, verified: true });
   execFileSync('git', ['add', '-A', '.conceptor', 'verification.txt'], { cwd: root });
+  assert.notEqual(spawnSync('git', ['-c', 'user.name=', '-c', 'user.email=', 'commit', '-qm', 'Finish'], { cwd: root, encoding: 'utf8' }).status, 0);
+  assert.equal((await applyPlan(root)).status, 'absent');
+  assert.match(execFileSync('git', ['show', `HEAD:${APPLY_PLAN_PATH}`], { cwd: root, encoding: 'utf8' }), /`verify`/);
+  assert.match(execFileSync('git', ['diff', '--cached', '--name-status'], { cwd: root, encoding: 'utf8' }), /D\s+\.conceptor\/APPLY_PLAN\.md/);
   execFileSync('git', ['commit', '-qm', 'Verify endpoint and finish plan'], { cwd: root });
   const finishCommit = execFileSync('git', ['show', '--pretty=format:', '--name-status', 'HEAD'], { cwd: root, encoding: 'utf8' });
   assert.match(finishCommit, /D\s+\.conceptor\/APPLY_PLAN\.md/);
   assert.match(finishCommit, /A\s+verification\.txt/);
+  assert.equal((await applyPlan(root)).status, 'absent');
+  assert.match(execFileSync('git', ['show', `HEAD^:${APPLY_PLAN_PATH}`], { cwd: root, encoding: 'utf8' }), /change-1/);
 });
 
 test('pending path must be ignored by Git before writes', async t => {
   const root = await project(t, { ignorePending: false });
   await assert.rejects(applyPlan(root, requestA), /Add .conceptor\/APPLY_PLAN.md.pending/);
   assert.deepEqual(await fs.readdir(path.join(root, '.conceptor')), []);
+  await fs.writeFile(path.join(root, '.gitignore'), `${APPLY_PLAN_PENDING_PATH}\n`);
+  await fs.writeFile(path.join(root, APPLY_PLAN_PENDING_PATH), '');
+  execFileSync('git', ['add', '--force', APPLY_PLAN_PENDING_PATH], { cwd: root });
+  await fs.unlink(path.join(root, APPLY_PLAN_PENDING_PATH));
+  // An ignore pattern does not stop Git tracking an already indexed path.
+  await assert.rejects(applyPlan(root, requestA), /Add .conceptor\/APPLY_PLAN.md.pending/);
 });
 
 test('physical .conceptor root is required', async t => {
@@ -323,4 +381,3 @@ test('physical .conceptor root is required', async t => {
   await fs.symlink(outside, path.join(root, '.conceptor'), 'junction');
   await assert.rejects(applyPlan(root), /physical \.conceptor directory/);
 });
-

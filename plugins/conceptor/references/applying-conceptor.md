@@ -1,8 +1,8 @@
 # Applying Conceptor to a change
 
-Conceptor preserves what a system must do, why it matters, and where implementation and evidence bear on that meaning. Use it to make the next decision without reconstructing the full history. The working loop is: recover relevant meaning, predict consequences, implement, compare actual effects, reconcile, and retain useful learning. Code remains revisable; an implementation discovery can justify an explicit meaning decision.
+Conceptor preserves what a system must do, why it matters, and where implementation and evidence bear on that meaning. Use it to make the next decision without reconstructing the full history. The shared reasoning loop is: recover relevant meaning, predict consequences, implement when authorized, compare actual effects, reconcile, and retain useful learning. Code remains revisable; an implementation discovery can justify an explicit meaning decision.
 
-Use this reference when a Conceptor skill needs deeper reasoning about meaning and evidence. Keep task-specific state in the native workflow. Discovery helpers are optional; their [request contracts](guide.md) define what they can establish. Conceptor does not inject this guidance or enforce a session cadence.
+Use this reference from `$conceptor:plan-change` and `$conceptor:apply-change`. Planning does not change accepted meaning or implementation. During authorized implementation, the one checkout-level `.conceptor/APPLY_PLAN.md` records accepted requests and remaining work; the [skills](../skills/apply-change/SKILL.md) define its lifecycle. Discovery helpers are optional; their [request contracts](guide.md) define what they can establish. Conceptor does not inject guidance or enforce an assessment cadence.
 
 ## Recover the governing meaning
 
@@ -23,7 +23,7 @@ Follow relevant upstream constraints and downstream consequences. `focus.related
 When incoming constraints or dependents matter, search authored meaning for the exact selected identity. For example, from the project root:
 
 ```text
-rg -n -F -g '*.md' -g '!**/archive/**' 'clip' .conceptor/meaning
+rg -n -F -g '*.md' 'clip' .conceptor/meaning
 ```
 
 Read the matched records' frontmatter. Keep only relevant Relations whose `target` is the selected ID; other mentions are leads, not edges. Read each Relation's `type`, `status`, source record, and governing prose. Preserve `observed` versus `accepted`. Follow another endpoint only when it can change the current decision. Native search is discovery, not proof that all semantic relationships are modeled.
@@ -36,15 +36,15 @@ Use this comparison when the goal changes, evidence invalidates an assumption, o
 2. Describe the simplest coherent approach before adapting it to current code.
 3. Compare responsibilities, consumers, state transitions and recovery paths. Identify missed requirements, replaceable mechanisms, obsolete obligations and unresolved decisions.
 4. Choose the approach by remaining implementation, migration, verification and maintenance cost. Preserve required capabilities through their real consumers.
-5. Explain the decision and acceptance evidence. Update the owning meaning record when an accepted decision changes it; leave task tracking to the native workflow.
+5. Explain the decision and acceptance evidence. Update the owning meaning record when an authorized decision changes it; keep only remaining implementation work in the apply plan.
 
-No hook blocks tools, counts compactions or requires a saved comparison account.
+Reassess when accepted intent changes, evidence invalidates an assumption, or repeated failures challenge the approach. No hook blocks tools, counts compactions, or requires a saved comparison account. After compaction, recover from the apply plan and inspect actual meaning, Git state, source changes, and applicable evidence.
 
 ## Connect the changed rule to its consumers
 
 Use the current Lens population as a starting map. Check whether the change affects identity, ownership, lifetime, state transitions, shared contracts, storage/replay, eligibility, concurrency, or a public interaction. If it does, trace the affected rule from its source of truth through actual dispatch and relevant consumers. Include unchanged consumers when their assumptions change.
 
-Before accepting that design, make these answers inspectable in the native task context when the work needs retained reasoning:
+Before accepting that design, make these answers inspectable in the proposal or live apply plan when retained reasoning is useful:
 
 - Which condition or authoritative prose governs the changed rule, and why?
 - Which owner produces the relevant state? Which consumers rely on it?
@@ -99,8 +99,8 @@ At design time and after actual changes, compare traced participants with the af
 1. Read the Lens's conditions and intended population. Verify selectors against actual paths. Include unsafe and incomplete realizations; selection must not depend on passing the property being checked.
 2. Update affected selectors for the responsibility change. Keep the same Concept and Lens identities when meaning stays the same. File-based Unit bindings are derived; do not create another editable Unit inventory.
 3. Review affected condition references, observation requests, check inputs, evidence kind, target, and coverage. A selected new participant cannot inherit an old check's support without evidence that the check covers it. Never use `coverage: selection` merely to silence a gap.
-4. Refresh affected bindings with `revisit` when it saves work. Inspect added/removed participants and unresolved selection. A native source check can establish the needed scope without a helper call. If the population cannot be established, retain that unresolved scope and its next decision in the native task context.
-5. Finish known affected Lens updates with the implementation, or state the specific remaining dependency at handoff. Do not claim synchronization from a refreshed cache when the authored selector still omits a known participant.
+4. Refresh affected bindings with `revisit` when it saves work. Inspect added/removed participants and unresolved selection. A native source check can establish the needed scope without a helper call. If the population cannot be established, retain that unresolved scope and its next decision in the apply plan or caller handoff.
+5. Finish known affected Lens updates with the implementation, or state the specific remaining dependency at handoff. Do not claim synchronization from a fresh observation when the authored selector still omits a known participant.
 
 A correct broad selector may already cover a new realization. Keep the glob when its population is still right; assess the new participant's role and check coverage. Remove a participant because its responsibility ended, not because excluding it hides a mismatch.
 
@@ -110,7 +110,7 @@ Attach or revise repeatable checks when they provide useful evidence for the con
 
 Give a worker the governing meaning pointers, changed contract, settled shared interfaces, actual consumers, write boundary, and required evidence. Include what must remain valid. The worker returns unexpected dependencies rather than extending its write scope. The root integrates the full consumer path; separate component passes do not multiply into application acceptance.
 
-Use the native host's producer, edit and recovery paths. Do not add a second scheduler or invalidation registry merely to coordinate this work. Keep the complete intended outcome visible while finishing connected behavior. Explain its ownership, main flow, and consequential failure behavior through clear interfaces and nearby reasons, then demonstrate the affected behavior in its real consumer under existing verification rules.
+Use the native host's producer, edit and recovery paths. Do not add a second scheduler or invalidation registry merely to coordinate this work. Keep the complete intended outcome visible in the apply plan while finishing connected behavior. Explain its ownership, main flow, and consequential failure behavior through clear interfaces and nearby reasons, then demonstrate the affected behavior in its real consumer under existing verification rules.
 
 ## Compare results and reassess the premise
 
@@ -161,17 +161,17 @@ Keep physical hardware, native lifecycle, acoustic output, and timing claims wit
 
 ## Routine changes and useful reuse
 
-For an explanatory button-label edit whose action, state, ownership, persistence, and accessibility meaning stay unchanged, inspect current context and make the edit. Use the existing appropriate rendered check when required. No new Concept, Lens, provider query, consumer inventory, checkpoint, or permanent test is needed. If the label changes the action promised to the user, inspect that interaction contract.
+For an explanatory button-label edit whose action, state, ownership, persistence, and accessibility meaning stay unchanged, inspect current context and make the edit. Use the existing appropriate rendered check when required. No new Concept, Lens, provider query, consumer inventory, or permanent test is needed. If the label changes the action promised to the user, inspect that interaction contract.
 
 For a new exporter already matched by a correct `src/export/*.mjs` selector, preserve the glob. Refresh membership when using the helper and inspect whether the existing check covers the new behavior. Preserve current evidence for unaffected participants; keep uncovered behavior unresolved. No new Concept is needed merely because there is a new file.
 
-Retain a current participant trace until relevant source, responsibilities, membership, or governing meaning changes. Do not repeat discovery solely because another prompt arrived or a different agent resumed. Read relevant fields from saved results instead of copying source inventories and hashes into every packet.
+Reuse an explicitly supplied participant trace only while its source, responsibilities, membership, and governing meaning remain applicable. Revalidate its bindings before reuse. Do not repeat discovery solely because a different agent resumed; do repeat it when inputs changed or the evidence does not answer the current question.
 
 ## Retain learning and hand off
 
 When a discovery changes where future work should look, update the existing Lens, Relation, or Concept that owns it. Preserve observed-versus-accepted status. Retain a Pattern Candidate only when its explanation could guide plausible future work; include alternatives, counterexamples, and reopening assumptions. Do not promote a repaired incident into a universal rule or retain a permanent symptom catalogue.
 
-Return decision-relevant evidence and unresolved scope to the native task context. The caller owns cross-turn retention of original failures and recovery information. Conceptor's expiring cache is not an archive. Preserve accepted conditions, reasons and exceptions in authored meaning.
+Return decision-relevant evidence and unresolved scope to the apply plan or caller. Conceptor does not persist an evidence cache. Preserve accepted conditions, reasons, and exceptions in authored meaning. The apply plan is bounded to 64 KiB, contains only remaining implementation work, and is removed in the final verified completion commit. Its one fixed sibling pending file is also bounded to 64 KiB and is recovery state, not another durable record.
 
 A useful handoff identifies the integrated behavior and actual diff/commit, maintained bindings, current evidence and limits, remaining decisions, and ownership. For plugin work, distinguish source changes, installed bundles, and session-loaded guidance. A source edit does not hot-reload an existing session.
 

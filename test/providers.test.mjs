@@ -1,5 +1,3 @@
-import './user-state.mjs';
-import { activate, deactivate } from '../plugins/conceptor/runtime/activation.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -15,7 +13,7 @@ const pluginRequire = createRequire(new URL('../plugins/conceptor/package.json',
 async function fixture(t, files) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(),'conceptor-providers-'));
   t.after(() => fs.rm(root,{recursive:true,force:true}));
-  await activate(root);
+  await fs.mkdir(path.join(root, '.conceptor'), {recursive:true});
   for (const [file,text] of Object.entries(files)) {
     await fs.mkdir(path.dirname(path.join(root,file)),{recursive:true});
     await fs.writeFile(path.join(root,file),text);
@@ -25,11 +23,10 @@ async function fixture(t, files) {
 
 test('inactive observation does not inspect source or invoke a configured provider', async t => {
   const root = await fixture(t, {});
-  await deactivate(root);
+  await fs.rename(path.join(root, '.conceptor'), path.join(root, 'saved-meaning'));
   const result = await observe(root, { provider: 'lsp', files: ['../invalid'], config: { command: 'missing-provider' } });
   assert.equal(result.status, 'inactive');
   assert.equal(result.facts, undefined);
-  await assert.rejects(fs.access(path.join(root, '.conceptor/cache')), { code: 'ENOENT' });
 });
 async function server(t, mode = 'normal') {
   const root = await fixture(t, {'src/main.rs':'fn main() {}','src/second.rs':'fn second() {}'});

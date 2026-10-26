@@ -1,5 +1,3 @@
-import './user-state.mjs';
-import { activate, deactivate } from '../plugins/conceptor/runtime/activation.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -9,15 +7,14 @@ import { promisify } from 'node:util';
 import { execFile } from 'node:child_process';
 import { stringify } from 'yaml';
 import { focus, revisit, reconcile } from '../plugins/conceptor/runtime/conceptor.mjs';
-import { hash, projectPath, writeText } from '../plugins/conceptor/runtime/state.mjs';
-import { storagePaths } from '../plugins/conceptor/runtime/storage.mjs';
+import { hash, projectPath } from '../plugins/conceptor/runtime/state.mjs';
 const run = promisify(execFile);
 const cli = path.resolve('plugins/conceptor/runtime/cli.mjs');
 
 async function fixture(t) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'v5-core-'));
   t.after(() => fs.rm(root, { recursive: true, force: true }));
-  await activate(root);
+  await fs.mkdir(path.join(root, '.conceptor'), {recursive:true});
   await fs.mkdir(path.join(root, 'src'));
   await fs.mkdir(path.join(root, 'checks'));
   await fs.writeFile(path.join(root, 'src/a.mjs'), 'export const answer = 42;\n');
@@ -28,14 +25,15 @@ async function fixture(t) {
   return { root, lens };
 }
 async function meaning(root, name, metadata, body = 'Reasons and examples remain readable without Conceptor.') {
-  await writeText(path.join(root, `.conceptor/meaning/${name}.md`), `---\n${stringify(metadata)}---\n${body}\n`);
+  await fs.mkdir(path.join(root, '.conceptor/meaning'), { recursive:true });
+  await fs.writeFile(path.join(root, `.conceptor/meaning/${name}.md`), `---\n${stringify(metadata)}---\n${body}\n`);
 }
 test('inactive entrypoints bypass invalid requests and preserve project data', async t => {
   const { root } = await fixture(t);
-  await deactivate(root);
-  const before = await fs.readFile(path.join(root, '.conceptor/meaning/concept.md'));
+  await fs.rename(path.join(root, '.conceptor'), path.join(root, 'saved-meaning'));
+  const before = await fs.readFile(path.join(root, 'saved-meaning/meaning/concept.md'));
   for (const operation of [focus, revisit, reconcile]) assert.equal((await operation(root, undefined)).status, 'inactive');
-  assert.deepEqual(await fs.readFile(path.join(root, '.conceptor/meaning/concept.md')), before);
+  assert.deepEqual(await fs.readFile(path.join(root, 'saved-meaning/meaning/concept.md')), before);
   const result = await run(process.execPath, [cli, 'focus', '--root', root, '--request', path.join(root, 'does-not-exist.json')]);
   assert.equal(JSON.parse(result.stdout).status, 'inactive');
 });
@@ -67,9 +65,10 @@ test('missing Lens and missing required population are unresolved; allowed absen
 
 test('new consumer, stale body, changed check, and static evidence cannot inherit runtime support', async t => {
   const { root, lens } = await fixture(t);
-  assert.equal((await reconcile(root, { lenses: ['lens'], runChecks: true })).status, 'supported');
+  const first = await reconcile(root, { lenses: ['lens'], runChecks: true });
+  assert.equal(first.status, 'supported');
   await fs.writeFile(path.join(root, 'src/b.mjs'), 'export const unsafe = true;\n');
-  const discovery = await revisit(root, { lenses: ['lens'] });
+  const discovery = await revisit(root, { lenses: ['lens'], previous: first });
   assert.ok(discovery.selections[0].added.includes('src/b.mjs'));
   const next = await reconcile(root, { lenses: ['lens'], runChecks: true });
   assert.equal(next.verdicts[0].participants.find(item => item.unit.path === 'src/b.mjs').status, 'unresolved');
@@ -83,20 +82,41 @@ test('new consumer, stale body, changed check, and static evidence cannot inheri
 
 test('unrelated drift retains evidence while target and meaning revisions stale it', async t => {
   const { root, lens } = await fixture(t);
-  await reconcile(root, { lenses: ['lens'], runChecks: true });
+  const first = await reconcile(root, { lenses: ['lens'], runChecks: true });
   await fs.writeFile(path.join(root, 'unrelated.txt'), 'independent native work');
-  assert.equal((await reconcile(root, { lenses: ['lens'] })).status, 'supported');
+  assert.equal((await reconcile(root, { lenses: ['lens'], previous: first })).status, 'supported');
   lens.checks[0].target = 'another-target';
   await meaning(root, 'lens', lens);
+  assert.equal((await reconcile(root, { lenses: ['lens'], previous: first })).status, 'unresolved');
+});
+
+test('receipt reuse is explicit, bound to the checkout, and does not alter prior observations', async t => {
+  const { root } = await fixture(t);
+  await fs.writeFile(path.join(root, 'checks/pass.mjs'), 'import fs from "node:fs"; fs.appendFileSync("runs.txt", "run\\n");');
+  const previous = await reconcile(root, { lenses: ['lens'], runChecks: true });
+  const original = structuredClone(previous);
   assert.equal((await reconcile(root, { lenses: ['lens'] })).status, 'unresolved');
+  assert.equal((await reconcile(root, { lenses: ['lens'], previous })).status, 'supported');
+  const inconsistent = structuredClone(previous);
+  inconsistent.receipts[0].exitCode = 1;
+  assert.equal((await reconcile(root, { lenses: ['lens'], previous: inconsistent })).status, 'unresolved');
+  assert.equal(await fs.readFile(path.join(root, 'runs.txt'), 'utf8'), 'run\n');
+  const { root: other } = await fixture(t);
+  const foreign = await reconcile(other, { lenses: ['lens'], previous });
+  assert.equal(foreign.status, 'unresolved');
+  const rebound = await reconcile(other, { lenses: ['lens'], previous: { ...previous, project: other } });
+  assert.equal(rebound.status, 'unresolved');
+  await fs.appendFile(path.join(root, 'src/a.mjs'), '// drift\n');
+  assert.equal((await reconcile(root, { lenses: ['lens'], previous })).status, 'unresolved');
+  assert.deepEqual(previous, original);
 });
 
 test('moved implementations retain meaning identity; a candidate Lens needs explicit acceptance', async t => {
   const { root, lens } = await fixture(t);
-  await reconcile(root, {lenses:['lens'],runChecks:true});
+  const receipt = await reconcile(root, {lenses:['lens'],runChecks:true});
   const before = (await focus(root, {concepts:['idea']})).meaning[0];
   await fs.rename(path.join(root, 'src/a.mjs'), path.join(root, 'src/moved.mjs'));
-  const moved = await revisit(root, {lenses:['lens']});
+  const moved = await revisit(root, {lenses:['lens'],previous:receipt});
   assert.ok(moved.selections[0].added.includes('src/moved.mjs'));
   assert.ok(moved.selections[0].removed.includes('src/a.mjs'));
   assert.equal((await reconcile(root, {lenses:['lens']})).status, 'unresolved');
@@ -174,7 +194,6 @@ test('final publication returns original failure when a later Lens invalidates i
   await fs.writeFile(path.join(root, 'checks/pass.mjs'), 'process.exitCode = 1;\n');
   await fs.writeFile(path.join(root, 'settings.json'), 'original-again');
   const failed = await reconcile(root, { lenses: ['lens', 'other-lens'], runChecks: true });
-  await fs.rm((await storagePaths(root)).cache, { recursive: true, force: true });
   const original = failed.observedMismatches.find(verdict => verdict.lens === 'lens');
   assert.equal(original.receipt.exitCode, 1);
   assert.ok(original.receipt.scope.inputs.some(input => input.path === 'settings.json' && input.hash === hash('original-again')));
@@ -184,17 +203,16 @@ test('revisit refreshes directive boundaries and literal queries beyond saved se
   const { root, lens } = await fixture(t);
   lens.selectors[0].patterns = ['src/a.mjs'];
   await meaning(root, 'lens', lens);
-  await revisit(root, { lenses: ['lens'], paths: ['src/**'] });
+  const previous = await revisit(root, { lenses: ['lens'], paths: ['src/**'] });
   await fs.writeFile(path.join(root, 'src/new-export.mjs'), 'export const useIdea = true;\n');
-  const result = await revisit(root, { lenses: ['lens'], paths: ['src/**'], query: 'useIdea' });
+  const result = await revisit(root, { lenses: ['lens'], paths: ['src/**'], query: 'useIdea', previous });
   assert.ok(result.discoveryQuestions.some(question => question.path === 'src/new-export.mjs'));
   assert.ok(result.observations.some(observation => observation.facts.some(fact => fact.kind === 'literal-occurrence' && fact.path === 'src/new-export.mjs')));
 });
 
-test('cache deletion preserves meaning and CLI exposes unsupported results', async t => {
+test('missing prior evidence preserves meaning and CLI exposes unsupported results', async t => {
   const { root } = await fixture(t);
   await reconcile(root, { lenses: ['lens'], runChecks: true });
-  await fs.rm((await storagePaths(root)).cache, { recursive: true, force: true });
   assert.ok((await focus(root, { concepts: ['idea'] })).meaning[0].body.includes('exception'));
   const refreshed = await revisit(root, { lenses: ['lens'] });
   assert.equal(refreshed.selections[0].baseline, 'missing');
@@ -214,8 +232,8 @@ test('noisy checks drain both streams with bounded output and reusable evidence'
   assert.equal(Buffer.byteLength(receipt.output.stderr), 65536);
   assert.equal(receipt.output.stdoutTruncated, true);
   assert.equal(receipt.output.stderrTruncated, true);
-  assert.equal((await reconcile(root, { lenses: ['lens'] })).receipts[0].id, receipt.id);
-  await assert.rejects(focus(root, { work: 'old-task' }), /checkpoints were removed/);
+  assert.equal((await reconcile(root, { lenses: ['lens'], previous: first })).receipts[0].id, receipt.id);
+  await assert.rejects(focus(root, { work: 'old-task' }), /Legacy work checkpoints/);
 });
 
 test('outside-root paths and escaped symlinks are refused before source reads', async t => {

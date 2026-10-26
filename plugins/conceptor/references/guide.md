@@ -2,39 +2,87 @@
 
 Use [Applying Conceptor](applying-conceptor.md) to turn meaning, participant selection, and evidence into implementation decisions and maintain affected Lenses. This guide owns artifact syntax and helper operation details.
 
-## Activation
+## Project state
 
-Use `$conceptor:enable-conceptor` to enable or disable a project explicitly. Native skill discovery loads guidance on demand; there are no Conceptor lifecycle hooks or injected AGENTS.md instructions.
-
-Activation is one local user setting keyed by the canonical physical project path. Runtime searches ancestors only within the nearest Git boundary. A nested repository or separate worktree needs its own opt-in. Windows and WSL have independent activation settings. Status reads do not create state.
-
-`activate` saves and verifies the setting before removing an empty legacy `.conceptor/active` marker. A legacy marker alone reports inactive with migration guidance. Other legacy work/cache files are not automatically migrated or deleted: inspect any unresolved recovery before discarding them. `deactivate` removes local opt-in, preserving authored meaning and source files.
+Conceptor is active when `.conceptor/` exists at the selected repository root. Resolve the nearest repository root; a nested repository or a worktree has its own `.conceptor/` and target. The CLI does not activate, deactivate, or report activation. There is no marker file, external activation registry, lifecycle hook, or injected instruction file.
 
 ## Authority and storage
 
-Store authored Markdown with YAML frontmatter under `.conceptor/meaning/`. The loader reads nested directories and excludes archives from default discovery. Concepts, typed Relations, Projection Units, Pattern Candidates, and Projection Lenses supply navigation and scoped evidence. Authoritative meaning remains usable without this plugin.
+Store authored Markdown with YAML frontmatter under `.conceptor/meaning/`. Concepts, typed Relations, Projection Units, Pattern Candidates, and Projection Lenses supply navigation and scoped evidence. Authoritative meaning remains usable without this plugin. Use Git history instead of archive directories.
 
 Every meaning file has `id`, `kind` (`concept`, `lens`, or `pattern`), `title`, and `status` (`accepted`, `candidate`, or `retired`). Put reasons, exceptions, examples, alternatives, and reopening assumptions in the Markdown body. Keep summaries linked to these files.
 
 Concept `conditions` contain `id`, `text`, `evidence` (`runtime` or `static`), and optional `allowsAbsence`. Typed `relations` contain `type`, `target`, and `status` (`observed` or `accepted`). Pattern Candidates contain `concepts`, `examples`, `counterexamples`, `alternatives`, and optional `lens`. Set a Pattern to `accepted` only through an explicit meaning decision.
 
-### Local settings and disposable evidence
+### Apply plan and bounded recovery
 
-Only authored meaning belongs in the project. Conceptor stores local settings and reusable evidence outside the checkout:
+While implementation remains, `.conceptor/APPLY_PLAN.md` records accepted request identities and revisions, a concise intent summary, the affected target and starting state, remaining implementation units in dependency order, and essential reasons, decisions, uncertainties, and recovery information. It contains no completed-task history, transcript, raw logs, or duplicate meaning. Remove a unit in the commit that completes it; remove the whole plan in the final verified completion commit. The runner or native workflow owns GitHub issues, branches, commits, and publication.
 
-| Host | Default home |
-| --- | --- |
-| Windows | `%LOCALAPPDATA%/Conceptor` |
-| Linux / WSL | `$XDG_STATE_HOME/conceptor`, or `~/.local/state/conceptor` |
-| macOS | `~/Library/Application Support/Conceptor` |
+The plan is limited to 64 KiB. Atomic replacement may use exactly one fixed sibling, `.conceptor/APPLY_PLAN.md.pending`, with a 64 KiB limit. This path is ignored by Git. A pending file requires ownership checks and reconciliation before another write. Do not delete unresolved state by age. No `work/`, `archive/`, `cache/`, verification-output, or assessment-report directory is created.
 
-`CONCEPTOR_HOME` may select an absolute external directory. The reported `stateFile` identifies the activation setting under `projects/`. `cache/` holds replaceable evidence; clearing it cannot deactivate a project. No service or background cleanup process is installed.
+#### Apply-plan API
 
-On cache access, entries older than seven days are removed. The shared cache keeps at most 128 completed entries and 32 MiB, evicting older entries as needed. One semantic key has one latest entry; oversized results are returned but not cached. Check output is captured in memory, at most 64 KiB of raw bytes per stream; receipts contain `output.stdout`, `output.stderr` and truncation flags. Both streams continue draining after the cap. No per-run log directory is created.
+The runtime exports `applyPlan(root, request)` from `runtime/apply-plan.mjs`. The CLI runs the same API:
 
-These limits bound reusable storage, not authored meaning. An expired or deleted receipt requires a rerun. A missing selection snapshot reports `baseline: missing`, with no claimed added/removed delta. Cache deletion can lose reuse and change history; it cannot create support.
+```text
+node PLUGIN_ROOT/runtime/cli.mjs apply-plan --root PROJECT_ROOT --request -
+```
 
-Conceptor no longer owns task checkpoints, repair/rollback journals, assessment cadence, GitHub issues or commit policy. The native workflow owns them. `reconcile.observedMismatches` returns original failures, including their source and meaning bindings, even when a later check invalidates current applicability. The caller must retain decision-relevant failures across calls; the cache is not a recovery archive.
+It reads one JSON object from standard input and writes one JSON result to standard output. Use `--request REQUEST.json` if a request file already exists. No request file is needed. `--root` accepts a path from the current directory; the CLI resolves it to the selected repository or worktree root. That root must contain a physical `.conceptor/` directory. The ESM API requires the absolute selected root. The pending-file path must already be ignored by Git before mutation. The CLI does not infer Codex permissions. For a mutating API call, pass `readOnly: true` or `permissionMode: "plan"` when the host is read-only or in Plan Mode. The caller remains responsible for respecting the host's actual permissions.
+
+An ESM caller passes the same JSON object directly and receives the result object without parsing stdout:
+
+```js
+import path from "node:path";
+import { pathToFileURL } from "node:url";
+
+const pluginRoot = "ABSOLUTE_PLUGIN_ROOT";
+const projectRoot = "ABSOLUTE_PROJECT_ROOT";
+const { applyPlan } = await import(pathToFileURL(path.join(pluginRoot, "runtime/apply-plan.mjs")));
+const result = await applyPlan(projectRoot, { action: "read" });
+```
+
+The `read` action is the default. It returns `{status, revision, plan, pending}`. `status` is `active`, `absent`, or `recovery-required`. `revision` is the SHA-256 hash of the exact plan bytes, or `null` when no plan exists. `plan` contains `metadata`, ordered `units`, `revision`, and serialized Markdown. A pending result reports validity, base and pending revisions, byte size, and a parse error when invalid.
+
+Use `accept` to admit a request or revision and plan the combined remaining work. It requires `expectedRevision`, `request`, `target`, and `units`. `expectedRevision` is the value returned by `read`, or `null` for an empty plan. `request` has nonempty `content` and optional `id`, `revision`, and `source`. Only `accept` can generate missing ID and revision values; it assigns a local ID and hashes the content when those fields are absent. When a plan already exists, a new request or changed revision requires `reassessed: true`. Reusing the same ID, revision, content, and source is a no-write resume. Conflicting content or source for that unchanged identity is an error.
+
+Each unit has an `id`, one-line `text`, and optional `dependsOn` array. IDs must be unique. Every dependency must name a unit that appears earlier in the list. The API stores each as a remaining task and writes dependencies on a separate line:
+
+```markdown
+- [ ] `inspect-export` -- Trace the current export path
+- [ ] `preserve-file` -- Keep the old file on write failure
+  depends-on: ["inspect-export"]
+```
+
+Remove a completed unit in the commit that completes it. Do not mark it `[x]`. An accepted request identity cannot be rewritten by `update`; accept a new revision instead. `update` requires an existing plan and its current `expectedRevision`. It can replace `target`, `baseline`, `decisions`, `uncertainties`, or the remaining `units`. Changing `target` or `baseline` also requires `reassessed: true`. To remove a canceled request, include the remaining `requests` and set both `reassessed: true` and `cancellationReconciled: true`. Preserve work that other accepted requests still need.
+
+This PowerShell example admits a request without creating a transport file. Read first and supply that result's revision when a plan already exists. This example assumes the plan is empty and the project has the required `.gitignore` entry:
+
+```powershell
+$planRequest = @{
+    action = "accept"
+    expectedRevision = $null
+    request = @{
+        id = "export-preservation"
+        revision = "1"
+        content = "Keep the existing export file if writing the replacement fails."
+    }
+    target = "Preserve exported data on write failure."
+    units = @(
+        @{ id = "inspect-export"; text = "Trace the current export and write-failure paths" },
+        @{ id = "preserve-file"; text = "Preserve the old file when a replacement write fails"; dependsOn = @("inspect-export") }
+    )
+}
+$planRequest | ConvertTo-Json -Depth 8 | node PLUGIN_ROOT/runtime/cli.mjs apply-plan --root PROJECT_ROOT --request -
+```
+
+On success, `accept` and `update` return `{revision, plan}`; an idempotent same-request acceptance also returns `unchanged: true`. A stale revision fails without replacing the current plan. An oversized candidate also fails before replacement. The CLI writes errors to stderr and exits with code 2; ESM calls throw. Re-read and reconcile before retrying.
+
+Use `recover` only after inspecting the actual checkout and both records. It requires `mode: "install"` or `"discard"`, matching `expectedRevision` and `expectedPendingRevision`, and all three confirmations: `ownedCheckout: true`, `soleRecoveryActor: true`, and `reconciled: true`. The runtime has no recovery lock; confirm there is no other recovery actor. Installing requires a valid pending record based on the current plan. The result is `{revision, recovered: "installed"|"discarded"}`.
+
+Use `finish` to remove the plan after verification or reconciled cancellation. It requires the current `expectedRevision` and either `verified: true` (with no remaining units) or `cancellationReconciled: true`. Clear all uncertainties first. It returns `{revision: null, finished: true}`. A mutation refuses an existing pending file until `recover` resolves it. Writers create the fixed pending file exclusively and remove their owned pending file after replacement or a recoverable write failure. An interruption or cleanup failure can leave the pending file for explicit recovery.
+
+The runtime does not persist evidence in a cache. Results are returned directly with bounded check output. A caller may supply prior observations or receipts; revalidate their project, source, and meaning bindings before reuse. A missing baseline reports `baseline: missing`; added/removed history remains unknown. Missing evidence is not support or permission to run a check. Keep original mismatches and unresolved evidence in the live apply plan or caller handoff when they affect remaining work.
 
 ## Projection Lenses
 
@@ -69,7 +117,7 @@ checks:
 
 Every verdict names condition, selector or participants, selection status, evidence, status (`supported`, `mismatch`, or `unresolved`), and reason. Required empty selection is unresolved unless the condition allows absence. A successful scoped check does not establish unobserved language behavior. Preserve supported evidence when another observation fails.
 
-A Lens with `checks: []` supplies navigation without behavioral support. Helper verdicts cover named conditions, not every requirement in a Concept's prose. Keep relevant prose obligations and independent native evidence visible in the native task context. See [Lens maintenance](applying-conceptor.md#maintain-affected-lenses) for selector, binding, and evidence upkeep.
+A Lens with `checks: []` supplies navigation without behavioral support. Helper verdicts cover named conditions, not every requirement in a Concept's prose. Keep relevant prose obligations and independent evidence visible in the apply plan or caller handoff when they affect remaining work. See [Lens maintenance](applying-conceptor.md#maintain-affected-lenses) for selector, binding, and evidence upkeep.
 
 Projection Units bind meaning to participants discovered by a Lens. Treat a binding as current only when its source and membership snapshots still match. Use `revisit` after source changes or new consumers. Do not treat an inventory match as resolved cross-language semantics.
 
@@ -83,17 +131,17 @@ The installed package needs Node.js 24 and its declared npm runtime dependencies
 node PLUGIN_ROOT/runtime/cli.mjs focus --root PROJECT --request REQUEST.json
 ```
 
-The CLI accepts `activate`, `deactivate`, `status`, `focus`, `revisit`, `reconcile`, and `observe`. Request paths identify JSON files. Use absolute project and request paths when the current directory differs. `focus`, `revisit`, and `reconcile` accept selective `concepts`, `lenses`, `paths` and `query`. `reconcile` runs native checks only with `runChecks: true`; otherwise it reuses applicable receipts. The helper does not install providers or build an implicit semantic index.
+The CLI accepts `focus`, `revisit`, `reconcile`, `observe`, and `apply-plan`. Request input can be a JSON file or stdin with `--request -`. Use absolute project and request paths when the current directory differs. `focus`, `revisit`, and `reconcile` accept selective `concepts`, `lenses`, `paths` and `query`. `reconcile` runs native checks only with `runChecks: true`; otherwise it uses only explicitly supplied and still-applicable prior receipts. The helper does not install providers or build an implicit semantic index.
 
 ```json
 {"concepts":["clip"],"lenses":["clip-playback"],"runChecks":true}
 ```
 
-ESM callers import `focus`, `revisit`, and `reconcile` from `PLUGIN_ROOT/runtime/conceptor.mjs` and pass `(root, request)`. Provider observations are exported from `runtime/providers/index.mjs`. Retired `work` requests fail explicitly rather than silently losing checkpoint persistence. Keep transport request files in OS temporary storage and remove them after use.
+ESM callers import `focus`, `revisit`, and `reconcile` from `PLUGIN_ROOT/runtime/conceptor.mjs` and pass `(root, request)`. Provider observations are exported from `runtime/providers/index.mjs`. JSON stdin avoids a transport file when a caller does not already have a file. There is no general-purpose work journal or automatic source repair.
 
 `focus.paths` matches exact project-relative files in discovered Lens populations; it is not a glob or general source search. `focus.related` returns pointers, including outgoing Relation endpoints, not all incoming Relations or a transitive impact closure. Use the [bounded incoming-Relation search](applying-conceptor.md#recover-the-governing-meaning) when governing constraints or dependents matter.
 
-For `revisit`, request `paths` supply the discovery boundary patterns. Compare with the latest matching cached baseline when available. Changed paths inside those boundaries but outside current Lens selection become discovery questions. Unchanged consumers and files outside declared boundaries are not automatically discovered. A literal `query` searches selected source and these boundaries. Declared Lens observations run on demand. Ordinary `focus` does not run them. Refreshing selection does not repair an incomplete authored selector.
+For `revisit`, request `paths` supply the discovery boundary patterns. Compare with an explicitly supplied and still-bound prior observation when available. Changed paths inside those boundaries but outside current Lens selection become discovery questions. Without a valid baseline, change history is unknown. Unchanged consumers and files outside declared boundaries are not automatically discovered. A literal `query` searches selected source and these boundaries. Declared Lens observations run on demand. Ordinary `focus` does not run them. Refreshing selection does not repair an incomplete authored selector.
 
 Check receipts bind relevant meaning/Lens records, declared input scope, check configuration, and execution dependencies. Changed membership or inputs can make a receipt unresolved. Do not silently backdate it; keep independently applicable native evidence separate. See [evidence reuse](applying-conceptor.md#compare-results-and-reassess-the-premise) for the distinction.
 
@@ -103,7 +151,7 @@ An `observe` request selects `provider` (`inventory`, `lsp`, `html`, `css`, or `
 
 HTML and CSS providers use packaged language services. CSS supports CSS and SCSS, not indented `.sass`. LSP uses a server explicitly supplied by the repository; configure its executable `command` and separate `args`. Install and pin that server through the repository's normal tooling. Do not infer an available language server from a filename.
 
-Run a scoped request through the native CLI, using the plugin location supplied by the activated hook:
+Run a scoped request through the native CLI, using the installed plugin location:
 
 ```text
 node <plugin-root>/runtime/cli.mjs observe --root <project-root> --request <request.json>
@@ -189,6 +237,6 @@ Conceptor captures requested and returned source files, not every environment/co
 
 ## What hashes establish
 
-Runtime hashes reject stale provider facts, invalidate inapplicable check results and identify source changes within declared scopes. They identify bytes, not behavior, coverage, user intent or human comprehension. A cache key also binds the plugin/cache version and canonical project identity.
+Runtime hashes reject stale provider facts, invalidate inapplicable check results and identify source changes within declared scopes. They identify bytes, not behavior, coverage, user intent or human comprehension. Supplied prior evidence also needs matching project identity, meaning, scope, and relevant source bindings.
 
 Keep accepted meaning in its owning Concept or Relation. Retain a Pattern only when it can guide a plausible future decision, with applicability and counterexamples. A repaired example alone is not independent evidence for that Pattern.

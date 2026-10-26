@@ -47,7 +47,7 @@ export async function discover(root, patterns) {
   const isExclusion = pattern => pattern.startsWith('!') && !pattern.startsWith('!(');
   const ignore = new Ignore([
     ...patterns.filter(isExclusion).map(pattern => pattern.slice(1)),
-    '**/.git/**', '**/node_modules/**', '.conceptor/cache/**', '.conceptor/work/**'
+    '**/.git/**', '**/node_modules/**', '.conceptor/APPLY_PLAN.md', '.conceptor/APPLY_PLAN.md.pending'
   ], { dot: true, nocase: false });
 
   // Glob treats filesystem errors as missing paths. Retain non-ENOENT errors
@@ -84,12 +84,3 @@ export async function captureScope(root, patterns, extraPaths = []) {
 }
 
 export async function readJson(file) { return JSON.parse(await fs.readFile(file, 'utf8')); }
-export async function writeText(file, text) {
-  await fs.mkdir(path.dirname(file), { recursive: true });
-  const temp = `${file}.${crypto.randomUUID()}.tmp`;
-  try {
-    await fs.writeFile(temp, text, { flag: 'wx' });
-    await fs.rename(temp, file);
-  } finally { await fs.rm(temp, { force: true }); }
-}
-export async function writeJson(file, value) { await writeText(file, JSON.stringify(value, null, 2) + '\n'); }
