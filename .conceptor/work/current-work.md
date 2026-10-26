@@ -43,9 +43,10 @@ zero reported compactions. Exact aggregate tokens are unavailable. No failed
 repair cycle or AI trial occurred. Reopen on a concrete missing live consumer.
 
 Current checkout: `C:/dev/projects/conceptor-plugin`, branch `main`; plugin identity
-is `conceptor`. Local documentation commit `716e179` and cleanup commits remain
-unpublished. Migration status and dated Windows/WSL evidence remain in issue #6
-and Git history. No push, refresh or installed-state requalification ran.
+is `conceptor`. The user authorized publication of documentation `716e179` and
+cleanup `c623cee`/`873ac9f` to `origin/main`. Issue #8 records verified delivery;
+check Git ancestry when resuming. Migration status and dated Windows/WSL evidence
+remain in issue #6 and Git history. No refresh or installed-state requalification ran.
 
 Product authority remains in [the approved plan](../../docs/approved-plan.md).
 [Issue #2](https://github.com/OnePersonLabs/conceptor-plugin/issues/2) is separate:
