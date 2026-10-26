@@ -1,6 +1,4 @@
 node_modules/
 *.tgz
-.conceptor/cache/
-.verification/
 .plugin-build/
 !dist/conceptor-0.1.0.tgz

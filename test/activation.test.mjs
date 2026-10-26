@@ -1,12 +1,10 @@
+import './user-state.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { spawn } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
-import { activate, deactivate, activeRoot, projectRoot, activationStatus, inactive } from '../plugins/conceptor/runtime/activation.mjs';
-import { assessment } from '../plugins/conceptor/runtime/reassessment.mjs';
+import { activate, deactivate, activeRoot, projectRoot, activationStatus } from '../plugins/conceptor/runtime/activation.mjs';
 
 async function fixture(t) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'conceptor-activation-'));
@@ -14,49 +12,29 @@ async function fixture(t) {
   return root;
 }
 
-const hook = fileURLToPath(new URL('../plugins/conceptor/hooks/conceptor-context.mjs', import.meta.url));
-function runHook(input, script = hook) {
-  return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [script], { stdio: ['pipe', 'pipe', 'pipe'] });
-    let stdout = '';
-    let stderr = '';
-    child.stdout.setEncoding('utf8').on('data', chunk => { stdout += chunk; });
-    child.stderr.setEncoding('utf8').on('data', chunk => { stderr += chunk; });
-    child.on('error', reject);
-    child.on('close', code => resolve({ code, stdout, stderr }));
-    child.stdin.end(JSON.stringify(input));
-  });
-}
-
-test('activation resolves the nearest marker and deactivation preserves stored project data', async t => {
+test('local activation is explicit, canonical and independent of project files', async t => {
   const root = await fixture(t);
-  const child = path.join(root, 'src', 'feature');
-  await fs.mkdir(child, { recursive: true });
+  const child = path.join(root, 'src');
+  await fs.mkdir(child);
   assert.equal(await activeRoot(child), undefined);
   assert.equal(await projectRoot(child), child);
+  const status = await activationStatus(root);
+  await assert.rejects(fs.access(status.stateFile), { code: 'ENOENT' });
   const result = await activate(root);
-  assert.equal(result.root, root);
-  assert.equal(await fs.readFile(result.marker, 'utf8'), '');
   assert.equal(await activeRoot(child), root);
   assert.equal(await projectRoot(child), root);
-  for (const folder of ['meaning', 'checkpoints', 'cache']) {
-    await fs.mkdir(path.join(root, '.conceptor', folder));
-    await fs.writeFile(path.join(root, '.conceptor', folder, 'keep'), folder);
-  }
-  await activate(path.join(root, 'src'));
-  assert.equal(await activeRoot(child), path.join(root, 'src'));
-  await deactivate(path.join(root, 'src'));
-  assert.equal(await activeRoot(child), root);
+  assert.deepEqual(await fs.readdir(root), ['src']);
+  const alias = path.join(await fixture(t), 'alias');
+  await fs.symlink(root, alias, 'junction');
+  assert.equal((await activationStatus(alias)).stateFile, result.stateFile);
+  await fs.writeFile(path.join(root, 'meaning.md'), 'authored meaning');
+  await deactivate(alias);
   await deactivate(root);
-  await deactivate(root);
-  assert.equal((await activationStatus(child)).status, 'inactive');
-  for (const folder of ['meaning', 'checkpoints', 'cache']) {
-    assert.equal(await fs.readFile(path.join(root, '.conceptor', folder, 'keep'), 'utf8'), folder);
-  }
-  assert.equal(inactive(child).root, child);
+  assert.equal(await activeRoot(child), undefined);
+  assert.equal(await fs.readFile(path.join(root, 'meaning.md'), 'utf8'), 'authored meaning');
 });
 
-test('Git directories and worktree files stop activation from leaking into another repository', async t => {
+test('nested repositories and worktree roots require separate activation', async t => {
   const root = await fixture(t);
   await activate(root);
   for (const kind of ['directory', 'file']) {
@@ -67,98 +45,46 @@ test('Git directories and worktree files stop activation from leaking into anoth
     else await fs.writeFile(path.join(nested, '.git'), 'gitdir: ../worktree');
     assert.equal(await activeRoot(child), undefined);
     assert.equal(await projectRoot(child), nested);
-    const status = await activationStatus(child);
-    assert.equal(status.status, 'inactive');
-    assert.equal(status.root, nested);
-    await activate(nested);
+    const separate = await activate(nested);
+    assert.notEqual(separate.stateFile, (await activationStatus(root)).stateFile);
     assert.equal(await activeRoot(child), nested);
-    assert.equal((await activationStatus(child)).status, 'active');
     await deactivate(nested);
     assert.equal(await activeRoot(child), undefined);
   }
 });
 
-test('a directory at the marker path is inactive and mutation errors surface', async t => {
+test('legacy opt-in is migrated explicitly without touching meaning or recovery', async t => {
   const root = await fixture(t);
-  await fs.mkdir(path.join(root, '.conceptor', 'active'), { recursive: true });
-  assert.equal(await activeRoot(root), undefined);
-  await assert.rejects(activate(root));
-  await assert.rejects(deactivate(root));
+  const legacy = path.join(root, '.conceptor');
+  await fs.mkdir(path.join(legacy, 'work'), { recursive: true });
+  await fs.writeFile(path.join(legacy, 'work', 'unresolved.json'), 'recovery bytes');
+  await fs.writeFile(path.join(legacy, 'active'), '');
+  const status = await activationStatus(root);
+  assert.equal(status.status, 'inactive');
+  assert.equal(status.legacyMarker, true);
+  assert.equal(await fs.readFile(path.join(legacy, 'active'), 'utf8'), '');
+  await assert.rejects(fs.access(status.stateFile), { code: 'ENOENT' });
+  assert.equal((await activate(root)).migrated, true);
+  await assert.rejects(fs.access(path.join(legacy, 'active')), { code: 'ENOENT' });
+  assert.equal(await fs.readFile(path.join(legacy, 'work', 'unresolved.json'), 'utf8'), 'recovery bytes');
+  await deactivate(root);
+  assert.equal(await fs.readFile(path.join(legacy, 'work', 'unresolved.json'), 'utf8'), 'recovery bytes');
+});
+
+test('activation rejects invalid state and an unexpected legacy marker', async t => {
+  const root = await fixture(t);
+  await fs.mkdir(path.join(root, '.conceptor'));
+  await fs.writeFile(path.join(root, '.conceptor', 'active'), 'user data');
+  await assert.rejects(activate(root), /not an empty file/);
+  await fs.unlink(path.join(root, '.conceptor', 'active'));
+  await activate(root);
+  await fs.writeFile(path.join(root, '.conceptor', 'active'), 'user data');
+  await assert.rejects(deactivate(root), /not an empty file/);
+  assert.equal((await activationStatus(root)).status, 'active');
+  await fs.unlink(path.join(root, '.conceptor', 'active'));
+  const savedHome = process.env.CONCEPTOR_HOME;
+  process.env.CONCEPTOR_HOME = root;
+  try { await assert.rejects(activate(root), /outside the project/); }
+  finally { process.env.CONCEPTOR_HOME = savedHome; }
   await assert.rejects(activeRoot(path.join(root, '\0')), { code: 'ERR_INVALID_ARG_VALUE' });
-});
-
-test('session hooks load guidance and prompt hooks link to it; inactive hooks emit nothing', async t => {
-  const root = await fixture(t);
-  const child = path.join(root, 'src');
-  await fs.mkdir(child);
-  const guidance = await fs.readFile(new URL('../plugins/conceptor/AGENTS.md', import.meta.url), 'utf8');
-  for (const event of ['SessionStart', 'UserPromptSubmit']) {
-    const off = await runHook({ cwd: child, hook_event_name: event });
-    assert.equal(off.code, 0, off.stderr);
-    assert.equal(off.stdout, '');
-  }
-  await activate(root);
-  for (const event of ['SessionStart', 'UserPromptSubmit']) {
-    const on = await runHook({ cwd: child, hook_event_name: event });
-    assert.equal(on.code, 0, on.stderr);
-    const output = JSON.parse(on.stdout).hookSpecificOutput;
-    assert.equal(output.hookEventName, event);
-    assert.ok(output.additionalContext.includes(JSON.stringify(root)));
-    if (event === 'SessionStart') assert.ok(output.additionalContext.includes(guidance));
-    else {
-      const guidancePath = fileURLToPath(new URL('../plugins/conceptor/AGENTS.md', import.meta.url));
-      assert.ok(output.additionalContext.includes(JSON.stringify(guidancePath)));
-      assert.ok(output.additionalContext.length < guidance.length);
-    }
-  }
-  await assert.rejects(fs.stat(path.join(root, '.conceptor', 'cache', 'reassessment')), { code: 'ENOENT' });
-  const nested = path.join(child, 'unrelated');
-  await fs.mkdir(path.join(nested, '.git'), { recursive: true });
-  const boundary = await runHook({ cwd: nested, event: 'UserPromptSubmit' });
-  assert.equal(boundary.code, 0, boundary.stderr);
-  assert.equal(boundary.stdout, '');
-});
-
-test('inactive hooks do not read consumer guidance; active hook failures surface', async t => {
-  const root = await fixture(t);
-  const plugin = path.join(root, 'plugin');
-  await fs.mkdir(path.join(plugin, 'hooks'), { recursive: true });
-  await fs.mkdir(path.join(plugin, 'runtime'));
-  await fs.copyFile(hook, path.join(plugin, 'hooks', 'conceptor-context.mjs'));
-  await fs.copyFile(new URL('../plugins/conceptor/runtime/activation.mjs', import.meta.url), path.join(plugin, 'runtime', 'activation.mjs'));
-  const script = path.join(plugin, 'hooks', 'conceptor-context.mjs');
-  const project = path.join(root, 'project');
-  await fs.mkdir(project);
-  const off = await runHook({ cwd: project, event: 'SessionStart' }, script);
-  assert.equal(off.code, 0, off.stderr);
-  assert.equal(off.stdout, '');
-  await activate(project);
-  const on = await runHook({ cwd: project, event: 'SessionStart' }, script);
-  assert.notEqual(on.code, 0);
-  assert.match(on.stderr, /ENOENT/);
-  assert.equal(on.stdout, '');
-});
-
-test('compact hooks advance only the root session cadence and preserve assessing work', async t => {
-  const root = await fixture(t);
-  await activate(root);
-  const input = { cwd: root, hook_event_name: 'SessionStart', session_id: 'session', permission_mode: 'default' };
-  for (const source of ['startup', 'resume', 'clear']) {
-    const result = await runHook({ ...input, source });
-    assert.equal(result.code, 0, result.stderr);
-    assert.match(JSON.parse(result.stdout).hookSpecificOutput.additionalContext, /full assessment from purpose is due/);
-  }
-  assert.equal((await assessment(root, { sessionId: 'session' })).state.workingCompactions, 0);
-  await assessment(root, { sessionId: 'session', action: 'begin', id: 'review', checkpoint: 'task' });
-  const compact = await runHook({ ...input, source: 'compact' });
-  assert.equal(compact.code, 0, compact.stderr);
-  assert.match(JSON.parse(compact.stdout).hookSpecificOutput.additionalContext, /Resume assessment "review"/);
-  assert.equal((await assessment(root, { sessionId: 'session' })).state.assessment.rootAssessmentCompactions, 1);
-  const plan = await runHook({ ...input, source: 'compact', permission_mode: 'plan' });
-  assert.equal(plan.code, 0, plan.stderr);
-  assert.match(JSON.parse(plan.stdout).hookSpecificOutput.additionalContext, /State is unsaved/);
-  assert.match(JSON.parse(plan.stdout).hookSpecificOutput.additionalContext, /"rootAssessmentCompactions":2/);
-  const prompt = await runHook({ ...input, source: 'compact', hook_event_name: 'UserPromptSubmit' });
-  assert.equal(prompt.code, 0, prompt.stderr);
-  assert.equal((await assessment(root, { sessionId: 'session' })).state.assessment.rootAssessmentCompactions, 1);
 });

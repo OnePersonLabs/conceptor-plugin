@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { readActivation, saveActivation } from './storage.mjs';
 
 function markerPath(root) {
   return path.join(root, '.conceptor', 'active');
@@ -20,9 +21,9 @@ async function isGitBoundary(root) {
 }
 
 export async function activeRoot(start) {
-  let current = path.resolve(start);
+  let current = await fs.realpath(start);
   while (true) {
-    if ((await statIfPresent(markerPath(current)))?.isFile()) return current;
+    if ((await readActivation(current)).active) return current;
     if (await isGitBoundary(current)) return undefined;
     const parent = path.dirname(current);
     if (parent === current) return undefined;
@@ -44,28 +45,37 @@ export async function projectRoot(start) {
 }
 
 export async function activate(root) {
-  const resolved = path.resolve(root);
+  const resolved = await fs.realpath(root);
   const marker = markerPath(resolved);
-  await fs.mkdir(path.dirname(marker), { recursive: true });
-  await fs.writeFile(marker, '');
-  return { status: 'active', root: resolved, marker };
+  const legacy = await statIfPresent(marker);
+  if (legacy && (!legacy.isFile() || legacy.size !== 0)) throw new Error('Legacy activation marker is not an empty file; inspect it before migration');
+  const locations = await saveActivation(resolved);
+  if (legacy) await fs.unlink(marker);
+  return { status: 'active', root: resolved, stateFile: locations.activation, migrated: Boolean(legacy) };
 }
 
 export async function deactivate(root) {
-  const resolved = path.resolve(root);
+  const resolved = await fs.realpath(root);
   const marker = markerPath(resolved);
+  const locations = await readActivation(resolved);
+  const legacy = await statIfPresent(marker);
+  if (legacy && (!legacy.isFile() || legacy.size !== 0)) throw new Error('Legacy activation marker is not an empty file; inspect it before removal');
   try {
-    await fs.unlink(marker);
+    if (legacy) await fs.unlink(marker);
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
   }
-  return { status: 'inactive', root: resolved, marker };
+  await fs.rm(locations.activation, { force: true });
+  return { status: 'inactive', root: resolved, stateFile: locations.activation };
 }
 
 export async function activationStatus(start) {
   const active = await activeRoot(start);
   const root = active ?? await projectRoot(start);
-  return { status: active ? 'active' : 'inactive', root, marker: markerPath(root) };
+  const locations = await readActivation(root);
+  const legacy = (await statIfPresent(markerPath(root)))?.isFile() ?? false;
+  return { status: active ? 'active' : 'inactive', root, stateFile: locations.activation, legacyMarker: legacy,
+    ...(legacy ? { instruction: 'Run activate to migrate this project opt-in to local user state. Existing meaning and recovery files are preserved.' } : {}) };
 }
 
 export function inactive(root) {

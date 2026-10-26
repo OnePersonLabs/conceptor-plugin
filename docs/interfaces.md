@@ -4,11 +4,11 @@ Runtime uses Node.js 24 ESM. Runtime source and these interfaces own helper cont
 
 ## Activation
 
-`activeRoot(start)` returns the nearest activated ancestor inside the nearest Git boundary, or undefined. `.conceptor/active` must be a regular file. A `.git` directory or worktree file stops the search after checking its own marker. `projectRoot(start)` returns that activated root, the nearest Git root, or the original directory when neither exists.
+`activeRoot(start)` returns the nearest locally activated canonical ancestor inside the nearest Git boundary, or undefined. A `.git` directory or worktree file stops search after its own activation check. `projectRoot(start)` returns that active root, the nearest Git root, or the original directory.
 
-`activate(root)` creates the empty marker at the supplied root. `deactivate(root)` removes only that marker. `activationStatus(start)` reports active/inactive and the applicable root and marker. CLI activate/deactivate default to `projectRoot(cwd)`; `--root` selects an explicit directory.
+`activate(root)` writes and verifies external per-user state keyed by canonical physical root, then removes an empty legacy `.conceptor/active` marker. Other project files are untouched. `deactivate(root)` removes only local opt-in and any empty legacy marker. `activationStatus(start)` returns status, root, stateFile and legacyMarker; it creates no state. CLI defaults to `projectRoot(cwd)`; `--root` selects an explicit root. Windows and WSL activation are independent.
 
-Focus, revisit, reconciliation, observations, checkpoint reads/writes/updates/resume/close, and repair require activation before reading project data or mutating Conceptor state. They return an inactive result when no marker applies. CLI checks activation before reading a request file. Hooks read consumer guidance only for activated projects.
+Focus, revisit, reconciliation and providers check activation before reading project data. Inactive CLI calls do not read their request files. The plugin uses native skill discovery and has no hooks or injected instruction file.
 
 ## Meaning files
 
@@ -18,27 +18,21 @@ A Lens has conditions expressed as concept-id#condition-id. Its selectors are ob
 
 ## Helper functions and CLI
 
-Export focus(root, request), revisit(root, request), reconcile(root, request) from runtime/conceptor.mjs. Requests may select concepts, lenses, paths, query, and work. reconcile runs checks only when runChecks=true; otherwise it reuses applicable receipts. CLI accepts: COMMAND --root PATH --request REQUEST.json. Commands: focus, revisit, reconcile, checkpoint, resume, close, repair, observe. There is no automatic provider installation or semantic indexing.
+Export focus(root, request), revisit(root, request), reconcile(root, request) from runtime/conceptor.mjs. Requests may select concepts, lenses, paths and query. reconcile runs checks only when runChecks=true; otherwise it reuses applicable receipts. CLI accepts: COMMAND --root PATH --request REQUEST.json. Commands: activate, deactivate, status, focus, revisit, reconcile, observe. Retired work requests fail explicitly. There is no automatic provider installation or semantic indexing.
 
-Every verdict names condition, selector/participants, selection status, evidence, status (supported, mismatch, unresolved), and reason. Reconcile retains the original mismatch in the work checkpoint before applying any changed selector/checker/condition interpretation.
+Every verdict names condition, selector/participants, selection status, evidence, status (supported, mismatch, unresolved), and reason. Reconcile returns full original failures in observedMismatches, even if a later check invalidates current applicability. The caller owns cross-call retention.
 
-## Purpose assessment
+## External state and evidence cache
 
-`assessment(root, request)` uses the existing activation boundary. CLI command `assessment` accepts `action: status|begin|complete|abandon`, `sessionId` (default `CODEX_THREAD_ID`, explicit null means untracked status), mutation `id`, optional `checkpoint`, required completion `comparison` path, nonnegative integer `extraWindows` for complete/abandon, and `readOnly` or `permissionMode: plan`. Each session has one atomically replaced cache record under `.conceptor/cache/reassessment/`, keyed by the session ID hash. The native root and its synchronous hook are the writers. There is no cross-session task scheduler or semantic decision ledger.
+`runtime/storage.mjs` owns canonical project identity, local activation files and disposable cache operations. `storagePaths(root)` reports project, home, activation and cache paths without creating them. Defaults and lifecycle are in the [storage reference](../plugins/conceptor/references/guide.md#local-settings-and-disposable-evidence).
 
-State retains phase, current assessment/candidate references, assessment and work compactions, interval, carried costs and most recent completed ID. Begin preserves an active matching ID. Complete calculates `max(1, ceil(9 * cost))`, where cost is root assessment compactions plus carried cost and extraWindows. Duplicate completion of the last completed ID changes nothing; an unmatched active ID is an error. Abandon invalidates the candidate and carries cost forward. The hook advances counters only on root SessionStart source compact, resuming an active assessment or reporting a due/working decision. Other startup sources inspect state without advancing counters.
+Activation is durable user configuration under `projects/`. The flat cache is shared across projects under `cache/`; keys bind cache/plugin version, canonical project and semantic identity. Each cache access prunes entries older than seven days and keeps at most 128 completed entries and 32 MiB. Entries larger than half the cache budget are returned without persistence. Concurrent writers atomically replace entries; eviction can discard reusable evidence but must not turn missing evidence into support. Observations do not create provider caches.
 
-Completion reads the project-relative JSON comparison account. Its nonempty string fields are `governing`, `cleanCandidate`, `comparison`, `decision`, `boundary`, `validation`, and `review`. The candidate retains its path and byte hash. An unbound, missing, changed or malformed comparison makes an otherwise completed candidate due. Duplicate completion does not rebind later content. The account supplies an inspectable transition input; native review assesses substance. The checkpoint links the account and keeps ordinary task state.
+A check receipt includes its source/environment binding, exit outcome and `output` with bounded stdout/stderr strings and truncation flags. Capture retains up to 64 KiB of raw bytes per stream and continues draining after truncation. Receipts are replaced by Lens/check key, with no UUID log folders. Reuse still requires matching meaning, Lens, check, source membership, configuration, execution environment and target.
 
-Results report status, saved/tracked flags, state and the approximation limit. Read-only requests and plan-mode hooks return calculated unsaved state without writes. Missing hook session identity produces untracked guidance. These interfaces establish cadence and declaration identity, not semantic compliance or a measured token/time ratio. The application reference owns the procedure.
+Selection and boundary results report `baseline: available|missing`. Without a valid prior snapshot, added, removed and changed lists are empty because change history is unknown. Current scope and participant selection remain available.
 
-The PreToolUse hook checks native `Bash`, `apply_patch` and delegation calls through the same lifecycle. It uses the hook's `session_id`, which the native host supplies as the parent ID for subagents. Working candidates allow ordinary calls. Due or active assessments reject them before execution, except explicit assessment-only shell/delegation declarations and patches confined to `.conceptor/work/`. Active gate errors return a denial with the reason; inactive projects return no output. The declarations are cooperative scope statements, not proof that arbitrary scripts are read-only. Existing `write_stdin` sessions, worker follow-up tools and other uncovered host paths remain coverage limits.
-
-An unsaved result includes `handoff: {root, sessionId, baseline, state}`. Pass it as `request.handoff` for the next transition. Baseline identifies the persisted parsed cache state, or null when absent. Root/session/baseline mismatch stops the transition without changing cache. Authorized status with a current handoff persists its pending state. A read-only hook emits a cache-based handoff and its compact delta; a root holding newer unsaved state applies that delta once to its own handoff instead. Cache-based status is provisional in that case.
-
-Completion, including read-only completion, needs a saved comparison account. A newly authored account that cannot be saved remains in the ordinary unsaved-decision handoff with assessment active. After write authority resumes, save it and complete. A handoff with a completed candidate still undergoes the current account identity check.
-
-Passive status/startup/resume inspection preserves an absent cache. It returns unsaved initial state rather than creating a baseline that would invalidate a pending read-only handoff. Explicit transitions and authorized handoff saves create the cache.
+Conceptor does not own task state, automatic source repair, rollback, compaction cadence, issue tracking or commit policy. Those belong to the native host. Removing disposable evidence cannot remove authored meaning.
 
 ## Shared filesystem functions
 
@@ -55,20 +49,6 @@ Return {provider:{id,adapterVersion,engine:{name,version}}, requestBinding, oper
 LSP config may include experimentalCapabilities, an object sent only as initialize capabilities.experimental. Optional readiness is {notification, equals}, where notification is a nonempty server notification name and equals is a nonempty map of top-level primitive values (string, finite number, boolean, or null). This gate requires an explicit positive request.timeoutMs. Register it before initialize; retain early notifications and let every later notification supersede the earlier status. Before each semantic request, the latest observed parameters must match every expected field. The same caller budget, cancellation, failure, and child cleanup apply; there is no new timeout, sleep, retry, or bypass.
 
 A configured gate adds readiness:{notification, equals, status:matched|unconfirmed, observed} to the result. observed is the latest received parameters or null when none arrived. An unmet gate adds lsp-readiness-unconfirmed and retains independent source evidence. A matched status is a persistent observation, not an acknowledgment of the current source version or proof of complete discovery. Requests without a gate keep their existing behavior and make no readiness claim. Operation status and scope.semanticCompleteness remain separate; semantic completeness is unclaimed even after a match. Definitions can verify candidate identities in Python, Rust, and TypeScript; reference results need not traverse renamed imports or re-exports, and no provider result establishes runtime callback targets or cross-language protocol edges.
-
-## Checkpoints and repair
-
-Checkpoint requests have id, goal, concepts, lenses, ownership [{owner,paths}], boundaries, completed, questions, and uncertainMutations. Root is the shared checkpoint writer. Closed checkpoints move out of default focus but remain readable. Resume compares source/discovery snapshots with current checkout and never replays a mutation.
-
-Default focus checkpoint context and CLI checkpoint/resume output are compact
-navigation summaries. They preserve open questions and uncertain mutation IDs,
-report evidence counts, and point to the full saved record. CLI resume also
-reports changed paths and repair-record pointers without embedding recovery
-bytes. `includeWorkDetails: true` returns the complete work record. Direct ESM
-checkpoint and resume results remain complete. Persisted checkpoint and repair
-formats are unchanged.
-
-Repair requests have id, work, owner, outputs [{path,expectedHash,content|fromFile|delete}], and optional condition and explanation. Only paths explicitly owned in the checkpoint can be automatically changed. fromFile accepts a producer's staged output; the native host runs the known producer. Save before images and an attempt record under the work directory before writes. Repeated same attempts or prior-state recurrence stop the strategy locally. inspect and rollback modes inspect the actual state; rollback changes only bytes still matching this attempt's postimage. Do not overwrite unrelated edits.
 
 Checks may declare coverage as explicit participant paths, or coverage: selection when the command genuinely evaluates the current selected population. Default coverage includes only literal selector paths. Wildcard members do not inherit support from a check unless coverage includes them. Check scope is authored evidence applicability, not a proof that arbitrary check code is complete.
 

@@ -1,18 +1,18 @@
 ---
 name: enable-conceptor
-description: Enable, disable, or check Conceptor in a project when the user asks to activate Conceptor, turn it off, or inspect its activation. Other Conceptor skills apply only to activated projects.
+description: Enable, disable, or check Conceptor for a local project when the user asks. Other Conceptor skills apply only to enabled projects.
 ---
 
 # Enable Conceptor
 
-Resolve the current project from the user's request and working directory. Resolve the installed plugin root from this skill's location, two directories above this skill directory. Use its `runtime/cli.mjs`; do not use another Conceptor installation.
+Resolve the project from the user's request and working directory. Resolve the installed plugin root two directories above this skill directory. Use that installation's `runtime/cli.mjs`.
 
-For an explicit enable request, run `node PLUGIN_ROOT/runtime/cli.mjs activate` in the project. For an explicitly selected project directory, pass `--root PROJECT`. The helper uses the nearest Git root by default and creates only `.conceptor/active`. It does not create speculative Concepts, Lenses, or checks. Activation completes when the helper reports `active` with the selected root.
+For an explicit enable request, run `node PLUGIN_ROOT/runtime/cli.mjs activate`. Pass `--root PROJECT` for an explicitly selected directory. The default is the nearest Git root. Check the returned root and `active` status.
 
-Tell the user that activated Git projects use reviewable local commits by default. Respect existing commit rules and any request to leave changes uncommitted. Activation does not authorize pushing or rewriting history.
+Activation saves one local user setting outside the checkout. It creates no meaning, task files or hooks. Windows and WSL have independent settings. An empty legacy `.conceptor/active` marker is removed only after the external setting is saved and verified. Existing meaning and legacy recovery files remain untouched.
 
-After activation, use Conceptor on the current directive. Recover relevant existing meaning first. If no meaning exists, retain the user's actual intent when it helps the work. Let ordinary requests select the other skills. Do not require the user to invoke them or prepare JSON requests. Read [the reference guide](../../references/guide.md) when a runtime helper is useful.
+After activation, recover relevant meaning for the current request. Native skill discovery selects the other skills; no instruction file is injected. Activation does not change the user's issue, Git or delivery policy. See the [reference](../../references/guide.md#activation) for storage and migration details.
 
-For a disable request, run `node PLUGIN_ROOT/runtime/cli.mjs deactivate` at the active project root. This removes only the activation marker. Keep meaning, checkpoints, and recovery records. Stop Conceptor work in this session and continue ordinary native work. Disabling completes when the helper reports `inactive` for that root.
+For a disable request, run `node PLUGIN_ROOT/runtime/cli.mjs deactivate --root PROJECT` at the active project root. Check the returned `inactive` status. This removes local opt-in and any empty legacy marker; it preserves authored meaning and source files. Continue ordinary native work.
 
-For a status request, run `node PLUGIN_ROOT/runtime/cli.mjs status` in the requested project and report its result. Global plugin enablement does not activate every project. An inactive project stays inactive until the user asks to enable it.
+For a status request, run `node PLUGIN_ROOT/runtime/cli.mjs status --root PROJECT`. Status does not create state. A legacy marker alone reports inactive with migration guidance. Enable only when the user requests it.

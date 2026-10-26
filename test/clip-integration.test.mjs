@@ -1,3 +1,4 @@
+import './user-state.mjs';
 import { activate } from '../plugins/conceptor/runtime/activation.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -7,7 +8,7 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 import { execFile } from 'node:child_process';
 import { parse, stringify } from 'yaml';
-import { focus, revisit, reconcile, writeCheckpoint, resume, repair } from '../plugins/conceptor/runtime/conceptor.mjs';
+import { focus, revisit, reconcile } from '../plugins/conceptor/runtime/conceptor.mjs';
 import { hash } from '../plugins/conceptor/runtime/state.mjs';
 
 const run = promisify(execFile);
@@ -39,21 +40,15 @@ function participant(result, condition, source) {
     ?.participants.find(item => item.unit?.path === source);
 }
 
-async function checkpoint(root) {
-  const request = JSON.parse(await fs.readFile(path.join(root, 'requests/checkpoint.json'), 'utf8'));
-  return writeCheckpoint(root, request);
-}
-
 test('Clip runtime evidence preserves source meaning and distinguishes committed edits', async t => {
   const root = await copyFixture(t);
-  await checkpoint(root);
   const conceptPath = path.join(root, '.conceptor/meaning/concepts/clip.md');
   const patternPath = path.join(root, '.conceptor/meaning/patterns/read-time-transform.md');
   const before = [await fs.readFile(conceptPath, 'utf8'), await fs.readFile(patternPath, 'utf8')];
-  const packet = await focus(root, { concepts: ['clip'], work: 'clip-export' });
+  const packet = await focus(root, { concepts: ['clip'] });
   assert.ok(packet.meaning.some(record => record.id === 'clip'));
   assert.ok(packet.related.some(record => record.id === 'read-time-transform'));
-  const result = await reconcile(root, { lenses: ['clip-playback'], work: 'clip-export', runChecks: true });
+  const result = await reconcile(root, { lenses: ['clip-playback'], runChecks: true });
   assert.equal(participant(result, 'clip#playback-isolation', 'js/playback.mjs').status, 'supported');
   assert.equal(participant(result, 'clip#playback-isolation', 'js/export.mjs').status, 'supported');
   assert.equal(participant(result, 'clip#persistence-source', 'python/persistence.py').status, 'supported');
@@ -62,13 +57,12 @@ test('Clip runtime evidence preserves source meaning and distinguishes committed
   assert.equal(result.status, 'unresolved');
   for (const receipt of result.receipts.filter(item => item.status === 'supported')) {
     assert.equal(receipt.exitCode, 0);
-    assert.ok((await fs.readFile(path.join(root, receipt.stdout), 'utf8')).includes('verified'));
+    assert.ok(receipt.output.stdout.includes('verified'));
   }
   assert.deepEqual([await fs.readFile(conceptPath, 'utf8'), await fs.readFile(patternPath, 'utf8')], before);
   const pattern = parse(before[1].split('---')[1]);
   assert.equal(pattern.status, 'candidate');
   assert.ok(pattern.counterexamples.some(item => item.includes('commitTranspose')));
-  assert.deepEqual((await resume(root, 'clip-export')).changed, []);
 });
 
 test('new handwritten export refreshes Units and requires explicit evidence coverage', async t => {
@@ -105,45 +99,19 @@ console.log('New handwritten export verified');\n`);
   assert.equal(participant(stale, 'clip#playback-isolation', unit.path).status, 'unresolved');
 });
 
-test('failed observation retains supported evidence and original mismatch in checkpoint', async t => {
+test('failed observation retains supported evidence and original mismatch in the returned evidence', async t => {
   const root = await copyFixture(t);
-  await checkpoint(root);
   await editLens(root, lens => {
     lens.checks.find(check => check.id === 'python-save').command = 'conceptor-missing-python-executable';
     lens.observations.push({ provider: 'lsp', operation: 'references', files: ['rust/playback.rs'],
       position: { line: 15, character: 8 }, config: { command: 'conceptor-missing-lsp-executable', args: [] } });
   });
-  const partial = await reconcile(root, { lenses: ['clip-playback'], work: 'clip-export', runChecks: true });
+  const partial = await reconcile(root, { lenses: ['clip-playback'], runChecks: true });
   assert.equal(participant(partial, 'clip#playback-isolation', 'js/playback.mjs').status, 'supported');
   assert.equal(participant(partial, 'clip#persistence-source', 'python/persistence.py').status, 'unresolved');
   assert.ok(partial.observations.some(item => item.provider.id === 'lsp' && item.status !== 'complete' && item.gaps.length));
   await fs.appendFile(path.join(root, 'checks/playback.mjs'), '\nthrow new Error("Deliberate failing evidence");\n');
-  const failed = await reconcile(root, { lenses: ['clip-playback'], work: 'clip-export', runChecks: true });
+  const failed = await reconcile(root, { lenses: ['clip-playback'], runChecks: true });
   assert.equal(participant(failed, 'clip#playback-isolation', 'js/playback.mjs').status, 'mismatch');
-  const resumed = await resume(root, 'clip-export');
-  assert.ok(resumed.mismatches.some(item => item.condition === 'clip#playback-isolation'));
-  const count = resumed.mismatches.length;
-  await editLens(root, lens => lens.checks = lens.checks.filter(check => check.id !== 'js-behavior'));
-  await reconcile(root, { lenses: ['clip-playback'], work: 'clip-export' });
-  assert.equal((await resume(root, 'clip-export')).mismatches.length, count);
-});
-
-test('native staged producer and owned repair preserve unrelated changes on rollback', async t => {
-  const root = await copyFixture(t);
-  await checkpoint(root);
-  const output = path.join(root, 'published/clip-export.json');
-  const before = await fs.readFile(output);
-  await run(process.execPath, ['producer/stage-export.mjs'], { cwd: root, windowsHide: true });
-  assert.deepEqual(await fs.readFile(output), before);
-  const request = { id: 'publish-export', work: 'clip-export', owner: 'export-worker',
-    outputs: [{ path: 'published/clip-export.json', expectedHash: hash(before), fromFile: 'staged/clip-export.json' }] };
-  await repair(root, request);
-  assert.deepEqual(await fs.readFile(output), await fs.readFile(path.join(root, 'staged/clip-export.json')));
-  assert.ok((await resume(root, 'clip-export')).changed.includes('published/clip-export.json'));
-  await repair(root, { ...request, mode: 'inspect' });
-  await fs.writeFile(output, 'unrelated native edit\n');
-  await assert.rejects(repair(root, { ...request, mode: 'rollback' }), /unrelated edits/);
-  assert.equal(await fs.readFile(output, 'utf8'), 'unrelated native edit\n');
-  await assert.rejects(repair(root, { id: 'unowned', work: 'clip-export', owner: 'export-worker',
-    outputs: [{ path: 'shared/clip.json', expectedHash: hash(await fs.readFile(path.join(root, 'shared/clip.json'))), content: '{}' }] }));
+  assert.ok(failed.observedMismatches.some(item => item.condition === 'clip#playback-isolation'));
 });

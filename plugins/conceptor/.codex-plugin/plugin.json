@@ -6,8 +6,7 @@
   "interface": {
     "displayName": "Conceptor",
     "shortDescription": "Shared meaning and scoped reconciliation",
-    "longDescription": "Concepts, typed Relations, Projection Units, Pattern Candidates, and Projection Lenses for native agent work. Optional helpers preserve reasons, exceptions, evidence gaps, and recovery state."
+    "longDescription": "Concepts, typed Relations, Projection Units, Pattern Candidates, and Projection Lenses for native agent work. Optional helpers recover meaning and return scoped evidence, reasons, exceptions and explicit gaps."
   },
-  "hooks": "./hooks/hooks.json",
   "repository": "https://github.com/OnePersonLabs/conceptor-plugin"
 }

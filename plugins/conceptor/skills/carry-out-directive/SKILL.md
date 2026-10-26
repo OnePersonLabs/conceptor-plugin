@@ -1,54 +1,22 @@
 ---
 name: carry-out-directive
-description: In a Conceptor-activated project, carry out implementation work with shared meaning, scoped evidence, owned recovery, and reviewable local commits.
+description: In a Conceptor-enabled project, apply accepted meaning and scoped evidence to an implementation change. Use when the change could alter a Concept, Relation, Lens, or its consumers.
 ---
 
-# Carry out a directive
+# Apply meaning to a change
 
-Check that this project is activated before Conceptor work. If `.conceptor/active` is absent, continue the native task without Conceptor. Do not make activation a condition of ordinary work.
+Check activation with `node PLUGIN_ROOT/runtime/cli.mjs status --root PROJECT` before using Conceptor. Resolve `PLUGIN_ROOT` from this skill's installed location. If inactive, continue through the native host without Conceptor. Do not enable it implicitly.
 
-Read the applicable authority and relevant exceptions. Use the native host to plan and execute the work. The root owns shared meaning, affected Lenses, and the checkpoint unless it assigns an exact surface. Conceptor supplies evidence and recovery helpers; it does not schedule work.
+Read the relevant accepted meaning, including prose conditions, reasons and exceptions. Separate the requested outcome from the existing implementation. Use [Applying Conceptor](../../references/applying-conceptor.md) when the changed rule or its consumers need investigation.
 
-If the project is a Git checkout, inspect the branch, current commit, and Git status before editing. Identify existing staged work and inspect relevant working diffs. Distinguish existing work from the directive's changes. For every project, identify the next unit that a reviewer can understand as one change. Adjust that boundary as dependencies become clear; do not wait until final handoff to divide a large changeset.
+Trace the rule from its owner to affected consumers, including unchanged consumers that rely on it. Use Concepts and Lenses as navigation, not proof that all obligations or participants were found. When the governing purpose or a design premise changes, compare the simplest coherent approach with current code before extending it. This is reasoning guidance, not a tool gate or a required saved account.
 
-Before accepting a consequential design, use [Applying Conceptor](../../references/applying-conceptor.md) to connect governing meaning to the changed rule, its owner, actual consumers, relevant state transitions, and evidence. Start from the requested outcome and current meaning, including authoritative prose. Use Units and Lenses as navigation. A selected file list is not an impact analysis, and checks do not supply missing requirements.
+Follow the native host's task, ownership, editing, recovery and delivery rules. Conceptor does not manage tasks, GitHub issues, branches, commits or publication. It does not apply source repairs or provide rollback.
 
-Record decision-changing obligations and uncertainties in the existing plan or checkpoint when useful; do not create a second ledger. Probe a consequential premise before dependent implementation. Current local context can resolve a routine edit without a new artifact or helper call. Keep the full intended outcome and still-applicable plan commitments visible.
+Maintain affected Lenses with the implementation. Check their actual participants, globs, condition references, observations and native checks. Refresh bindings when source or membership changes. A selected file list does not establish behavior; retain uncovered obligations as unresolved.
 
-Use [Reassess from purpose](../../references/applying-conceptor.md#reassess-from-purpose) when due or when the current candidate's premises change. Save the clean comparison and complete its required architecture review and lifecycle before coding or assigning implementation. Define a replacement through its whole consumer boundary, including affected tests and cutover. Let the accepted outcome determine that boundary rather than preserving each existing class.
+Use the optional `focus`, `revisit`, `observe` and `reconcile` helpers when their evidence answers a current question. The [reference](../../references/guide.md) defines their contracts. Run checks only when authorized and useful. Preserve independently applicable evidence when another observation fails.
 
-Give workers governing meaning pointers, the changed contract and settled shared interfaces, actual consumers, disjoint write paths, and required evidence. They return unexpected dependencies and proposed Lens changes to the root. Separate Unit or Lens IDs do not establish independent ownership of files, checkpoints, cache baselines, or the Git index.
+Compare the result with the governing meaning through its real consumer. Return original mismatches and unresolved evidence to the native task context before further changes. The disposable cache is not a recovery record. Record an accepted change of meaning in its owning Concept or Relation; keep proposals distinct from accepted decisions.
 
-Compare traced participants and actual changes with affected Lens selectors. The root maintains their intended population, condition references, observations, check inputs, target, evidence kind, and coverage with the implementation. Verify globs against the actual tree. Refresh affected bindings when source or membership changes; report unresolved scope. Select unsafe implementations too, and accept valid handwritten alternatives. Follow [Lens maintenance](../../references/applying-conceptor.md#maintain-affected-lenses) for the concrete procedure.
-
-Choose the next connected behavior that closes a product gap and exercise it
-through its actual consumer. Keep the full intended scope visible. Explain the
-behavior and important design choices so the user can detect drift. Code and
-interfaces must support that explanation; a larger evidence packet cannot
-compensate for an opaque implementation.
-
-Run known producers through the native host. When replacement needs recovery, produce staged files first. Inspect staged content, then use an owned `repair` request with expected hashes. Read [the reference guide](../../references/guide.md) for the request contract. Keep source, generated outputs, and producer ownership explicit.
-
-Keep original mismatch evidence before changing an implementation, selector, check, or Concept. Compare actual changes with the intended behavior and predicted consequences. If successive patches expose the same faulty ownership or lifetime premise, pause dependent patches and revise that connected design. Use `$conceptor:reconcile-and-learn` to distinguish a realization, binding, observation, or meaning defect. Batch affected checks when connected behavior is ready and reuse still-applicable evidence. State what the checks establish and which checks remain unrun.
-
-## Reviewable local commits
-
-In an activated Git project, the native root makes local commits when a coherent unit is ready. Follow more specific user and repository rules, including a request to leave work uncommitted. Workers return changes and evidence; they do not stage or commit. Read [the commit procedure](../../references/guide.md#reviewable-local-commits) when preparing a commit.
-
-Group changes by the behavior or decision they explain. Keep the implementation, affected consumers, relevant checks, and necessary meaning changes together. Split unrelated behavior and cleanup. A preparatory change earns a separate commit when it is useful and reviewable by itself. Do not split by file, language, agent, elapsed time, or a fixed size quota. If dependent changes cannot form coherent intermediate states, keep them together. Provide a clear review order.
-
-At a unit's completion point, inspect its actual diff and applicable check results. Apply existing review requirements. Do not add a certification cycle for every commit. Preserve evidence scope and unresolved questions; a commit does not certify the whole feature. Never bypass a failed hook or describe a known failure as passing.
-
-Write a subject that names the concrete result. Add a short body with the reason, the behavior or exception that matters, and validation or remaining limits. For a broad unit, say why it belongs together and where to start reading. The reviewer should understand the unit without this conversation.
-
-Commit only the directive's reviewed changes. Preserve other staged and working changes. If ownership, concurrent index use, or mixed edits prevent safe isolation, leave the unit uncommitted, retain its reason and next action in existing task state, and continue independent work. Report local commit IDs in the handoff. Push or rewrite history only with separate authorization.
-
-## Handoff
-
-Update shared meaning only when this work changes meaning. Finish known affected Lens updates or retain their specific unresolved scope and next action. Update the checkpoint when it creates a useful future action or interruption state. Preserve unrelated edits. Hand the root exact changed paths, evidence, gaps, and decisions. State source, installed-plugin, and session-loaded instruction status separately when delivering plugin changes.
-
-Keep the active record about current decisions, assignments, unresolved risks,
-and the next action. Use links for retained detail. Prefer a commit and scoped
-diff over another source snapshot; extra byte identities need a specific
-consumer such as stale-input detection or guarded repair. Do not duplicate
-runtime hash records in manually maintained manifests.
+Explain the resulting behavior, evidence and remaining uncertainty. Do not create a Conceptor task checkpoint, archive, session ledger or extra instruction file.

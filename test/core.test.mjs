@@ -1,3 +1,4 @@
+import './user-state.mjs';
 import { activate, deactivate } from '../plugins/conceptor/runtime/activation.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -7,9 +8,9 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 import { execFile } from 'node:child_process';
 import { stringify } from 'yaml';
-import { focus, revisit, reconcile, writeCheckpoint, resume, closeCheckpoint, repair } from '../plugins/conceptor/runtime/conceptor.mjs';
+import { focus, revisit, reconcile } from '../plugins/conceptor/runtime/conceptor.mjs';
 import { hash, projectPath, writeText } from '../plugins/conceptor/runtime/state.mjs';
-import { readCheckpoint, updateCheckpoint } from '../plugins/conceptor/runtime/work.mjs';
+import { storagePaths } from '../plugins/conceptor/runtime/storage.mjs';
 const run = promisify(execFile);
 const cli = path.resolve('plugins/conceptor/runtime/cli.mjs');
 
@@ -29,26 +30,19 @@ async function fixture(t) {
 async function meaning(root, name, metadata, body = 'Reasons and examples remain readable without Conceptor.') {
   await writeText(path.join(root, `.conceptor/meaning/${name}.md`), `---\n${stringify(metadata)}---\n${body}\n`);
 }
-async function checkpoint(root) { return writeCheckpoint(root, { id: 'directive', goal: 'Retain meaningful progress', ownership: [{ owner: 'worker', paths: ['src/a.mjs', 'src/b.mjs'] }], boundaries: ['src/**'], completed: ['A useful native edit'], questions: ['Check current evidence'], uncertainMutations: [] }); }
-
-test('inactive entrypoints bypass invalid requests and preserve existing state', async t => {
+test('inactive entrypoints bypass invalid requests and preserve project data', async t => {
   const { root } = await fixture(t);
-  await checkpoint(root);
   await deactivate(root);
-  const before = await fs.readFile(path.join(root, '.conceptor/work/directive.md'));
-  for (const operation of [focus, revisit, reconcile, writeCheckpoint, resume, closeCheckpoint, repair, updateCheckpoint]) {
-    assert.equal((await operation(root, undefined)).status, 'inactive');
-  }
-  assert.deepEqual(await fs.readFile(path.join(root, '.conceptor/work/directive.md')), before);
-  await assert.rejects(fs.access(path.join(root, '.conceptor/cache')), { code: 'ENOENT' });
-  const result = await run(process.execPath, [cli, 'repair', '--root', root, '--request', path.join(root, 'does-not-exist.json')]);
+  const before = await fs.readFile(path.join(root, '.conceptor/meaning/concept.md'));
+  for (const operation of [focus, revisit, reconcile]) assert.equal((await operation(root, undefined)).status, 'inactive');
+  assert.deepEqual(await fs.readFile(path.join(root, '.conceptor/meaning/concept.md')), before);
+  const result = await run(process.execPath, [cli, 'focus', '--root', root, '--request', path.join(root, 'does-not-exist.json')]);
   assert.equal(JSON.parse(result.stdout).status, 'inactive');
 });
 
-test('focus selects meaning without hydrating cycles or old checkpoint archives', async t => {
+test('focus selects meaning without hydrating unrelated records', async t => {
   const { root } = await fixture(t);
   await meaning(root, 'other', { id: 'other', kind: 'concept', title: 'Another idea', status: 'accepted', relations: [{ type: 'depends-on', target: 'idea', status: 'observed' }] });
-  await checkpoint(root);
   const index = await focus(root);
   assert.ok(index.index.every(item => !Object.hasOwn(item, 'body')));
   const packet = await focus(root, { concepts: ['idea'] });
@@ -56,45 +50,7 @@ test('focus selects meaning without hydrating cycles or old checkpoint archives'
   assert.ok(packet.related.some(item => item.id === 'lens'));
   const lensPacket = await focus(root, { lenses: ['lens'] });
   assert.deepEqual(lensPacket.meaning.map(item => item.id), ['lens']);
-  const closed = await closeCheckpoint(root, 'directive');
-  assert.equal(closed.status, 'closed');
-  assert.ok((await fs.readFile(path.join(root, closed.file), 'utf8')).includes('A useful native edit'));
-  assert.equal((await focus(root, { concepts: ['idea'] })).checkpoint, undefined);
-});
 
-test('routine checkpoint output retains recovery routes while full records remain available', async t => {
-  const { root } = await fixture(t);
-  await checkpoint(root);
-  const repairId = 'interrupted';
-  const repairFile = `.conceptor/work/repairs/${repairId}/record.json`;
-  await writeText(path.join(root, repairFile), JSON.stringify({ status: 'interrupted', before: 'x'.repeat(20000) }));
-  await updateCheckpoint(root, 'directive', {
-    uncertainMutations: [repairId],
-    body: 'Decision: retain the user recording. Exception: never replay an uncertain write.',
-  });
-  const saved = await readCheckpoint(root, 'directive');
-  const savedBytes = await fs.readFile(path.join(root, '.conceptor/work/directive.md'));
-  const compact = (await focus(root, { work: 'directive' })).checkpoint;
-  assert.deepEqual(compact.questions, saved.questions);
-  assert.deepEqual(compact.uncertainMutations, saved.uncertainMutations);
-  assert.equal(compact.owners[0].paths, saved.ownership[0].paths.length);
-  assert.deepEqual(await fs.readFile(path.join(root, compact.file)), savedBytes);
-  assert.deepEqual((await focus(root, { work: 'directive', includeWorkDetails: true })).checkpoint, saved);
-
-  await fs.appendFile(path.join(root, 'src/a.mjs'), '// changed since checkpoint\n');
-  const fullResume = await resume(root, 'directive');
-  const requestPath = path.join(root, 'request.json');
-  await fs.writeFile(requestPath, JSON.stringify({ id: 'directive' }));
-  const invoke = () => run(process.execPath, [cli, 'resume', '--root', root, '--request', requestPath]);
-  const summary = JSON.parse((await invoke()).stdout);
-  assert.deepEqual(summary.changed, fullResume.changed);
-  assert.deepEqual(summary.questions, saved.questions);
-  assert.equal(summary.mutations[0].status, fullResume.mutations[0].attempt.status);
-  assert.deepEqual(JSON.parse(await fs.readFile(path.join(root, summary.mutations[0].file), 'utf8')), fullResume.mutations[0].attempt);
-  assert.ok(JSON.stringify(summary).length < JSON.stringify(fullResume).length);
-  await fs.writeFile(requestPath, JSON.stringify({ id: 'directive', includeWorkDetails: true }));
-  assert.deepEqual(JSON.parse((await invoke()).stdout), fullResume);
-  assert.deepEqual(await fs.readFile(path.join(root, compact.file)), savedBytes);
 });
 
 test('missing Lens and missing required population are unresolved; allowed absence is explicit', async t => {
@@ -184,28 +140,25 @@ test('later checks cannot leave earlier evidence current after its configuration
   assert.equal((await reconcile(root, { lenses: ['lens'], runChecks: true })).status, 'unresolved');
 });
 
-test('shared check runs once for multiple conditions and retains the first mismatch', async t => {
+test('shared check runs once and returns failures for each covered condition', async t => {
   const { root, lens } = await fixture(t);
-  await checkpoint(root);
   await meaning(root, 'concept', { id: 'idea', kind: 'concept', title: 'Idea', status: 'accepted', conditions: [{ id: 'behavior', text: 'A', evidence: 'runtime' }, { id: 'other', text: 'B', evidence: 'runtime' }] });
   lens.conditions.push('idea#other');
   lens.checks[0].conditions.push('idea#other');
   await meaning(root, 'lens', lens);
-  const failed = await reconcile(root, { lenses: ['lens'], work: 'directive', runChecks: true });
+  const failed = await reconcile(root, { lenses: ['lens'], runChecks: true });
   assert.equal(failed.receipts.length, 1);
   await fs.writeFile(path.join(root, 'checks/pass.mjs'), 'process.exitCode=1;\n');
-  await reconcile(root, { lenses: ['lens'], work: 'directive', runChecks: true });
+  const mismatched = await reconcile(root, { lenses: ['lens'], runChecks: true });
   lens.checks = [];
   await meaning(root, 'lens', lens);
-  await reconcile(root, { lenses: ['lens'], work: 'directive' });
-  const restored = await resume(root, 'directive');
-  assert.equal(restored.mismatches.length, 2);
-  assert.ok(restored.lastReconciliation.changes.every(item => item.lensOrCheckerChanged));
+  await reconcile(root, { lenses: ['lens'] });
+  assert.equal(mismatched.observedMismatches.length, 2);
+  assert.ok(mismatched.observedMismatches.every(item => item.receipt.exitCode === 1));
 });
 
-test('final publication rechecks earlier Lenses and retains original mismatch after cache deletion', async t => {
+test('final publication returns original failure when a later Lens invalidates its inputs', async t => {
   const { root, lens } = await fixture(t);
-  await checkpoint(root);
   await fs.writeFile(path.join(root, 'settings.json'), 'original');
   lens.checks[0].inputs.push('settings.json');
   await meaning(root, 'lens', lens);
@@ -220,10 +173,9 @@ test('final publication rechecks earlier Lenses and retains original mismatch af
   assert.equal(first.verdicts.find(verdict => verdict.lens === 'lens').status, 'unresolved');
   await fs.writeFile(path.join(root, 'checks/pass.mjs'), 'process.exitCode = 1;\n');
   await fs.writeFile(path.join(root, 'settings.json'), 'original-again');
-  await reconcile(root, { lenses: ['lens', 'other-lens'], work: 'directive', runChecks: true });
-  await fs.rm(path.join(root, '.conceptor/cache'), { recursive: true });
-  const restored = await resume(root, 'directive');
-  const original = restored.mismatches.find(verdict => verdict.lens === 'lens');
+  const failed = await reconcile(root, { lenses: ['lens', 'other-lens'], runChecks: true });
+  await fs.rm((await storagePaths(root)).cache, { recursive: true, force: true });
+  const original = failed.observedMismatches.find(verdict => verdict.lens === 'lens');
   assert.equal(original.receipt.exitCode, 1);
   assert.ok(original.receipt.scope.inputs.some(input => input.path === 'settings.json' && input.hash === hash('original-again')));
 });
@@ -232,82 +184,38 @@ test('revisit refreshes directive boundaries and literal queries beyond saved se
   const { root, lens } = await fixture(t);
   lens.selectors[0].patterns = ['src/a.mjs'];
   await meaning(root, 'lens', lens);
-  await checkpoint(root);
+  await revisit(root, { lenses: ['lens'], paths: ['src/**'] });
   await fs.writeFile(path.join(root, 'src/new-export.mjs'), 'export const useIdea = true;\n');
-  const result = await revisit(root, { lenses: ['lens'], work: 'directive', query: 'useIdea' });
+  const result = await revisit(root, { lenses: ['lens'], paths: ['src/**'], query: 'useIdea' });
   assert.ok(result.discoveryQuestions.some(question => question.path === 'src/new-export.mjs'));
   assert.ok(result.observations.some(observation => observation.facts.some(fact => fact.kind === 'literal-occurrence' && fact.path === 'src/new-export.mjs')));
 });
 
-test('owned repair is inspectable/idempotent and refuses stale or overlapping writers', async t => {
+test('cache deletion preserves meaning and CLI exposes unsupported results', async t => {
   const { root } = await fixture(t);
-  await checkpoint(root);
-  await assert.rejects(writeCheckpoint(root, { id: 'conflict', goal: 'No silent writer overlap', ownership: [{ owner: 'one', paths: ['src/a.mjs'] }, { owner: 'two', paths: ['src/a.mjs'] }] }), /Conflicting ownership/);
-  const before = await fs.readFile(path.join(root, 'src/a.mjs'));
-  const request = { id: 'repair-one', work: 'directive', owner: 'worker', condition: 'idea#behavior', explanation: 'Restore known behavior', outputs: [{ path: 'src/a.mjs', expectedHash: hash(before), content: 'fixed\n' }] };
-  await repair(root, request);
-  assert.equal((await repair(root, request)).states[0].state, 'after');
-  assert.ok((await resume(root, 'directive')).changed.includes('src/a.mjs'));
-  await repair(root, { id: request.id, mode: 'rollback' });
-  assert.deepEqual(await fs.readFile(path.join(root, 'src/a.mjs')), before);
-  await assert.rejects(repair(root, { ...request, id: 'stale', outputs: [{ ...request.outputs[0], expectedHash: 'wrong' }] }), /Stale expected/);
-});
-
-test('rollback preflight preserves all outputs when one has unrelated bytes; aliases cannot split ownership', async t => {
-  const { root } = await fixture(t);
-  await checkpoint(root);
-  await fs.writeFile(path.join(root, 'src/b.mjs'), 'before-b');
-  const beforeA = await fs.readFile(path.join(root, 'src/a.mjs'));
-  await repair(root, { id: 'two-files', work: 'directive', owner: 'worker', outputs: [{path:'src/a.mjs',expectedHash:hash(beforeA),content:'after-a'}, {path:'src/b.mjs',expectedHash:hash('before-b'),content:'after-b'}] });
-  await fs.writeFile(path.join(root, 'src/b.mjs'), 'unrelated');
-  await assert.rejects(repair(root, { id: 'two-files', mode: 'rollback' }), /unrelated edits/);
-  assert.equal(await fs.readFile(path.join(root, 'src/a.mjs'), 'utf8'), 'after-a');
-  await fs.writeFile(path.join(root, 'src/b.mjs'), 'after-b');
-  const nativeRename = fs.rename;
-  fs.rename = async (from, to) => { if (to === path.join(root, 'src/b.mjs')) throw new Error('Injected second restore failure'); return nativeRename(from, to); };
-  try { await assert.rejects(repair(root, {id:'two-files',mode:'rollback'}), /interrupted/); }
-  finally { fs.rename = nativeRename; }
-  const interrupted = await resume(root, 'directive');
-  assert.deepEqual(interrupted.uncertainMutations, ['two-files']);
-  assert.equal(interrupted.mutations[0].attempt.status, 'rollback-interrupted');
-  assert.deepEqual(await fs.readFile(path.join(root, 'src/a.mjs')), beforeA);
-  await repair(root, {id:'two-files',mode:'rollback'});
-  assert.deepEqual((await resume(root, 'directive')).uncertainMutations, []);
-  await fs.writeFile(path.join(root, 'src/a.mjs'), 'after-a');
-  await fs.symlink(path.join(root, 'src'), path.join(root, 'alias'), 'junction');
-  await assert.rejects(writeCheckpoint(root, {id:'aliases',goal:'Own actual files',ownership:[{owner:'one',paths:['src/not-created.mjs']},{owner:'two',paths:['alias/not-created.mjs']}]}), /Conflicting ownership/);
-  await assert.rejects(repair(root, {id:'alias-outputs',work:'directive',owner:'worker',outputs:[{path:'src/a.mjs',expectedHash:hash('after-a'),content:'next'},{path:'alias/a.mjs',expectedHash:hash('after-a'),content:'next'}]}), /Duplicate repair output/);
-});
-
-test('prior-state repair and two failed strategies stop locally without losing unrelated work', async t => {
-  const { root } = await fixture(t);
-  await checkpoint(root);
-  const before = await fs.readFile(path.join(root, 'src/a.mjs'));
-  await repair(root, { id: 'first', work: 'directive', owner: 'worker', condition: 'idea#behavior', explanation: 'Try once', outputs: [{ path: 'src/a.mjs', expectedHash: hash(before), content: 'new\n' }] });
-  const repeated = await repair(root, { id: 'cycle', work: 'directive', owner: 'worker', condition: 'idea#behavior', outputs: [{ path: 'src/a.mjs', expectedHash: hash('new\n'), content: before.toString() }] });
-  assert.equal(repeated.status, 'stopped');
-  await fs.symlink(path.join(root, 'src'), path.join(root, 'alias'), 'junction');
-  const aliasCycle = await repair(root, {id:'alias-cycle',work:'directive',owner:'worker',condition:'idea#behavior',outputs:[{path:'alias/a.mjs',expectedHash:hash('new\n'),content:before.toString()}]});
-  assert.equal(aliasCycle.status, 'stopped');
-  await repair(root, {id:'group',work:'directive',owner:'worker',condition:'idea#behavior',outputs:[{path:'src/a.mjs',expectedHash:hash('new\n'),content:'group-a'},{path:'src/b.mjs',expectedHash:null,content:'group-b'}]});
-  const reorderedCycle = await repair(root, {id:'reordered-cycle',work:'directive',owner:'worker',condition:'idea#behavior',outputs:[{path:'src/b.mjs',expectedHash:hash('group-b'),delete:true},{path:'src/a.mjs',expectedHash:hash('group-a'),content:'new\n'}]});
-  assert.equal(reorderedCycle.status, 'stopped');
-  await updateCheckpoint(root, 'directive', { repairHistory: [{ condition: 'idea#behavior', explanation: 'same', outcome: 'mismatch' }, { condition: 'idea#behavior', explanation: 'same', outcome: 'mismatch' }] });
-  const stopped = await repair(root, { id: 'failed-again', work: 'directive', owner: 'worker', condition: 'idea#behavior', explanation: 'same', outputs: [{ path: 'src/a.mjs', expectedHash: hash('group-a'), content: 'different\n' }] });
-  assert.equal(stopped.status, 'stopped');
-  assert.equal((await resume(root, 'directive')).completed[0], 'A useful native edit');
-});
-
-test('cache deletion preserves meaning/checkpoint and CLI exposes unsupported results', async t => {
-  const { root } = await fixture(t);
-  await checkpoint(root);
   await reconcile(root, { lenses: ['lens'], runChecks: true });
-  await fs.rm(path.join(root, '.conceptor/cache'), { recursive: true });
+  await fs.rm((await storagePaths(root)).cache, { recursive: true, force: true });
   assert.ok((await focus(root, { concepts: ['idea'] })).meaning[0].body.includes('exception'));
-  assert.deepEqual((await resume(root, 'directive')).changed, []);
+  const refreshed = await revisit(root, { lenses: ['lens'] });
+  assert.equal(refreshed.selections[0].baseline, 'missing');
+  assert.deepEqual(refreshed.selections[0].added, []);
   const request = path.join(root, 'request.json');
   await fs.writeFile(request, JSON.stringify({ lenses: ['lens'] }));
   await assert.rejects(run(process.execPath, [cli, 'reconcile', '--root', root, '--request', request]), error => error.code === 2 && JSON.parse(error.stdout).status === 'unresolved');
+});
+
+test('noisy checks drain both streams with bounded output and reusable evidence', async t => {
+  const { root } = await fixture(t);
+  await fs.writeFile(path.join(root, 'checks/pass.mjs'), 'process.stdout.write("x".repeat(200000)); process.stderr.write("y".repeat(200000));');
+  const first = await reconcile(root, { lenses: ['lens'], runChecks: true });
+  assert.equal(first.status, 'supported');
+  const receipt = first.receipts[0];
+  assert.equal(Buffer.byteLength(receipt.output.stdout), 65536);
+  assert.equal(Buffer.byteLength(receipt.output.stderr), 65536);
+  assert.equal(receipt.output.stdoutTruncated, true);
+  assert.equal(receipt.output.stderrTruncated, true);
+  assert.equal((await reconcile(root, { lenses: ['lens'] })).receipts[0].id, receipt.id);
+  await assert.rejects(focus(root, { work: 'old-task' }), /checkpoints were removed/);
 });
 
 test('outside-root paths and escaped symlinks are refused before source reads', async t => {

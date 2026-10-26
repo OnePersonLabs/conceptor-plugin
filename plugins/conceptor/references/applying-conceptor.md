@@ -2,7 +2,7 @@
 
 Conceptor preserves what a system must do, why it matters, and where implementation and evidence bear on that meaning. Use it to make the next decision without reconstructing the full history. The working loop is: recover relevant meaning, predict consequences, implement, compare actual effects, reconcile, and retain useful learning. Code remains revisable; an implementation discovery can justify an explicit meaning decision.
 
-This procedure belongs to the selected workflow skill. Use existing plans and checkpoints for task-specific decisions. Do not copy the procedure into each task or require a new artifact for routine work. Discovery helpers are optional; their [request contracts](guide.md) define what they can establish. The assessment helper below maintains the requested compaction cadence.
+Use this reference when a Conceptor skill needs deeper reasoning about meaning and evidence. Keep task-specific state in the native workflow. Discovery helpers are optional; their [request contracts](guide.md) define what they can establish. Conceptor does not inject this guidance or enforce a session cadence.
 
 ## Recover the governing meaning
 
@@ -17,7 +17,6 @@ Use each artifact for its actual purpose:
 | Projection Unit | A current implementation location selected by a Lens | That every symbol in the file realizes the Concept |
 | Lens | An intended population and optional condition-specific observations/checks | Complete discovery or whole-application correctness |
 | Pattern Candidate | A reusable explanation, alternatives, counterexamples, and applicability | Authority from repetition or from its own generated repairs |
-| Checkpoint | Active decisions, ownership, evidence pointers, and recovery state | Replacement authority or permission to replay uncertain mutations |
 
 Follow relevant upstream constraints and downstream consequences. `focus.related` offers pointers, including outgoing Relation endpoints from selected records. It does not collect records solely because their Relations target a selected Concept, and it is not a transitive impact closure.
 
@@ -31,44 +30,21 @@ Read the matched records' frontmatter. Keep only relevant Relations whose `targe
 
 ## Reassess from purpose
 
-The root performs this procedure before the first consequential action without a current candidate and when the compaction hook reports it due. A changed goal, invalidated premise, or two unsuccessful repair cycles first requires a focused premise check. Expand that check only far enough to settle the changed premise; complete the full procedure when it changes the governing approach. A routine edit with a current candidate does not trigger another assessment. Initial, due and active assessment states conservatively hold all ordinary source edits until completion.
+Use this comparison when the goal changes, evidence invalidates an assumption, or a proposed change would extend a questionable design. Scale it to the decision; routine work needs no assessment artifact.
 
-1. Recover the observable product outcome, applicable capabilities, reasons, conditions, exceptions and accepted corrections from governing artifacts. Separate required outcomes from selected implementation mechanisms. Use existing authority rather than reconstructing all history.
-2. Describe the simplest coherent approach if starting today, before adapting it to current code. State the responsibilities, interfaces and evidence needed to deliver the outcome. Reuse the previous candidate when its premises remain applicable; identify those checked premises instead of inventing a new architecture.
-3. Compare that candidate with the implementation and the previous run's friction. Trace actual producers, state owners, consumers and recovery paths. Identify fragmented ownership, repeated translation, tests tied to replaceable internals, repeated discovery and repairs around the same premise. Treat these as hypotheses until source or execution evidence supports them.
-4. Classify consequential differences: a requirement the candidate missed; a replaceable mechanism; an obsolete obligation whose retirement has governing authority; or an unresolved decision. Carry real concerns into the candidate. A failed test or inconvenient implementation does not authorize retiring its required behavior.
-5. Choose keep, replace or replan by remaining implementation, migration, verification and maintenance cost. For a replacement, define the whole connected boundary: inputs, outputs, state, persistence, consumers, tests and cutover. Build from those interfaces inward, using old code as a reference for applicable concerns. Consolidate competing owners and remove superseded implementation within that boundary. Preserve useful work and required verification. Replacement is not automatically cheaper.
-6. Name the next integrated product result and its acceptance evidence. A helper or checked component alone cannot complete a consumer requirement. Record changed decisions and reasons with their existing meaning owner. Save the comparison account defined in [assessment requests](guide.md#assessment-requests), and link it from the existing checkpoint. The account supplies the implementation transition; it does not replace governing meaning or the task tracker.
+1. Recover the observable outcome, conditions, reasons and accepted corrections from governing meaning.
+2. Describe the simplest coherent approach before adapting it to current code.
+3. Compare responsibilities, consumers, state transitions and recovery paths. Identify missed requirements, replaceable mechanisms, obsolete obligations and unresolved decisions.
+4. Choose the approach by remaining implementation, migration, verification and maintenance cost. Preserve required capabilities through their real consumers.
+5. Explain the decision and acceptance evidence. Update the owning meaning record when an accepted decision changes it; leave task tracking to the native workflow.
 
-Make the comparison and consequential decision visible before dependent implementation. Preserve active ownership, uncertain mutations, user pauses and host permissions. Reassessment grants no authority to replay effects, cancel another writer or reduce product scope.
-
-### Before implementation
-
-Keep assessment separate from implementation. During assessment, inspect governing artifacts, describe the clean candidate, then inspect the implementation to account for concrete concerns. Bounded probes can resolve design uncertainty; they do not authorize production edits. Resolve required architecture review before completing the assessment. Review of the resulting code comes later.
-
-The pre-tool hook rejects ordinary native shell, patch and delegation calls while assessment is due or active. For a shell call that only performs discovery, assessment probes or planning writes, use `# conceptor-assessment: <purpose>` as its first line. Keep probe effects within the declared assessment boundary. For a read-only assessment or review assignment, start its message with `Conceptor assessment: <purpose>`. Patches whose targets are all under `.conceptor/work/` can record the assessment. These declarations preserve useful assessment work; they are not alternate routes for implementation.
-
-Complete the lifecycle with the saved comparison account. The runtime checks its required fields and binds its contents to the candidate. Missing, changed or unbound accounts make the candidate due. Field presence establishes an inspectable account, not correct reasoning. Native review must judge its substance under the project's review rules. A successful declaration cannot excuse a comparison written after coding.
-
-This is a cooperative workflow guard. It does not prove arbitrary scripts read-only or cover every external mutation channel. Existing interactive shell sessions and messages to running workers do not receive this fresh-call check. Keep those operations inside the current phase and assigned boundary. Treat a marked production edit as a behavior failure. Do not use an uncovered tool to avoid the transition. The real trial must inspect both the account and edit chronology.
-
-### Assessment cadence
-
-Use the installed runtime's `assessment` command through the existing `--request` JSON transport. Read [assessment requests](guide.md#assessment-requests) for the small lifecycle contract. Begin a full assessment before its discovery and reconstruction work. Record the candidate, comparison and decision, resolve any required review of that architecture decision, then complete the assessment before dependent implementation. Implementation and review of the resulting code occur in the working phase; they do not keep the assessment open. A focused premise check alone leaves the scheduled interval unchanged. Root assessment is the default; delegation must justify its added context and integration cost.
-
-The hook counts root compactions in the assessment phase separately from ordinary-work compactions. Completion sets the next work interval to `max(1, ceil(9 * cost))`, where cost includes assessment compactions, carried cost from abandoned assessments and `extraWindows`. Charge each delegated assessment context one extra window plus its reported compactions. If its compaction count is unavailable, charge one window and retain that measurement limit. This is a coarse scheduling proxy for a 10% overhead target, not a time or token bound; partial windows and unobserved worker usage limit precision.
-
-Compaction during assessment resumes the same assessment. Repeated begin and completion preserve existing progress. Abandon a cancelled or superseded assessment without claiming a valid candidate; retain its cost for the next authorized assessment. Resume uses the same session cache. A fresh session recovers the prior candidate from the checkpoint and checks its premises before using it.
-
-In Plan mode or read-only work, use read-only requests and retain unsaved phase, cost and decision changes in the ordinary handoff. Do not claim persistence. A missing cache or session identity cannot establish a current candidate: recover the checkpoint and perform the applicable premise check. Cache deletion preserves authored meaning and checkpoints.
-
-Hook delivery and helper state establish mechanical behavior only. Evaluate actual goal recovery, comparison, decisions and consumer progress through authorized work. Keep assessment, implementation and review costs separate where measurements permit; report missing measurements as unknown. Scale or simplify costly reassessment while preserving its obligation.
+No hook blocks tools, counts compactions or requires a saved comparison account.
 
 ## Connect the changed rule to its consumers
 
 Use the current Lens population as a starting map. Check whether the change affects identity, ownership, lifetime, state transitions, shared contracts, storage/replay, eligibility, concurrency, or a public interaction. If it does, trace the affected rule from its source of truth through actual dispatch and relevant consumers. Include unchanged consumers when their assumptions change.
 
-Before accepting that design, make these answers inspectable in the existing plan or checkpoint when the work needs retained reasoning:
+Before accepting that design, make these answers inspectable in the native task context when the work needs retained reasoning:
 
 - Which condition or authoritative prose governs the changed rule, and why?
 - Which owner produces the relevant state? Which consumers rely on it?
@@ -88,25 +64,25 @@ Stop discovery when current evidence explains the proposed behavior, relevant tr
 
 | Question | Useful route | Remaining limit and cost |
 | --- | --- | --- |
-| Where is this exact protocol name, selector, or registration mentioned? | Native text search or V5 inventory within explicit paths | Cheap leads, including non-code seams; aliases and same-name symbols require further inspection |
+| Where is this exact protocol name, selector, or registration mentioned? | Native text search or Conceptor inventory within explicit paths | Cheap leads, including non-code seams; aliases and same-name symbols require further inspection |
 | Does this candidate call or callback value refer to the changed owner? | Configured LSP definition at that usage, or the project's compatible language service | Can resolve identity through imports and aliases; requires the actual project configuration |
 | Which other usages should I inspect? | Scoped imports, re-exports, registrations, and reference queries | Reference results can stop at renamed bindings; they are leads, not a complete consumer list |
 | Where are calls, imports, or registrations with a known syntax shape? | An available language AST or Tree-sitter query | Removes text noise; syntax alone does not resolve cross-file symbol identity or dynamic targets |
-| Which callable contains these references? | Inspect returned locations; use a host's call hierarchy when available and applicable | V5's current adapter does not expose call hierarchy; a call graph still does not specify lifetime duties |
+| Which callable contains these references? | Inspect returned locations; use a host's call hierarchy when available and applicable | Conceptor's current adapter does not expose call hierarchy; a call graph still does not specify lifetime duties |
 | What must a subscriber withdraw after retirement or requalification? | Read its registration, owned state, output queries, and existing behavioral checks | Requires contract reasoning; none of these discovery tools supplies that meaning |
 
 Python, Rust, and TypeScript are peer languages in this procedure. Use compatible native tools for the actual language and project; do not infer equivalent coverage from an LSP connection. [Tree-sitter queries](https://github.com/tree-sitter/tree-sitter/blob/master/docs/src/using-parsers/queries/2-operators.md) can select syntax in all three when suitable grammars are available. Syntax still needs semantic or source-based identity resolution. Adding a parser or provider also adds compatibility, configuration, provenance, failure-handling, and maintenance work.
 
-Use this path for an on-demand V5 LSP observation:
+Use this path for an on-demand Conceptor LSP observation:
 
 1. Inspect the repository's installed tools and actual project, environment, source membership, and supported operations. Use compatible versions. Do not silently substitute another checkout's compiler, Python environment, or Rust feature/target configuration.
 2. Find candidate imports, re-exports, calls, and registrations in the affected scope. Follow observed aliases. Native text search is often sufficient; an available AST or Tree-sitter query can reduce syntax noise. Record exact candidate locations rather than inferring that equal spelling means equal identity.
 3. At an ambiguous call or callback value, select `definitions`, its seed file, and zero-based position. Supply the native executable and separate arguments. Run the existing Node `observe` CLI. See the [peer-language setup and requests](guide.md#native-observations-for-python-rust-and-typescript). Compare the returned definition with the changed owner. Use references to discover more candidates, not to declare that no others exist.
-4. Where the server requires startup readiness, use its supported configuration or explicit notification contract. The optional V5 gate uses the latest observed status within the caller's budget. A match is not a source-version acknowledgment or proof of complete project analysis. Arbitrary sleeps, successful transport, and empty queries cannot establish absence.
+4. Where the server requires startup readiness, use its supported configuration or explicit notification contract. The optional LSP readiness gate uses the latest observed status within the caller's budget. A match is not a source-version acknowledgment or proof of complete project analysis. Arbitrary sleeps, successful transport, and empty queries cannot establish absence.
 5. Read capabilities, locations, readiness when configured, currentness, and every gap. Trace confirmed consumers through owned state and output/recovery behavior. Follow a stored callback through its registration and dispatch owner; navigation does not determine the final runtime target of an indirect call.
-6. Keep relevant project configuration and discovery assumptions with the existing evidence. V5 binds requested and returned source files, not every compiler/environment input. `scope.currentness` concerns captured inputs. Use a separate native snapshot for relevant uncaptured configuration and membership, and verify it before reuse.
+6. Keep relevant project configuration and discovery assumptions with the existing evidence. Conceptor binds requested and returned source files, not every compiler/environment input. `scope.currentness` concerns captured inputs. Use a separate native snapshot for relevant uncaptured configuration and membership, and verify it before reuse.
 
-V5 starts and closes a language server for each observation. Repeated questions can make startup dominate useful work. Use an existing native language-service session when it is suitable; keep its evidence and coverage explicit. Do not add a persistent service or global index merely to avoid a few focused reads. An existing source-bound index can use V5's `index` provider when its inputs and supported facts are current.
+Conceptor starts and closes a language server for each observation. Repeated questions can make startup dominate useful work. Use an existing native language-service session when it is suitable; keep its evidence and coverage explicit. Do not add a persistent service or global index merely to avoid a few focused reads. An existing source-bound index can use Conceptor's `index` provider when its inputs and supported facts are current.
 
 The same scoped example applies in all three languages: a producer is re-exported under one alias, imported as `receive`, then called and stored as a callback. A separate file has an unrelated local `receive`. Native text search for only the producer misses the consumer. Syntax queries find both call shapes. In exercised Python, Rust, and TypeScript examples, definitions at the candidate call, registration, and re-export reached the producer, while the decoy resolved locally. Python and Rust reference sets remained segmented across aliases; one producer-reference query did not find those consumers. The indirect invocation resolved to its stored binding, not a verified runtime callback. These examples establish candidate navigation, not complete discovery or lifecycle correctness.
 
@@ -116,14 +92,14 @@ Extend a provider only when a concrete repeated question remains costly or unsup
 
 ## Maintain affected Lenses
 
-The root owns authored meaning and Lens changes unless it assigns the exact surface. Workers return new participants, changed responsibilities, proposed selector/check changes, reasons, and unresolved scope to that owner. Different Unit or Lens IDs do not establish independent ownership of one file, checkpoint, cache baseline, or Git index.
+The root owns authored meaning and Lens changes unless it assigns the exact surface. Workers return new participants, changed responsibilities, proposed selector/check changes, reasons, and unresolved scope to that owner. Different Unit or Lens IDs do not establish independent ownership of one meaning file or Lens.
 
 At design time and after actual changes, compare traced participants with the affected Lens population. Inspect a binding when an owner moves, appears, retires, changes responsibility, or gains a consumer. An unchanged consumer can also need inspection when its producer's contract changes.
 
 1. Read the Lens's conditions and intended population. Verify selectors against actual paths. Include unsafe and incomplete realizations; selection must not depend on passing the property being checked.
 2. Update affected selectors for the responsibility change. Keep the same Concept and Lens identities when meaning stays the same. File-based Unit bindings are derived; do not create another editable Unit inventory.
 3. Review affected condition references, observation requests, check inputs, evidence kind, target, and coverage. A selected new participant cannot inherit an old check's support without evidence that the check covers it. Never use `coverage: selection` merely to silence a gap.
-4. Refresh affected bindings with `revisit` when it saves work. Inspect added/removed participants and unresolved selection. A native source check can establish the needed scope without a helper call. If the population cannot be established, retain that unresolved scope and its next decision in the existing checkpoint.
+4. Refresh affected bindings with `revisit` when it saves work. Inspect added/removed participants and unresolved selection. A native source check can establish the needed scope without a helper call. If the population cannot be established, retain that unresolved scope and its next decision in the native task context.
 5. Finish known affected Lens updates with the implementation, or state the specific remaining dependency at handoff. Do not claim synchronization from a refreshed cache when the authored selector still omits a known participant.
 
 A correct broad selector may already cover a new realization. Keep the glob when its population is still right; assess the new participant's role and check coverage. Remove a participant because its responsibility ended, not because excluding it hides a mismatch.
@@ -134,7 +110,7 @@ Attach or revise repeatable checks when they provide useful evidence for the con
 
 Give a worker the governing meaning pointers, changed contract, settled shared interfaces, actual consumers, write boundary, and required evidence. Include what must remain valid. The worker returns unexpected dependencies rather than extending its write scope. The root integrates the full consumer path; separate component passes do not multiply into application acceptance.
 
-Use the existing producer and repair paths. Do not add a second scheduler or invalidation registry merely to coordinate this work. Keep the complete intended outcome visible while finishing connected behavior. Explain its ownership, main flow, and consequential failure behavior through clear interfaces and nearby reasons, then demonstrate the affected behavior in its real consumer under existing verification rules.
+Use the native host's producer, edit and recovery paths. Do not add a second scheduler or invalidation registry merely to coordinate this work. Keep the complete intended outcome visible while finishing connected behavior. Explain its ownership, main flow, and consequential failure behavior through clear interfaces and nearby reasons, then demonstrate the affected behavior in its real consumer under existing verification rules.
 
 ## Compare results and reassess the premise
 
@@ -147,11 +123,11 @@ Compare actual effects with the governing meaning and pre-change account. Preser
 | Observation or check does not establish its claim | Repair the evidence mechanism and retain the original discrepancy |
 | Accepted meaning conflicts or needs revision | Return the specific meaning decision through the authorized path |
 
-Manual repairs can change symptoms while preserving one faulty ownership premise. When successive patches expose that pattern, pause dependent repairs and trace the connected rule before another patch. Preserve useful work and competing explanations. Change the approach at its owner. Retain the existing automatic-repair stop rules; this procedure adds no counter or guard.
+Manual repairs can change symptoms while preserving one faulty ownership premise. When successive patches expose that pattern, pause dependent repairs and trace the connected rule before another patch. Preserve useful work and competing explanations. Change the approach at its owner. The native host owns repair budgets and recovery; this procedure adds no counter or guard.
 
 Reuse evidence within its actual condition, source, membership, configuration, provider/check revision, execution target, and observation kind. Static shape does not prove runtime delivery or timing. An unavailable observation leaves its claim unresolved; it does not erase independent support.
 
-V5 receipts bind whole relevant meaning and Lens records plus declared check inputs and execution dependencies. They can invalidate more broadly than an exact semantic dependency engine. Do not label a stale receipt current or silently backdate it. Independently recorded native evidence can still be reused when its applicability is established and disclosed separately. Do not rerun a broad suite solely to make a status table green.
+Conceptor receipts bind whole relevant meaning and Lens records plus declared check inputs and execution dependencies. They can invalidate more broadly than an exact semantic dependency engine. Do not label a stale receipt current or silently backdate it. Independently recorded native evidence can still be reused when its applicability is established and disclosed separately. Do not rerun a broad suite solely to make a status table green.
 
 ## Worked connected change
 
@@ -195,7 +171,7 @@ Retain a current participant trace until relevant source, responsibilities, memb
 
 When a discovery changes where future work should look, update the existing Lens, Relation, or Concept that owns it. Preserve observed-versus-accepted status. Retain a Pattern Candidate only when its explanation could guide plausible future work; include alternatives, counterexamples, and reopening assumptions. Do not promote a repaired incident into a universal rule or retain a permanent symptom catalogue.
 
-Keep one concise active checkpoint with decisions, ownership, unresolved scope, evidence pointers, and next actions. Distill routing and completed status more freely than authority. Preserve conditions, reasons, exceptions, unresolved choices, and recovery evidence. Closing work or changing implementation history does not authorize erasing accepted meaning.
+Return decision-relevant evidence and unresolved scope to the native task context. The caller owns cross-turn retention of original failures and recovery information. Conceptor's expiring cache is not an archive. Preserve accepted conditions, reasons and exceptions in authored meaning.
 
 A useful handoff identifies the integrated behavior and actual diff/commit, maintained bindings, current evidence and limits, remaining decisions, and ownership. For plugin work, distinguish source changes, installed bundles, and session-loaded guidance. A source edit does not hot-reload an existing session.
 

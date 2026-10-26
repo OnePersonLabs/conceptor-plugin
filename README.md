@@ -1,6 +1,6 @@
 # Conceptor -- Concept Projector
 
-Conceptor helps an agent recover the reason for a change, find its current implementations, and compare selected behavior with that meaning. The native harness still runs the work and coordinates agents. The plugin stores readable meaning and offers optional evidence and recovery helpers.
+Conceptor helps an agent recover the reason for a change, find its current implementations, and compare selected behavior with that meaning. The native harness still runs the work and coordinates agents. The plugin stores readable meaning and offers optional discovery and evidence helpers.
 
 ## Start with one change
 
@@ -32,7 +32,7 @@ The original vocabulary has work to do:
 | Projection Lens | Discovery and checks for particular conditions and participants. |
 | Pattern Candidate | A possible reusable approach with examples, counterexamples, and alternatives. |
 
-Meaning lives in `.conceptor/meaning/` as Markdown with YAML frontmatter. A directive can keep a concise checkpoint in `.conceptor/work/`. Checks and discovery use disposable caches. Meaning and native application code remain usable after removing the plugin.
+Meaning lives in `.conceptor/meaning/` as Markdown with YAML frontmatter. Local activation and bounded reusable evidence live outside the checkout. Conceptor creates no task archive or session ledger. Meaning and application code remain usable after removing the plugin.
 
 ## Use it in a project
 
@@ -51,13 +51,13 @@ creates `.plugin-build/conceptor`, the directory selected by the marketplace.
 If preparation fails, resolve that error before installation; a raw remote checkout
 does not contain this generated bundle. See [first-use recovery](docs/getting-started.md#if-something-does-not-work).
 
-In a fresh Codex session opened in the project you want to work on, say **"Enable Conceptor in this project."** The agent uses `$conceptor:enable-conceptor` to create `.conceptor/active`. Then describe work normally. The agent selects the relevant skills and prepares helper requests; you do not need to remember a workflow or command names.
+In a fresh Codex session opened in the project you want to work on, say **"Enable Conceptor in this project."** The agent uses `$conceptor:enable-conceptor` to save local opt-in outside the checkout. Then describe work normally. The agent selects the relevant skills and prepares helper requests; you do not need to remember a workflow or command names.
 
-Say **"Turn Conceptor off in this project"** to remove the marker. Meaning and recovery records remain. Inactive projects receive no hook guidance or runtime observations. A nested Git repository needs its own activation.
+Say **"Turn Conceptor off in this project"** to remove local opt-in. Authored meaning and source files remain. A nested repository or separate worktree needs its own activation; Windows and WSL settings are independent. No Conceptor hooks inject guidance or block tools.
 
-Rollback restores saved bytes from one owned repair when the current bytes still match that repair's output. It refuses to overwrite unrelated edits. It does not rewind the repository or undo ordinary native work.
+Conceptor supplies meaning and scoped evidence. Your native workflow owns tasks, GitHub issues, editing, recovery, commits and publication. Enabling Conceptor does not change those policies.
 
-Activated Git projects also use reviewable local commits by default. The agent groups each behavior or decision with its implementation, consumers, checks, and necessary meaning changes. It commits at coherent completion points and explains the reason and validation. There are no file-count or line-count quotas. Existing commit rules and requests to leave work uncommitted take precedence. Pushing and rewriting history need separate authorization.
+The evidence cache replaces entries and evicts them after seven days or when its 128-entry / 32 MiB limits are reached. Check output is bounded and returned inline. Cache loss requires fresh evidence; it cannot create a passing result. See [local state and migration](plugins/conceptor/references/guide.md#local-settings-and-disposable-evidence).
 
 ## Try the helper
 
@@ -67,7 +67,6 @@ Use Node.js 24 or newer. From this workspace:
 npm.cmd ci --ignore-scripts
 npm.cmd run setup:plugin
 node plugins/conceptor/runtime/cli.mjs activate --root examples/clip
-node plugins/conceptor/runtime/cli.mjs checkpoint --root examples/clip --request examples/clip/requests/checkpoint.json
 node plugins/conceptor/runtime/cli.mjs focus --root examples/clip --request examples/clip/requests/focus.json
 node plugins/conceptor/runtime/cli.mjs revisit --root examples/clip --request examples/clip/requests/focus.json
 node plugins/conceptor/runtime/cli.mjs reconcile --root examples/clip --request examples/clip/requests/reconcile.json
@@ -77,18 +76,18 @@ The last request explicitly runs native checks. The clip example requires Python
 
 Use `focus` to retrieve selected meaning, `revisit` to refresh discovery, and `reconcile` to collect scoped verdicts. Provider requests are explicit. A normal context request does not start a compiler or install a language server.
 
-The CLI also provides `observe`, `checkpoint`, `resume`, `close`, and `repair`. Results are JSON. Reconciliation exits with `0` for supported results, `1` for a mismatch, and `2` for unresolved evidence or an error. Native checks run without a shell. See [the reference guide](plugins/conceptor/references/guide.md) for request formats, coverage declarations, provider setup, and owned-output repair.
+The CLI also provides `observe`, `status`, and `deactivate`. Results are JSON. Reconciliation exits with `0` for supported results, `1` for a mismatch, and `2` for unresolved evidence or an error. Native checks run without a shell. See [the reference guide](plugins/conceptor/references/guide.md) for request formats, coverage declarations, provider setup and evidence retention.
 
 ## Plugin contents
 
-The plugin is in [plugins/conceptor](plugins/conceptor). It contains project-scoped hook guidance and four skills:
+The plugin is in [plugins/conceptor](plugins/conceptor). It contains a runtime, on-demand references and four native skills:
 
 - `$conceptor:enable-conceptor`: enable, disable, or inspect activation in a project.
 - `$conceptor:recover-meaning`: recover the authority, current participants, and relevant uncertainty.
-- `$conceptor:carry-out-directive`: carry out native work with explicit ownership and useful recovery state.
+- `$conceptor:carry-out-directive`: apply accepted meaning and evidence to an implementation change.
 - `$conceptor:reconcile-and-learn`: investigate discrepancies and retain learning that could change future action.
 
-Create a portable package with `npm.cmd run pack:plugin` after `setup:plugin`. The plugin's own lockfile and dependency directory supply the bundled runtime. The root package supplies test tooling. Unpack the archive and use its `package` directory as the plugin root. Its CLI is `runtime/cli.mjs`. The local marketplace uses a prepared bundle under `.plugin-build/conceptor`. `$onepersonlabs:refresh-local-plugins` runs `plugin:prepare-local`, then installs and enables `conceptor@conceptor` and trusts its hooks in reachable Windows and WSL user homes. Preparation requires Node.js 24+, npm, and `tar`. Use the source checkout for this workflow. A raw GitHub marketplace checkout needs this preparation before its plugin source is installable.
+Create a portable package with `npm.cmd run pack:plugin` after `setup:plugin`. The plugin's own lockfile and dependency directory supply the bundled runtime. The root package supplies test tooling. Unpack the archive and use its `package` directory as the plugin root. Its CLI is `runtime/cli.mjs`. The local marketplace uses a prepared bundle under `.plugin-build/conceptor`. `$onepersonlabs:refresh-local-plugins` runs `plugin:prepare-local`, then installs and enables `conceptor@conceptor` in reachable Windows and WSL user homes. Preparation requires Node.js 24+, npm, and `tar`. Use the source checkout for this workflow. A raw GitHub marketplace checkout needs this preparation before its plugin source is installable.
 
 ## Language evidence
 
@@ -109,6 +108,6 @@ LSP navigation does not establish a complete cross-language graph. The provider 
 npm.cmd test
 ```
 
-The deterministic tests cover scoped evidence, cache invalidation, discovery changes, native checks, provider failures, repair recovery, project activation, and the [shared Clip example](examples/clip/README.md). They make no AI calls. The [implementation interfaces](docs/interfaces.md) describe the current data contracts; the [application guide](plugins/conceptor/references/applying-conceptor.md) explains how to use meaning and evidence during a change.
+The deterministic tests cover scoped evidence, cache invalidation, discovery changes, native checks, provider failures, project activation and bounded external state, and the [shared Clip example](examples/clip/README.md). They make no AI calls. The [implementation interfaces](docs/interfaces.md) describe the current data contracts; the [application guide](plugins/conceptor/references/applying-conceptor.md) explains how to use meaning and evidence during a change.
 
 Conceptor was previously named OPL Projector. Existing local data directories were renamed directly to `.conceptor/`; the runtime does not perform a migration.

@@ -42,17 +42,6 @@ export async function captureInputs(root, paths) {
   return inputs;
 }
 
-// Ownership follows the actual file or nearest existing parent, including an
-// internal junction whose eventual output does not exist yet.
-export async function physicalProjectPath(root, relative) {
-  const target = await projectPath(root, relative);
-  let existing = target;
-  while (true) {
-    try { return path.resolve(await fs.realpath(existing), path.relative(existing, target)); }
-    catch (error) { if (error.code !== 'ENOENT') throw error; existing = path.dirname(existing); }
-  }
-}
-
 export async function discover(root, patterns) {
   if (!Array.isArray(patterns) || patterns.some(p => typeof p !== 'string' || path.isAbsolute(p) || /^[a-z]:/i.test(p) || p.split(/[\\/]/).includes('..'))) throw new Error('Discovery patterns must remain inside the project');
   const isExclusion = pattern => pattern.startsWith('!') && !pattern.startsWith('!(');
@@ -98,9 +87,9 @@ export async function readJson(file) { return JSON.parse(await fs.readFile(file,
 export async function writeText(file, text) {
   await fs.mkdir(path.dirname(file), { recursive: true });
   const temp = `${file}.${crypto.randomUUID()}.tmp`;
-  await fs.writeFile(temp, text, { flag: 'wx' });
-  try { await fs.rename(temp, file); }
-  catch (error) { await fs.unlink(temp); throw error; }
+  try {
+    await fs.writeFile(temp, text, { flag: 'wx' });
+    await fs.rename(temp, file);
+  } finally { await fs.rm(temp, { force: true }); }
 }
 export async function writeJson(file, value) { await writeText(file, JSON.stringify(value, null, 2) + '\n'); }
-export async function optionalJson(file) { try { return await readJson(file); } catch (error) { if (error.code !== 'ENOENT') throw error; return null; } }

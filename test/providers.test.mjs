@@ -1,3 +1,4 @@
+import './user-state.mjs';
 import { activate, deactivate } from '../plugins/conceptor/runtime/activation.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';

@@ -23,10 +23,11 @@ Tell the agent:
 Enable Conceptor in this project.
 ```
 
-The activation helper reports `active` and the selected project root, and creates
-`.conceptor/active`. Check that the reported project is the one you intended.
+The activation helper reports `active`, the selected project root and an external
+`stateFile`. Check that the reported project is the one you intended.
 You do not need to invent Concepts or prepare helper JSON. An independently
-versioned nested Git repository needs its own activation.
+versioned nested Git repository or separate worktree needs its own activation.
+Windows and WSL settings are independent. No project marker or hook is created.
 
 ## Describe a useful change
 
@@ -41,11 +42,12 @@ change local; do not push it.
 The agent should recover relevant existing intent, inspect the export path,
 make the authorized change, and compare the result with that intent. Expect an
 explanation of the change, applicable check results, and remaining uncertainty.
-Activated Git projects use coherent local commits by default, unless your
-instructions say otherwise. Activation does not authorize publication.
+Your existing workflow controls tasks, issues, commits and publication.
+Conceptor supplies meaning and evidence without changing those rules.
 
-Meaning is retained as readable Markdown in `.conceptor/meaning/`; useful active
-work and recovery records can live in `.conceptor/work/`. A recorded claim is
+Meaning is retained as readable Markdown in `.conceptor/meaning/`. Reusable
+evidence uses a bounded external cache; task and recovery state stay with the
+native host. A recorded claim is
 not proof that the implementation satisfies it. Optional discovery and checks
 have explicit coverage limits. See [applying Conceptor](../plugins/conceptor/references/applying-conceptor.md)
 for the reasoning procedure and [the reference](../plugins/conceptor/references/guide.md)
@@ -57,16 +59,21 @@ for helper contracts.
   error. Correct the prerequisite and rerun preparation before installing.
 - **The skill is missing:** confirm installation and start a fresh Codex session.
 - **The project seems inactive:** ask “Check Conceptor activation in this project.”
-  Confirm the reported root; global installation and project activation differ.
+  Confirm the reported root and host. A legacy `.conceptor/active` marker needs
+  explicit activation to migrate; installed plugin state and project opt-in differ.
 - **A check is unresolved:** inspect its stated coverage and missing evidence.
   Missing runtime or language-provider support is not a passing result. Continue
   only work whose premises remain supported.
 
 To stop using Conceptor here, say “Turn Conceptor off in this project.” The helper
-reports `inactive` and removes the activation marker. It preserves meaning and
-recovery records so ordinary development can continue. Owned-repair rollback is
-a separate operation; disabling does not undo changes or rewind Git history.
+reports `inactive` and removes local opt-in. It preserves authored meaning and
+source files. Conceptor does not apply repairs or provide rollback.
 
-This guide was checked against the preparation script, marketplace manifest,
-activation helper, and workflow skills. The example request illustrates the
-workflow; it is not a new model-driven trial or evidence of improved productivity.
+The cache retains at most 128 completed entries and 32 MiB, with seven-day expiry
+checked on access. Missing evidence requires rerunning the applicable check.
+Original failures are returned to the native task context; the cache is not an
+archive. See [storage and migration](../plugins/conceptor/references/guide.md#local-settings-and-disposable-evidence)
+for locations and treatment of legacy recovery files.
+
+The commands and runtime paths are checked deterministically. This guide does
+not claim that native skill selection or product benefit was measured in an AI trial.
