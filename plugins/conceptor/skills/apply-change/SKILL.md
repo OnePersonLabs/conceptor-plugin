@@ -25,6 +25,8 @@ Record the accepted intent in `.conceptor/APPLY_PLAN.md` before editing dependen
 
 Combine new accepted requests with the current target and replan their remaining work in dependency order. Preserve useful completed work and unrelated edits. A later accepted decision supersedes earlier intent where they conflict; repeating an older request must not silently reverse that decision. For cancellation, remove the canceled intent, then retain work still needed by other accepted requests.
 
+Each worktree owns its target and apply plan. The outer runner owns checkout assignment and integration across branches. Report conflicting meaning changes to that caller; do not silently choose a winner or write another checkout's plan.
+
 If a materially important design choice is unresolved, ask the user. In an unattended run, return the exact decision to the caller and pause only dependent work. Respect native permissions and host Plan Mode. Do not switch the host into native Plan Mode. Planning discussion alone does not change accepted meaning, the apply plan, or implementation. Begin model and plan edits only when implementation is authorized.
 
 ## Implement and reassess
@@ -34,6 +36,8 @@ Use [the shared reasoning procedure](../../references/applying-conceptor.md) to 
 Follow Git and delivery instructions from the caller. The caller or native workflow owns branches, commits, issues, pushes, pull requests, and publication. Create commits only when the caller or project instructions require them. When they require implementation commits, complete one coherent unit per commit. Retain a unit in `APPLY_PLAN.md` until its completion commit. Remove it in that same commit. If a unit spans commits, leave it listed until its completion commit.
 
 Update accepted meaning in its owning records when an authorized decision changes it. Keep applicable Lens selectors, bindings, and checks aligned with actual consumers. Use focus, revisit, observations, and reconciliation only when they answer a current question. Checks run only when authorized and useful. Missing history or a missing baseline stays unknown; do not treat it as support or permission to run checks. Revalidate explicitly supplied prior observations and receipts against current project and meaning bindings before reuse. Conceptor does not retain an evidence cache by default.
+
+When a request establishes or revises accepted meaning, retain its governing source identity, revision, current reasons, and relevant supersession decisions in that meaning record. Before deleting the apply plan, move any still-governing design decision to its owning meaning record. Keep completed execution history in Git. This preserves the current rationale without turning meaning into a request log.
 
 After compaction or interruption, recover from the plan plus actual files, Git state, and applicable evidence. If a pending plan replacement exists, do not overwrite it blindly. Establish its owner and reconcile it with the current plan and checkout before continuing. The pending file is bounded recovery state, not another plan.
 

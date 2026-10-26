@@ -12,6 +12,8 @@ Store authored Markdown with YAML frontmatter under `.conceptor/meaning/`. Conce
 
 Every meaning file has `id`, `kind` (`concept`, `lens`, or `pattern`), `title`, and `status` (`accepted`, `candidate`, or `retired`). Put reasons, exceptions, examples, alternatives, and reopening assumptions in the Markdown body. Keep summaries linked to these files.
 
+Keep current source lineage in the owning meaning record, including opaque request identities and revisions when they govern an accepted decision. Explain relevant supersession there so an older repeated request cannot silently restore obsolete meaning. Preserve this rationale before deleting the live apply plan; use Git for execution history.
+
 Concept `conditions` contain `id`, `text`, `evidence` (`runtime` or `static`), and optional `allowsAbsence`. Typed `relations` contain `type`, `target`, and `status` (`observed` or `accepted`). Pattern Candidates contain `concepts`, `examples`, `counterexamples`, `alternatives`, and optional `lens`. Set a Pattern to `accepted` only through an explicit meaning decision.
 
 ### Apply plan and bounded recovery
