@@ -1,4 +1,4 @@
-# V5 implementation interfaces
+# Conceptor implementation interfaces
 
 Runtime uses Node.js 24 ESM. Runtime source and these interfaces own helper contracts. The native root owns integration and shared meaning. Assign one writer per mutable surface and preserve concurrent edits.
 

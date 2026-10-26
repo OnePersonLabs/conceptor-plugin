@@ -109,8 +109,6 @@ LSP navigation does not establish a complete cross-language graph. The provider 
 npm.cmd test
 ```
 
-The deterministic tests cover scoped evidence, cache invalidation, discovery changes, native checks, provider failures, repair recovery, project activation, and the [shared Clip example](examples/clip/README.md). They make no AI calls. The [approved plan](docs/approved-plan.md) records the design and approval boundaries; [implementation interfaces](docs/interfaces.md) describe the data contracts. The [implementation report](docs/implementation-report.md) records verification and remaining gaps. The current portable archive is [dist/conceptor-0.1.0.tgz](dist/conceptor-0.1.0.tgz).
+The deterministic tests cover scoped evidence, cache invalidation, discovery changes, native checks, provider failures, repair recovery, project activation, and the [shared Clip example](examples/clip/README.md). They make no AI calls. The [implementation interfaces](docs/interfaces.md) describe the current data contracts; the [application guide](plugins/conceptor/references/applying-conceptor.md) explains how to use meaning and evidence during a change.
 
-V5 is an experiment in adaptive convergence. Its maintenance cost and benefit on Psychord still need evidence from use. If a Lens costs more than it helps, revise or suspend that mechanism while continuing native development.
-
-Conceptor was previously named OPL Projector. Existing local data directories were renamed directly to `.conceptor/`; the runtime does not perform a migration. Dated reports retain the names and source identities that they originally checked.
+Conceptor was previously named OPL Projector. Existing local data directories were renamed directly to `.conceptor/`; the runtime does not perform a migration.
