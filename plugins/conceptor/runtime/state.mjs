@@ -47,7 +47,7 @@ export async function discover(root, patterns) {
   const isExclusion = pattern => pattern.startsWith('!') && !pattern.startsWith('!(');
   const ignore = new Ignore([
     ...patterns.filter(isExclusion).map(pattern => pattern.slice(1)),
-    '**/.git/**', '**/node_modules/**', '.conceptor/APPLY_PLAN.md', '.conceptor/APPLY_PLAN.md.pending'
+    '**/.git/**', '**/node_modules/**'
   ], { dot: true, nocase: false });
 
   // Glob treats filesystem errors as missing paths. Retain non-ENOENT errors

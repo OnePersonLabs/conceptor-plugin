@@ -233,7 +233,7 @@ test('noisy checks drain both streams with bounded output and reusable evidence'
   assert.equal(receipt.output.stdoutTruncated, true);
   assert.equal(receipt.output.stderrTruncated, true);
   assert.equal((await reconcile(root, { lenses: ['lens'], previous: first })).receipts[0].id, receipt.id);
-  await assert.rejects(focus(root, { work: 'old-task' }), /Legacy work checkpoints/);
+  await assert.rejects(focus(root, { work: 'old-task' }), /Task state belongs to the caller/);
 });
 
 test('outside-root paths and escaped symlinks are refused before source reads', async t => {

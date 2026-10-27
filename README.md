@@ -14,9 +14,7 @@ For example, ask the agent to improve an export error while preserving the exist
 
 Conceptor is active when `.conceptor/` exists at the selected repository root. A nested repository or separate worktree has its own root and its own target. No activation command, marker file, external registry, hook, or injected `AGENTS.md` is used.
 
-Accepted project meaning lives in `.conceptor/meaning/` as readable Markdown. While implementation remains, `.conceptor/APPLY_PLAN.md` records accepted request identities and only the remaining implementation units. Conceptor retains no work archive, evidence cache, transcript, or session ledger. Git history supplies prior committed state.
-
-The apply plan is bounded to 64 KiB. Atomic replacement may use one fixed sibling file, `.conceptor/APPLY_PLAN.md.pending`, also bounded to 64 KiB and ignored by Git. An unresolved plan remains until the work is reconciled; there is no age-based deletion while no process runs. See [the first-use guide](docs/getting-started.md) and [runtime interfaces](docs/interfaces.md).
+Accepted project meaning lives in `.conceptor/meaning/` as readable Markdown. The caller's selected task tracker owns task identity, progress, dependencies, and resumption. Conceptor keeps no task ledger or evidence cache. Use Git history for committed execution history. See [the first-use guide](docs/getting-started.md) and [runtime interfaces](docs/interfaces.md).
 
 ## Install the plugin
 

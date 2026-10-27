@@ -1,5 +1,4 @@
 node_modules/
 *.tgz
 .plugin-build/
-/.conceptor/APPLY_PLAN.md.pending
 !dist/conceptor-0.1.0.tgz

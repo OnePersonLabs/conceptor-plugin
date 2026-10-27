@@ -18,7 +18,7 @@ export async function focus(root, request = {}) {
   const activatedProject = await activeRoot(root);
   if (!activatedProject) return inactive(root);
   root = activatedProject;
-  if (request.work !== undefined) throw new Error("Legacy work checkpoints are unsupported; use the apply-plan interface and omit work");
+  if (request.work !== undefined) throw new Error("Task state belongs to the caller; omit work from Conceptor helper requests");
   const records = await loadMeaning(root);
   const active = records.filter(item => item.status !== 'retired');
   if (!request.concepts?.length && !request.query && !request.paths?.length && !request.lenses?.length) return { index: active.map(({ id, kind, title, file }) => ({ id, kind, title, file })), instruction: 'Select relevant identities, words, or paths; no global graph was loaded into the packet' };
@@ -54,7 +54,7 @@ export async function revisit(root, request = {}) {
   const activatedProject = await activeRoot(root);
   if (!activatedProject) return inactive(root);
   root = activatedProject;
-  if (request.work !== undefined) throw new Error("Legacy work checkpoints are unsupported; use the apply-plan interface and omit work");
+  if (request.work !== undefined) throw new Error("Task state belongs to the caller; omit work from Conceptor helper requests");
   if (!request.lenses?.length && !request.concepts?.length) throw new Error('Revisit needs explicit Lens or Concept identities');
   const records = await loadMeaning(root);
   const results = [];
@@ -158,7 +158,7 @@ export async function reconcile(root, request = {}) {
   const activatedProject = await activeRoot(root);
   if (!activatedProject) return inactive(root);
   root = activatedProject;
-  if (request.work !== undefined) throw new Error("Legacy work checkpoints are unsupported; use the apply-plan interface and omit work");
+  if (request.work !== undefined) throw new Error("Task state belongs to the caller; omit work from Conceptor helper requests");
   if (!request.lenses?.length && !request.concepts?.length) throw new Error('Reconcile needs explicit Lens or Concept identities');
   const records = await loadMeaning(root);
   const lenses = selectLenses(records, request);

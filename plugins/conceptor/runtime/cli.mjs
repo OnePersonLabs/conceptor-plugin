@@ -8,7 +8,7 @@ import { projectRoot, activeRoot, inactive } from './activation.mjs';
 async function main() {
   const [command, ...args] = process.argv.slice(2);
   if (!command || command === '--help' || command === 'help') {
-    console.log('Conceptor\nCommands: focus, revisit, reconcile, observe, apply-plan\nUsage: conceptor COMMAND [--root PATH] [--request -|REQUEST.json]\nUse --request - for JSON on stdin. A root .conceptor directory makes a project active.');
+    console.log('Conceptor\nCommands: focus, revisit, reconcile, observe\nUsage: conceptor COMMAND [--root PATH] [--request -|REQUEST.json]\nUse --request - for JSON on stdin. A root .conceptor directory makes a project active.');
     return;
   }
   const options = {};
@@ -17,7 +17,7 @@ async function main() {
     options[args[index].slice(2)] = args[index + 1];
   }
   const root = await projectRoot(options.root ? path.resolve(options.root) : process.cwd());
-  const operations = { focus, revisit, reconcile, observe, 'apply-plan': async (root, request) => (await import('./apply-plan.mjs')).applyPlan(root, request) };
+  const operations = { focus, revisit, reconcile, observe };
   if (!operations[command]) throw new Error(`Unknown command: ${command}`);
   if (!await activeRoot(root)) {
     console.log(JSON.stringify(inactive(root), null, 2));

@@ -2,7 +2,7 @@
 
 Conceptor preserves what a system must do, why it matters, and where implementation and evidence bear on that meaning. Use it to make the next decision without reconstructing the full history. The shared reasoning loop is: recover relevant meaning, predict consequences, implement when authorized, compare actual effects, reconcile, and retain useful learning. Code remains revisable; an implementation discovery can justify an explicit meaning decision.
 
-Use this reference from `$conceptor:plan-change` and `$conceptor:apply-change`. Planning does not change accepted meaning or implementation. During authorized implementation, the one checkout-level `.conceptor/APPLY_PLAN.md` records accepted requests and remaining work; the [skills](../skills/apply-change/SKILL.md) define its lifecycle. Discovery helpers are optional; their [request contracts](guide.md) define what they can establish. Conceptor does not inject guidance or enforce an assessment cadence.
+Use this reference from `$conceptor:plan-change` and `$conceptor:apply-change`. Planning does not change accepted meaning or implementation. During authorized implementation, the caller owns task identity, progress, and recovery; the [skills](../skills/apply-change/SKILL.md) define Conceptor's role. Discovery helpers are optional; their [request contracts](guide.md) define what they can establish. Conceptor does not inject guidance or enforce an assessment cadence.
 
 ## Recover the governing meaning
 
@@ -36,15 +36,15 @@ Use this comparison when the goal changes, evidence invalidates an assumption, o
 2. Describe the simplest coherent approach before adapting it to current code.
 3. Compare responsibilities, consumers, state transitions and recovery paths. Identify missed requirements, replaceable mechanisms, obsolete obligations and unresolved decisions.
 4. Choose the approach by remaining implementation, migration, verification and maintenance cost. Preserve required capabilities through their real consumers.
-5. Explain the decision and acceptance evidence. Update the owning meaning record when an authorized decision changes it; keep only remaining implementation work in the apply plan.
+5. Explain the decision and acceptance evidence. Update the owning meaning record when an authorized decision changes it; keep task status in the caller's selected tracker.
 
-Reassess when accepted intent changes, evidence invalidates an assumption, or repeated failures challenge the approach. No hook blocks tools, counts compactions, or requires a saved comparison account. After compaction, recover from the apply plan and inspect actual meaning, Git state, source changes, and applicable evidence.
+Reassess when accepted intent changes, evidence invalidates an assumption, or repeated failures challenge the approach. No hook blocks tools, counts compactions, or requires a saved comparison account. After interruption, recover from the caller's task context and inspect actual meaning, Git state, source changes, and applicable evidence.
 
 ## Connect the changed rule to its consumers
 
 Use the current Lens population as a starting map. Check whether the change affects identity, ownership, lifetime, state transitions, shared contracts, storage/replay, eligibility, concurrency, or a public interaction. If it does, trace the affected rule from its source of truth through actual dispatch and relevant consumers. Include unchanged consumers when their assumptions change.
 
-Before accepting that design, make these answers inspectable in the proposal or live apply plan when retained reasoning is useful:
+Before accepting that design, make these answers inspectable in the proposal or caller's selected task record when useful:
 
 - Which condition or authoritative prose governs the changed rule, and why?
 - Which owner produces the relevant state? Which consumers rely on it?
@@ -99,7 +99,7 @@ At design time and after actual changes, compare traced participants with the af
 1. Read the Lens's conditions and intended population. Verify selectors against actual paths. Include unsafe and incomplete realizations; selection must not depend on passing the property being checked.
 2. Update affected selectors for the responsibility change. Keep the same Concept and Lens identities when meaning stays the same. File-based Unit bindings are derived; do not create another editable Unit inventory.
 3. Review affected condition references, observation requests, check inputs, evidence kind, target, and coverage. A selected new participant cannot inherit an old check's support without evidence that the check covers it. Never use `coverage: selection` merely to silence a gap.
-4. Refresh affected bindings with `revisit` when it saves work. Inspect added/removed participants and unresolved selection. A native source check can establish the needed scope without a helper call. If the population cannot be established, retain that unresolved scope and its next decision in the apply plan or caller handoff.
+4. Refresh affected bindings with `revisit` when it saves work. Inspect added/removed participants and unresolved selection. A native source check can establish the needed scope without a helper call. If the population cannot be established, retain that unresolved scope and its next decision in the caller's selected task record.
 5. Finish known affected Lens updates with the implementation, or state the specific remaining dependency at handoff. Do not claim synchronization from a fresh observation when the authored selector still omits a known participant.
 
 A correct broad selector may already cover a new realization. Keep the glob when its population is still right; assess the new participant's role and check coverage. Remove a participant because its responsibility ended, not because excluding it hides a mismatch.
@@ -110,7 +110,7 @@ Attach or revise repeatable checks when they provide useful evidence for the con
 
 Give a worker the governing meaning pointers, changed contract, settled shared interfaces, actual consumers, write boundary, and required evidence. Include what must remain valid. The worker returns unexpected dependencies rather than extending its write scope. The root integrates the full consumer path; separate component passes do not multiply into application acceptance.
 
-Use the native host's producer, edit and recovery paths. Do not add a second scheduler or invalidation registry merely to coordinate this work. Keep the complete intended outcome visible in the apply plan while finishing connected behavior. Explain its ownership, main flow, and consequential failure behavior through clear interfaces and nearby reasons, then demonstrate the affected behavior in its real consumer under existing verification rules.
+Use the native host's producer, edit and recovery paths. Do not add a second scheduler or invalidation registry merely to coordinate this work. Keep the complete intended outcome visible through the caller's task context while finishing connected behavior. Explain its ownership, main flow, and consequential failure behavior through clear interfaces and nearby reasons, then demonstrate the affected behavior in its real consumer under existing verification rules.
 
 ## Compare results and reassess the premise
 
@@ -171,7 +171,7 @@ Reuse an explicitly supplied participant trace only while its source, responsibi
 
 When a discovery changes where future work should look, update the existing Lens, Relation, or Concept that owns it. Preserve observed-versus-accepted status. Retain a Pattern Candidate only when its explanation could guide plausible future work; include alternatives, counterexamples, and reopening assumptions. Do not promote a repaired incident into a universal rule or retain a permanent symptom catalogue.
 
-Return decision-relevant evidence and unresolved scope to the apply plan or caller. Conceptor does not persist an evidence cache. Preserve accepted conditions, reasons, and exceptions in authored meaning. The apply plan is bounded to 64 KiB, contains only remaining implementation work, and is removed in the final verified completion commit. Its one fixed sibling pending file is also bounded to 64 KiB and is recovery state, not another durable record.
+Return decision-relevant evidence and unresolved scope to the caller. Conceptor does not persist an evidence cache. Preserve accepted conditions, reasons, and exceptions in authored meaning. The caller owns durable task state; Conceptor creates no repository task ledger.
 
 A useful handoff identifies the integrated behavior and actual diff/commit, maintained bindings, current evidence and limits, remaining decisions, and ownership. For plugin work, distinguish source changes, installed bundles, and session-loaded guidance. A source edit does not hot-reload an existing session.
 
