@@ -47,7 +47,7 @@ checks:
 ---
 ```
 
-Every verdict names condition, selector or participants, selection status, evidence, status (`supported`, `mismatch`, or `unresolved`), and reason. Required empty selection is unresolved unless the condition allows absence. A successful scoped check does not establish unobserved language behavior. Preserve supported evidence when another observation fails.
+Every verdict names condition, selector or participants, selection status, evidence, status (`supported`, `mismatch`, or `unresolved`), and reason. Required empty selection is unresolved unless the condition allows absence. A successful scoped check does not establish unobserved language behavior. Return supported and failed observations together in the current result; do not persist them merely to make them durable. Save a receipt only when a named consumer needs it to support an exact active claim or recover an interrupted operation. Bind it to the meaning, source/version, execution target, and validity conditions it supports. Remove it when that consumer completes, the evidence is superseded or invalidated, or the operation is abandoned, subject to a bounded recovery window. Reading or copying it does not renew that window. Keep accepted conclusions in authored meaning records; those records do not imply permanent retention of raw outputs.
 
 A Lens with `checks: []` supplies navigation without behavioral support. Helper verdicts cover named conditions, not every requirement in a Concept's prose. Keep relevant prose obligations and independent evidence visible in the caller's task context when they affect remaining work. See [Lens maintenance](applying-conceptor.md#maintain-affected-lenses) for selector, binding, and evidence upkeep.
 
@@ -75,7 +75,7 @@ ESM callers import `focus`, `revisit`, and `reconcile` from `PLUGIN_ROOT/runtime
 
 For `revisit`, request `paths` supply the discovery boundary patterns. Compare with an explicitly supplied and still-bound prior observation when available. Changed paths inside those boundaries but outside current Lens selection become discovery questions. Without a valid baseline, change history is unknown. Unchanged consumers and files outside declared boundaries are not automatically discovered. A literal `query` searches selected source and these boundaries. Declared Lens observations run on demand. Ordinary `focus` does not run them. Refreshing selection does not repair an incomplete authored selector.
 
-Check receipts bind relevant meaning/Lens records, declared input scope, check configuration, and execution dependencies. Changed membership or inputs can make a receipt unresolved. Do not silently backdate it; keep independently applicable native evidence separate. See [evidence reuse](applying-conceptor.md#compare-results-and-reassess-the-premise) for the distinction.
+Check receipts bind relevant meaning/Lens records, declared input scope, check configuration, and execution dependencies. Changed membership or inputs can make a receipt unresolved. Do not silently backdate it; keep independently applicable native evidence separate while its consumer needs it. Conceptor returns receipts to the caller and does not keep an evidence cache. Callers that persist one own its consumer, validity checks, cleanup on completion/cancellation/supersession, and maximum recovery window. See [evidence reuse](applying-conceptor.md#compare-results-and-reassess-the-premise) for the distinction.
 
 ## Provider setup
 

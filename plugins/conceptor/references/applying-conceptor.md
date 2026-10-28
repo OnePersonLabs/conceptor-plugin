@@ -80,7 +80,7 @@ Use this path for an on-demand Conceptor LSP observation:
 3. At an ambiguous call or callback value, select `definitions`, its seed file, and zero-based position. Supply the native executable and separate arguments. Run the existing Node `observe` CLI. See the [peer-language setup and requests](guide.md#native-observations-for-python-rust-and-typescript). Compare the returned definition with the changed owner. Use references to discover more candidates, not to declare that no others exist.
 4. Where the server requires startup readiness, use its supported configuration or explicit notification contract. The optional LSP readiness gate uses the latest observed status within the caller's budget. A match is not a source-version acknowledgment or proof of complete project analysis. Arbitrary sleeps, successful transport, and empty queries cannot establish absence.
 5. Read capabilities, locations, readiness when configured, currentness, and every gap. Trace confirmed consumers through owned state and output/recovery behavior. Follow a stored callback through its registration and dispatch owner; navigation does not determine the final runtime target of an indirect call.
-6. Keep relevant project configuration and discovery assumptions with the existing evidence. Conceptor binds requested and returned source files, not every compiler/environment input. `scope.currentness` concerns captured inputs. Use a separate native snapshot for relevant uncaptured configuration and membership, and verify it before reuse.
+6. Keep relevant project configuration and discovery assumptions with evidence only while a named consumer needs the result. Conceptor binds requested and returned source files, not every compiler/environment input. `scope.currentness` concerns captured inputs. Use a separate native snapshot for relevant uncaptured configuration and membership, and verify it before reuse. When that consumer is done, discard the snapshot; do not turn it into an unowned durable artifact.
 
 Conceptor starts and closes a language server for each observation. Repeated questions can make startup dominate useful work. Use an existing native language-service session when it is suitable; keep its evidence and coverage explicit. Do not add a persistent service or global index merely to avoid a few focused reads. An existing source-bound index can use Conceptor's `index` provider when its inputs and supported facts are current.
 
@@ -104,7 +104,7 @@ At design time and after actual changes, compare traced participants with the af
 
 A correct broad selector may already cover a new realization. Keep the glob when its population is still right; assess the new participant's role and check coverage. Remove a participant because its responsibility ended, not because excluding it hides a mismatch.
 
-Attach or revise repeatable checks when they provide useful evidence for the condition. Keep navigation-only Lenses when that is their useful role; `checks: []` supplies no behavioral support. Do not create a permanent test for every prose requirement or store transient absolute probe paths as durable checks. One-time native evidence can remain linked with its checked source, target, and limits. State which acceptance obligations remain outside helper receipts.
+Attach or revise repeatable checks when they provide useful evidence for the condition. Keep navigation-only Lenses when that is their useful role; `checks: []` supplies no behavioral support. Do not create a permanent test for every prose requirement or store transient absolute probe paths as durable checks. One-time native evidence may be returned to the caller with its checked source, target, and limits; persist it only when an identified active claim has no suitable existing consumer, then remove it when that claim is completed, superseded, invalidated, or abandoned. State which acceptance obligations remain outside helper receipts.
 
 ## Execute with shared ownership
 
@@ -120,7 +120,7 @@ Compare actual effects with the governing meaning and pre-change account. Preser
 | --- | --- |
 | Realization violates accepted meaning | Repair its responsible implementation and affected consumers |
 | Selection or binding is incomplete/stale | Correct the affected population and inspect newly exposed obligations |
-| Observation or check does not establish its claim | Repair the evidence mechanism and retain the original discrepancy |
+| Observation or check does not establish its claim | Repair the evidence mechanism and return the original discrepancy to the caller while it can change the next decision |
 | Accepted meaning conflicts or needs revision | Return the specific meaning decision through the authorized path |
 
 Manual repairs can change symptoms while preserving one faulty ownership premise. When successive patches expose that pattern, pause dependent repairs and trace the connected rule before another patch. Preserve useful work and competing explanations. Change the approach at its owner. The native host owns repair budgets and recovery; this procedure adds no counter or guard.
@@ -128,6 +128,8 @@ Manual repairs can change symptoms while preserving one faulty ownership premise
 Reuse evidence within its actual condition, source, membership, configuration, provider/check revision, execution target, and observation kind. Static shape does not prove runtime delivery or timing. An unavailable observation leaves its claim unresolved; it does not erase independent support.
 
 Conceptor receipts bind whole relevant meaning and Lens records plus declared check inputs and execution dependencies. They can invalidate more broadly than an exact semantic dependency engine. Do not label a stale receipt current or silently backdate it. Independently recorded native evidence can still be reused when its applicability is established and disclosed separately. Do not rerun a broad suite solely to make a status table green.
+
+Return evidence in the current result/conversation by default. Persist a generated receipt or diagnostic only when a named downstream consumer needs it to support an exact claim or recover an interrupted operation. Bind it to the meaning revision, source/input versions, execution target and validity conditions that make it applicable. Settle or discard it when that consumer completes, the claim is superseded or invalidated, or the operation is cancelled; if interruption recovery requires a longer window, bound that window and make the caller responsible for cleanup. Reading or copying does not extend the lifetime. Preserve accepted reasons, conditions and exceptions in the existing meaning owner, not raw command output. A failed observation is not itself a reason for indefinite retention.
 
 ## Worked connected change
 
@@ -171,7 +173,7 @@ Reuse an explicitly supplied participant trace only while its source, responsibi
 
 When a discovery changes where future work should look, update the existing Lens, Relation, or Concept that owns it. Preserve observed-versus-accepted status. Retain a Pattern Candidate only when its explanation could guide plausible future work; include alternatives, counterexamples, and reopening assumptions. Do not promote a repaired incident into a universal rule or retain a permanent symptom catalogue.
 
-Return decision-relevant evidence and unresolved scope to the caller. Conceptor does not persist an evidence cache. Preserve accepted conditions, reasons, and exceptions in authored meaning. The caller owns durable task state; Conceptor creates no repository task ledger.
+Return decision-relevant evidence and unresolved scope to the caller. Conceptor does not persist an evidence cache. Preserve accepted conditions, reasons, and exceptions in authored meaning. Do not copy raw observations or check output into durable records unless an identified downstream consumer needs that evidence to support an exact active claim. Any saved evidence must identify the consumer, owner, source/version binding, validity, disposal condition, and maximum recovery window; remove it when its consumer finishes or the claim is superseded, invalidated, or abandoned. The caller owns durable task state and cleanup of caller-owned evidence; Conceptor creates no repository task ledger.
 
 A useful handoff identifies the integrated behavior and actual diff/commit, maintained bindings, current evidence and limits, remaining decisions, and ownership. For plugin work, distinguish source changes, installed bundles, and session-loaded guidance. A source edit does not hot-reload an existing session.
 
