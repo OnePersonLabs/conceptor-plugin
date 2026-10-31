@@ -4,7 +4,7 @@ Conceptor helps an agent keep a project's reasons and constraints connected to i
 
 ## Start with a change
 
-Use `$conceptor:plan-change` to investigate a change and develop a proposal through conversation. It can cover architecture, algorithms, interfaces, failure behavior, dependencies, and verification. Planning does not change accepted project meaning or code.
+Use `$conceptor:plan-change` to investigate a change and develop a proposal through conversation. It compares available sources with preserved meaning, then checks the affected capability and scenarios before choosing implementation steps. Planning alone does not authorize meaning edits or code. You can separately authorize recording an accepted clarification without starting implementation.
 
 Use `$conceptor:apply-change` to implement a direct request or a proposal. A prior plan, issue, or separate approval step is not required. The skill reconciles work on resumption against actual project files and Git state.
 
@@ -51,7 +51,7 @@ try {
 
 The example request files are explicit inputs. The CLI also accepts JSON from stdin with `--request -`. The last request explicitly runs native checks. The Clip example needs Python and `rustc` for its persistence and Rust checks. It also includes frontend and C# subjects whose runtime behavior needs separate evidence. An unresolved result can therefore be correct.
 
-Use `focus` to retrieve selected meaning, `revisit` to refresh discovery, and `reconcile` to collect scoped verdicts. Provider requests are explicit. A normal context request does not start a compiler or install a language server. See [the reference guide](plugins/conceptor/references/guide.md) for request formats, scoped checks, providers, and evidence limits.
+Use `focus` to retrieve selected meaning, `revisit` to refresh discovery, and `reconcile` to collect scoped verdicts. Explicitly requested Concepts with missing Lens coverage remain visible and unresolved. Checks do not establish that source meaning was fully captured or that a design preserves the whole capability. Provider requests are explicit. A normal context request does not start a compiler or install a language server. See [the reference guide](plugins/conceptor/references/guide.md) for request formats, scoped checks, providers, and evidence limits.
 
 ## Plugin skills
 

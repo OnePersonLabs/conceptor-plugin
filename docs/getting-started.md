@@ -12,7 +12,7 @@ For a project that has no Conceptor meaning yet, explicitly ask the agent to cre
 
 ## Plan or apply a change
 
-Use `$conceptor:plan-change` when you want to investigate before implementation. The agent reads relevant meaning and code, asks questions when an answer could change the design, and returns a proposal. The proposal can cover architecture, algorithms, interfaces, failure behavior, implementation order, and acceptance evidence. Planning leaves accepted meaning and implementation unchanged.
+Use `$conceptor:plan-change` when you want to investigate before implementation. The agent compares relevant sources and corrections with existing meaning, checks the design against the affected capability and compatible scenarios, and returns a proposal. Small implementation steps must account for what they defer and how those capabilities still fit. Planning alone leaves meaning and implementation unchanged. If you explicitly ask to record an accepted clarification, the agent can reconcile its meaning owner without starting code; host Plan Mode and write restrictions still apply.
 
 Use `$conceptor:apply-change` when you want implementation. It accepts a direct request or a prior proposal; an issue, proposal, and separate approval step are not prerequisites. For example:
 
@@ -36,5 +36,6 @@ Optional discovery and checks have explicit coverage limits. A recorded claim is
 - **A skill is missing:** confirm installation and start a fresh Codex session. Ordinary skill selection is supported, but a caller that requires a specific step should name `$conceptor:plan-change` or `$conceptor:apply-change` explicitly.
 - **The project seems inactive:** confirm that `.conceptor/` exists at the selected repository root. Check the root when a nested repository or worktree is involved.
 - **A check is unresolved:** inspect its stated scope, coverage, and missing evidence. Missing runtime or language-provider support is not a passing result. Continue only work whose premises remain supported.
+- **A proposal lost part of the intent:** use `$conceptor:recover-meaning` with the existing source or correction pointer. The agent should distinguish missing meaning from a failure to use meaning already present, repair authorized omissions at their owner, and compare the proposal with the broader capability. A successful scoped check cannot resolve that design question.
 
 The commands and runtime paths are checked deterministically. This guide does not claim that native skill selection or product benefit was measured in an AI trial.

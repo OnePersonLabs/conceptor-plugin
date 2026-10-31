@@ -35,6 +35,9 @@ export function conditionOf(records, reference) {
 }
 
 export function selectLenses(records, request) {
+  for (const id of request.concepts ?? []) {
+    if (!records.some(record => record.id === id && record.kind === 'concept' && record.status === 'accepted')) throw new Error(`No accepted Concept selected: ${id}`);
+  }
   const lenses = records.filter(record => record.kind === 'lens' && record.status === 'accepted' && (!request.lenses?.length || request.lenses.includes(record.id)) && (!request.concepts?.length || record.conditions?.some(ref => request.concepts.includes(ref.split('#')[0]))));
   for (const id of request.lenses ?? []) if (!lenses.some(lens => lens.id === id)) throw new Error(`No active Lens selected: ${id}`);
   for (const lens of lenses) {
@@ -49,4 +52,22 @@ export function selectLenses(records, request) {
     }
   }
   return lenses;
+}
+
+export function requestedMeaningCoverage(records, request, lenses) {
+  const requestedConcepts = [];
+  const uncoveredRequests = [];
+  for (const id of new Set(request.concepts ?? [])) {
+    const concept = records.find(record => record.id === id && record.kind === 'concept' && record.status === 'accepted');
+    const conditions = (concept.conditions ?? []).map(condition => {
+      const reference = `${id}#${condition.id}`;
+      const observers = lenses.filter(lens => lens.conditions.includes(reference)).map(lens => lens.id);
+      if (!observers.length) uncoveredRequests.push({ concept: id, condition: reference, reason: 'No selected accepted Lens observes this requested condition' });
+      return { condition: reference, lenses: observers };
+    });
+    // A prose-only Concept is meaningful, but has no machine-observable condition scope.
+    if (!conditions.length) uncoveredRequests.push({ concept: id, reason: 'Requested Concept has no declared conditions; its prose requires separate assessment' });
+    requestedConcepts.push({ concept: id, file: concept.file, meaningHash: concept.hash, conditions });
+  }
+  return { requestedConcepts, uncoveredRequests, scope: 'Declared conditions of explicitly requested Concepts and their selected Lenses only; prose and source completeness are not machine established' };
 }

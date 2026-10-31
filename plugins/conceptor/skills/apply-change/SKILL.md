@@ -17,12 +17,12 @@ Keep accepted meaning separate from proposals, observations, and implementation 
 
 ## Decide and implement
 
-Use [the shared reasoning procedure](../../references/applying-conceptor.md) to trace the outcome through its producers and consumers, compare responsibilities and failure paths, and choose proportionate evidence. If a material design choice is unresolved, ask the user; in an unattended run, return the exact decision and pause only dependent work.
+Before choosing an implementation unit, use [source coverage](../../references/applying-conceptor.md#check-source-coverage) and [the capability comparison](../../references/applying-conceptor.md#compare-the-capability-before-choosing-an-increment). Reuse a supplied comparison while its sources, decisions and boundaries still apply. Account for substantive omissions, compatible scenarios, dependencies and consumers beyond this increment. A direct request can start this reasoning without a separate planning ceremony. Resolve engineering choices from evidence; if a consequential human dependency remains, return that exact decision and pause only dependent work.
 
-Planning discussion does not authorize implementation or change accepted meaning. Respect host permissions and native Plan Mode. Begin edits only when implementation is authorized. Preserve useful completed work and unrelated changes. The caller owns task tracking and branch, commit, issue, and publication policy.
+Planning discussion alone does not authorize implementation or meaning edits. An explicit meaning correction can authorize reconciliation without authorizing code. Respect host permissions and native Plan Mode. Begin implementation edits only when implementation is authorized. Preserve useful completed work and unrelated changes. The caller owns task tracking and branch, commit, issue, and publication policy.
 
 Use focus, revisit, observation, and reconciliation helpers only when they answer a current question. Revalidate supplied prior observations and receipts against current project and meaning bindings. Conceptor does not retain an evidence cache. Missing history or a missing baseline stays unknown; it does not support a claim or authorize a check.
 
 When evidence invalidates an assumption, the accepted target changes, or repeated failures challenge the design, reassess at the responsible layer. Keep completed execution history in Git and durable product reasons in their meaning owners. After interruption, recover from the caller's task context plus actual files, Git history, and applicable evidence. Do not claim replay protection or exact request resumption from Conceptor state.
 
-Report the integrated behavior, evidence, remaining uncertainty, and any caller-owned follow-up.
+Compare the integrated behavior with the source-grounded capability account, including relevant prose beyond helper conditions. Report what this increment establishes, what it leaves deferred or unresolved, and the evidence for each. Do not report completion of the larger capability from a passing subset.

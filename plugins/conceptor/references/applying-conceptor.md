@@ -18,15 +18,46 @@ Use each artifact for its actual purpose:
 | Lens | An intended population and optional condition-specific observations/checks | Complete discovery or whole-application correctness |
 | Pattern Candidate | A reusable explanation, alternatives, counterexamples, and applicability | Authority from repetition or from its own generated repairs |
 
-Follow relevant upstream constraints and downstream consequences. `focus.related` offers pointers, including outgoing Relation endpoints from selected records. It does not collect records solely because their Relations target a selected Concept, and it is not a transitive impact closure.
+Follow relevant upstream constraints and downstream consequences. `focus.related` offers pointers to governing Concepts of selected Lenses and incoming/outgoing Relation endpoints. Read the source record to distinguish accepted from observed Relations. These pointers are one hop through authored links, not a transitive impact closure or a complete account of semantic dependencies.
 
-When incoming constraints or dependents matter, search authored meaning for the exact selected identity. For example, from the project root:
+When links are missing or a prose dependency matters, search authored meaning for the selected identity and the capability's terms. For example, from the project root:
 
 ```text
 rg -n -F -g '*.md' 'clip' .conceptor/meaning
 ```
 
-Read the matched records' frontmatter. Keep only relevant Relations whose `target` is the selected ID; other mentions are leads, not edges. Read each Relation's `type`, `status`, source record, and governing prose. Preserve `observed` versus `accepted`. Follow another endpoint only when it can change the current decision. Native search is discovery, not proof that all semantic relationships are modeled.
+Read the matched records' frontmatter and relevant prose. A Relation whose `target` is the selected ID is an incoming edge; other mentions are leads. Read each Relation's `type`, `status`, source record, and governing prose. Follow another endpoint only when it can change the current decision. Native search is discovery, not proof that all semantic relationships are modeled.
+
+### Check source coverage
+
+For a new design, a scope change, or recovery after a substantive correction, establish two things separately: whether the meaning records preserve the relevant intent, and whether the proposed design serves it. Reading the records establishes neither by itself.
+
+Start from the project's declared source index, meaning headings and source references, and the caller's actual corrections. Inspect this map before selecting only by the proposed implementation's vocabulary. Reuse available extracts before requesting history or asking the user to reconstruct it. Follow an original source when an extract omits a distinction that could change the decision. Do not export the whole history or infer that an unavailable source contains no requirements.
+
+Compare decision-changing source statements with their existing meaning owners. Preserve these distinctions:
+
+| Source-to-meaning finding | Consequence |
+| --- | --- |
+| Explicitly represented | Cite the governing section and use its constraint in the design comparison |
+| Partial, fragmented, or absent | Recover the missing relationship or exception; reconcile at its existing owner when authorized |
+| Superseded | Identify the later decision and why the earlier statement no longer governs |
+| Candidate or unanswered choice | Preserve the option and question without making it a prerequisite or accepted mechanism |
+| Illustrative example | Retain what it demonstrates without turning its numbers, sequence, or UI into universal limits |
+| New specificity | Separate the user's clarification from the agent's proposed mechanism; reconcile only the authorized delta |
+
+Return the consequential gaps with source anchors and destinations in the current proposal or caller's task record. A short comparison is enough; no second ledger or permanent coverage inventory is required. Do not add machine conditions for every prose statement. Repair missing meaning from its sources, never from what the implementation happens to support. If authority or source coverage remains uncertain, name the affected decision and continue independent work.
+
+### Compare the capability before choosing an increment
+
+For a consequential design, use the recovered sources to explain the required capability and its cooperating responsibilities before selecting the next implementation unit. Include relevant consumers and compatible scenarios outside that unit. A convenient demo, one game interaction, or the currently implemented subset cannot set the design boundary.
+
+In the proposal, connect each decision-changing requirement or scenario to its responsible contract and consumer. Then distinguish what this increment delivers, what the broader design preserves but defers, what it contradicts or omits, and what remains undecided. A deferral needs a credible interface or dependency and a way to verify it later; naming a future feature does not establish compatibility. Reuse existing issue links for deferred work rather than creating another task list. Resolve engineering from the evidence; ask the user only for a consequential preference, authority, or fact that cannot be recovered.
+
+Challenge the proposal with the compatible case most likely to invalidate its boundary. For example, a sequential musical continuation and simultaneous accompaniment can use shared generation but require different temporal relationships and playback consumers. A single audition may be a useful increment if those contracts remain possible; it is not completion of both capabilities. Likewise, model-backed output, contextual assessment, and deadline prediction need their own evidence even if one UI can display all three. Keep suggested looping or phrase lengths provisional when the source only offers them as examples.
+
+Do this comparison before presenting an architecture as adequate or asking the user to approve an illustrative interaction. An unresolved mechanism need not stop an independent increment, but the increment must not settle that mechanism accidentally. On a new correction, compare it with the existing account and revisit affected boundaries rather than replacing the whole outcome with the latest small request.
+
+At verification, compare against the recovered sources again, not just the implementation checklist. Report capability coverage and implementation evidence separately. A supported Lens verdict covers its named conditions and participants; it cannot certify source capture, whole-design adequacy, or the capabilities deferred by an increment. This reasoning is an inspectable work product, not a deterministic proof of agent reliability.
 
 ## Reassess from purpose
 

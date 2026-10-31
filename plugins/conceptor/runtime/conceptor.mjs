@@ -4,7 +4,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { hash, projectPath, discover, captureScope } from './state.mjs';
-import { loadMeaning, conditionOf, selectLenses } from './meaning.mjs';
+import { loadMeaning, conditionOf, selectLenses, requestedMeaningCoverage } from './meaning.mjs';
 import { observe } from './providers/index.mjs';
 
 const evidenceFormat = 'conceptor-evidence/1';
@@ -21,10 +21,16 @@ export async function focus(root, request = {}) {
   if (request.work !== undefined) throw new Error("Task state belongs to the caller; omit work from Conceptor helper requests");
   const records = await loadMeaning(root);
   const active = records.filter(item => item.status !== 'retired');
-  if (!request.concepts?.length && !request.query && !request.paths?.length && !request.lenses?.length) return { index: active.map(({ id, kind, title, file }) => ({ id, kind, title, file })), instruction: 'Select relevant identities, words, or paths; no global graph was loaded into the packet' };
+  const pointer = ({ id, kind, title, status, file }) => ({ id, kind, title, status, file });
+  if (!request.concepts?.length && !request.query && !request.paths?.length && !request.lenses?.length) return { index: active.map(pointer), instruction: 'Select relevant identities, words, or paths; no global graph was loaded into the packet' };
+  for (const [field, kind] of [['concepts', 'concept'], ['lenses', 'lens']]) {
+    for (const id of request[field] ?? []) if (!active.some(record => record.id === id && record.kind === kind)) throw new Error(`No active ${kind} selected: ${id}`);
+  }
   const words = request.query?.toLowerCase().split(/\s+/).filter(Boolean) ?? [];
-  const selected = active.filter(item => request.concepts?.includes(item.id) || request.lenses?.includes(item.id) || words.some(word => `${item.title} ${item.id} ${item.body}`.toLowerCase().includes(word)));
-  for (const id of request.concepts ?? []) if (!active.some(record => record.id === id)) throw new Error(`Unknown active meaning: ${id}`);
+  const selected = active.filter(item => {
+    const { file, hash: sourceHash, ...authored } = item;
+    return request.concepts?.includes(item.id) || request.lenses?.includes(item.id) || words.some(word => JSON.stringify(authored).toLowerCase().includes(word));
+  });
   if (request.paths?.length) {
     for (const lens of active.filter(item => item.kind === 'lens')) {
       const population = await discover(root, (lens.selectors ?? []).flatMap(selector => selector.patterns));
@@ -35,8 +41,14 @@ export async function focus(root, request = {}) {
     }
   }
   const ids = new Set(selected.map(record => record.id));
-  const related = active.filter(item => !ids.has(item.id) && ((item.kind === 'lens' && item.conditions?.some(ref => ids.has(ref.split('#')[0]))) || item.concepts?.some(id => ids.has(id)) || selected.some(record => record.relations?.some(link => link.target === item.id))));
-  return { meaning: selected, related: related.map(({ id, kind, title, file }) => ({ id, kind, title, file })), observations: 'Request a provider explicitly when current code facts would help' };
+  const related = active.filter(item => !ids.has(item.id) && (
+    (item.kind === 'lens' && item.conditions?.some(ref => ids.has(ref.split('#')[0])))
+    || item.concepts?.some(id => ids.has(id))
+    || item.relations?.some(link => ids.has(link.target))
+    || selected.some(record => record.relations?.some(link => link.target === item.id)
+      || (record.kind === 'lens' && record.conditions?.some(ref => ref.split('#')[0] === item.id)))
+  ));
+  return { meaning: selected, related: related.map(pointer), scope: 'Selected records and direct related pointers only; no transitive or semantic completeness claim', observations: 'Request a provider explicitly when current code facts would help' };
 }
 
 async function selections(root, lens) {
@@ -57,8 +69,10 @@ export async function revisit(root, request = {}) {
   if (request.work !== undefined) throw new Error("Task state belongs to the caller; omit work from Conceptor helper requests");
   if (!request.lenses?.length && !request.concepts?.length) throw new Error('Revisit needs explicit Lens or Concept identities');
   const records = await loadMeaning(root);
+  const lenses = selectLenses(records, request);
+  const meaningCoverage = requestedMeaningCoverage(records, request, lenses);
   const results = [];
-  for (const lens of selectLenses(records, request)) {
+  for (const lens of lenses) {
     const priorPacket = priorEvidence(root, request);
     const previous = (priorPacket?.selections ?? priorPacket?.discovery?.selections)?.find(item => item.lens === lens.id);
     const current = await selections(root, lens);
@@ -84,9 +98,9 @@ export async function revisit(root, request = {}) {
     for (const file of changed.filter(file => !selectedPaths.has(file))) discoveryQuestions.push({ path: file, reason: 'Changed within the directive boundary but outside current Lens selection; investigate relevance and check coverage' });
   }
   const observations = [];
-  for (const lens of selectLenses(records, request)) for (const providerRequest of lens.observations ?? []) observations.push(await observe(root, providerRequest));
+  for (const lens of lenses) for (const providerRequest of lens.observations ?? []) observations.push(await observe(root, providerRequest));
   if (request.query) observations.push(await observe(root, { provider: 'inventory', operation: 'relationships', files: [...new Set([...selectedPaths, ...(boundary?.scope.inputs.map(input => input.path) ?? [])])], literal: request.query }));
-  return { format: evidenceFormat, project: root, selections: results, boundary, discoveryQuestions, observations };
+  return { format: evidenceFormat, project: root, selections: results, boundary, discoveryQuestions, observations, meaningCoverage };
 }
 
 async function checkScope(root, lens, check) {
@@ -236,7 +250,8 @@ export async function reconcile(root, request = {}) {
       verdicts.push({ condition: reference, lens: lens.id, meaningHash: concept.hash, lensHash: lens.hash, participants, status, scope: 'Only this condition and selected participants; no whole-Concept or application certificate' });
     }
   }
-  const result = { format: evidenceFormat, project: root, verdicts, receipts, observations, discovery, independentSource: independent, status: !verdicts.length || verdicts.some(item => item.status === 'unresolved') ? 'unresolved' : verdicts.some(item => item.status === 'mismatch') ? 'mismatch' : 'supported' };
+  const meaningCoverage = requestedMeaningCoverage(records, request, lenses);
+  const result = { format: evidenceFormat, project: root, verdicts, receipts, observations, discovery, independentSource: independent, meaningCoverage, status: !verdicts.length || meaningCoverage.uncoveredRequests.length || verdicts.some(item => item.status === 'unresolved') ? 'unresolved' : verdicts.some(item => item.status === 'mismatch') ? 'mismatch' : 'supported' };
   if (verdicts.some(item => item.status === 'mismatch')) result.status = 'mismatch';
   if (!verdicts.length) result.reason = 'No accepted Lens observes the selected meaning';
   result.observedMismatches = observedMismatches;

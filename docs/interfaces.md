@@ -20,6 +20,10 @@ The CLI commands are `focus`, `revisit`, `reconcile`, and `observe`; common opti
 
 Every verdict names condition, selector or participants, selection status, evidence, status (`supported`, `mismatch`, or `unresolved`), and reason. Original mismatches remain visible in the returned result even when a later observation makes them inapplicable. The caller retains evidence that matters to remaining work in its selected task record.
 
+`focus` validates explicit `concepts` and `lenses` against nonretired records of the respective kind. Its lexical query searches authored metadata and body. Index and related pointers include `status`; related pointers include direct incoming/outgoing Relations and governing Concepts of selected Lenses, without transitive closure. A related pointer does not load its body or accept an observed Relation.
+
+`revisit` and `reconcile` validate explicit Concept requests as accepted Concepts. Their `meaningCoverage` contains `requestedConcepts: [{concept, file, meaningHash, conditions: [{condition, lenses}]}]`, `uncoveredRequests: [{concept, condition?, reason}]`, and a `scope` limitation. A declared condition without a selected Lens, or a requested Concept without declared conditions, produces an uncovered request. Reconcile aggregate status is unresolved when these gaps remain, unless a mismatch takes precedence; supported individual verdicts are preserved. This compares explicit Concept requests with selected Lens condition references only. It does not establish complete source capture, prose coverage, scenario compatibility or whole-design acceptance.
+
 Selection and boundary results report `baseline: available|missing`. Without a valid prior snapshot, added, removed, and changed lists are empty because change history is unknown. Current scope and participant selection remain available. Missing evidence is not support and does not authorize running checks.
 
 ## Shared filesystem functions

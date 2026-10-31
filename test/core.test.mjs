@@ -40,15 +40,64 @@ test('inactive entrypoints bypass invalid requests and preserve project data', a
 
 test('focus selects meaning without hydrating unrelated records', async t => {
   const { root } = await fixture(t);
-  await meaning(root, 'other', { id: 'other', kind: 'concept', title: 'Another idea', status: 'accepted', relations: [{ type: 'depends-on', target: 'idea', status: 'observed' }] });
+  await meaning(root, 'other', { id: 'other', kind: 'concept', title: 'Another idea', status: 'candidate', relations: [{ type: 'depends-on', target: 'idea', status: 'observed' }] });
+  await meaning(root, 'distant', { id: 'distant', kind: 'concept', title: 'Distant idea', status: 'accepted', relations: [{ type: 'depends-on', target: 'other', status: 'accepted' }] });
   const index = await focus(root);
   assert.ok(index.index.every(item => !Object.hasOwn(item, 'body')));
+  assert.equal(index.index.find(item => item.id === 'other').status, 'candidate');
   const packet = await focus(root, { concepts: ['idea'] });
   assert.deepEqual(packet.meaning.map(item => item.id), ['idea']);
   assert.ok(packet.related.some(item => item.id === 'lens'));
+  assert.equal(packet.related.find(item => item.id === 'other').status, 'candidate');
+  assert.ok(!packet.related.some(item => item.id === 'distant'));
+  const incoming = await focus(root, { concepts: ['other'] });
+  assert.equal(incoming.meaning[0].relations[0].status, 'observed');
   const lensPacket = await focus(root, { lenses: ['lens'] });
   assert.deepEqual(lensPacket.meaning.map(item => item.id), ['lens']);
+  assert.equal(lensPacket.related.find(item => item.id === 'idea').status, 'accepted');
+  const queryPacket = await focus(root, { query: 'Observe' });
+  assert.ok(queryPacket.meaning.some(item => item.id === 'lens'));
+  assert.ok(queryPacket.related.some(item => item.id === 'idea'));
+});
 
+test('focus searches authored conditions and alternatives while validating identity selectors', async t => {
+  const { root } = await fixture(t);
+  await meaning(root, 'metadata', { id: 'metadata', kind: 'concept', title: 'Metadata', status: 'candidate', conditions: [{ id: 'scope', text: 'Accompaniment must remain available.', evidence: 'runtime' }], alternatives: ['Specialist substitution'] }, 'Body has its own provenance.');
+  assert.deepEqual((await focus(root, { query: 'accompaniment' })).meaning.map(item => item.id), ['metadata']);
+  assert.deepEqual((await focus(root, { query: 'specialist' })).meaning.map(item => item.id), ['metadata']);
+  assert.ok((await focus(root, { query: 'provenance' })).meaning[0].body.includes('provenance'));
+  assert.equal((await focus(root, { concepts: ['metadata'] })).meaning[0].status, 'candidate');
+  for (const request of [{ concepts: ['lens'] }, { lenses: ['idea'] }, { concepts: ['missing'] }, { lenses: ['missing'] }]) await assert.rejects(focus(root, request), /No active (concept|lens) selected/);
+  await meaning(root, 'retired', { id: 'retired', kind: 'concept', title: 'Old idea', status: 'retired' });
+  await assert.rejects(focus(root, { concepts: ['retired'] }), /No active concept selected/);
+});
+
+test('explicit Concept coverage exposes omitted conditions and prose without erasing supported verdicts', async t => {
+  const { root } = await fixture(t);
+  await meaning(root, 'concept', { id: 'idea', kind: 'concept', title: 'Idea', status: 'accepted', conditions: [{ id: 'behavior', text: 'Observed behavior', evidence: 'runtime' }, { id: 'context', text: 'Preserve wider context', evidence: 'runtime' }] });
+  await meaning(root, 'unobserved', { id: 'unobserved', kind: 'concept', title: 'An unobserved need', status: 'accepted', conditions: [{ id: 'needed', text: 'Independent capability', evidence: 'runtime' }] });
+  await meaning(root, 'prose', { id: 'prose', kind: 'concept', title: 'Prose authority', status: 'accepted' }, 'This accepted requirement has no machine condition.');
+  const request = { concepts: ['idea', 'unobserved', 'prose'] };
+  const discovery = await revisit(root, request);
+  assert.deepEqual(discovery.meaningCoverage.uncoveredRequests.map(item => item.condition ?? item.concept), ['idea#context', 'unobserved#needed', 'prose']);
+  assert.deepEqual(discovery.meaningCoverage.requestedConcepts.find(item => item.concept === 'idea').conditions, [{ condition: 'idea#behavior', lenses: ['lens'] }, { condition: 'idea#context', lenses: [] }]);
+  const result = await reconcile(root, { ...request, runChecks: true });
+  assert.equal(result.status, 'unresolved');
+  assert.equal(result.verdicts[0].status, 'supported');
+  assert.deepEqual(result.meaningCoverage, discovery.meaningCoverage);
+  assert.match(result.meaningCoverage.scope, /prose and source completeness are not machine established/);
+  const scoped = await reconcile(root, { lenses: ['lens'], runChecks: true });
+  assert.equal(scoped.status, 'supported');
+  assert.deepEqual(scoped.meaningCoverage.requestedConcepts, []);
+});
+
+test('revisit and reconcile reject unknown, wrong-kind, candidate and retired Concepts', async t => {
+  const { root } = await fixture(t);
+  await meaning(root, 'candidate', { id: 'candidate', kind: 'concept', title: 'Candidate', status: 'candidate' });
+  await meaning(root, 'retired', { id: 'retired', kind: 'concept', title: 'Retired', status: 'retired' });
+  for (const operation of [revisit, reconcile]) {
+    for (const id of ['missing', 'lens', 'candidate', 'retired']) await assert.rejects(operation(root, { concepts: ['idea', id] }), /No accepted Concept selected/);
+  }
 });
 
 test('missing Lens and missing required population are unresolved; allowed absence is explicit', async t => {
