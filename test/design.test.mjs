@@ -106,6 +106,7 @@ test('handoff requires a distinct asserted reviewer and exact design, increment,
   assert.equal((await handoff(root, valid)).status, 'ready');
   for (const mutate of [
     request => { delete request.review; },
+    request => { delete request.review.bindings; },
     request => { request.review.reviewerId = request.plannerId; },
     request => { request.review.reviewedRefs.pop(); },
     request => { request.review.reviewedRefs.push(request.review.reviewedRefs[0]); },

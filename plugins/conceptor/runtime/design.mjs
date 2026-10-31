@@ -217,7 +217,7 @@ export async function handoff(root, request = {}) {
     const { current, bindings } = checkedResult;
     const review = request.review;
     const issues = [];
-    if (!object(review) || review.format !== reviewFormat || digest(review.bindings) !== digest(bindings)) return unresolved([{ reason: 'Review is missing or its bindings do not match the current design, increment, planner, and authority' }]);
+    if (!object(review) || review.format !== reviewFormat || !object(review.bindings) || digest(review.bindings) !== digest(bindings)) return unresolved([{ reason: 'Review is missing or its bindings do not match the current design, increment, planner, and authority' }]);
     if (!nonempty(review.reviewerId) || review.reviewerId.trim() === request.plannerId.trim()) issues.push({ reason: 'reviewerId must be nonempty and different from plannerId; identities are host assertions' });
     if (!Array.isArray(review.reviewedRefs) || new Set(review.reviewedRefs).size !== review.reviewedRefs.length || digest([...review.reviewedRefs].sort()) !== digest(current.scope.refs)) issues.push({ reason: 'Review must explicitly cover every required scope ref exactly once' });
     if (!['clear', 'findings', 'blocked'].includes(review.verdict) || !nonempty(review.summary) || !Array.isArray(review.findings) || review.findings.some(finding => !object(finding) || !current.scope.refs.includes(finding.ref) || !nonempty(finding.reason))) issues.push({ reason: 'Review needs a valid verdict, summary, and source-referenced findings' });
