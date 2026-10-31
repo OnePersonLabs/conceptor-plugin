@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import path from 'node:path';
-import { focus, revisit, reconcile } from './conceptor.mjs';
+import { focus, revisit, reconcile, prepareDesign, checkDesign, handoff } from './conceptor.mjs';
 import { observe } from './providers/index.mjs';
 import { readJson } from './state.mjs';
 import { projectRoot, activeRoot, inactive } from './activation.mjs';
@@ -8,7 +8,7 @@ import { projectRoot, activeRoot, inactive } from './activation.mjs';
 async function main() {
   const [command, ...args] = process.argv.slice(2);
   if (!command || command === '--help' || command === 'help') {
-    console.log('Conceptor\nCommands: focus, revisit, reconcile, observe\nUsage: conceptor COMMAND [--root PATH] [--request -|REQUEST.json]\nUse --request - for JSON on stdin. A root .conceptor directory makes a project active.');
+    console.log('Conceptor\nCommands: focus, revisit, reconcile, observe, prepare-design, check-design, handoff\nUsage: conceptor COMMAND [--root PATH] [--request -|REQUEST.json]\nUse --request - for JSON on stdin. A root .conceptor directory makes a project active.');
     return;
   }
   const options = {};
@@ -17,9 +17,9 @@ async function main() {
     options[args[index].slice(2)] = args[index + 1];
   }
   const root = await projectRoot(options.root ? path.resolve(options.root) : process.cwd());
-  const operations = { focus, revisit, reconcile, observe };
+  const operations = { focus, revisit, reconcile, observe, 'prepare-design': prepareDesign, 'check-design': checkDesign, handoff };
   if (!operations[command]) throw new Error(`Unknown command: ${command}`);
-  if (!await activeRoot(root)) {
+  if (!['prepare-design', 'check-design', 'handoff'].includes(command) && !await activeRoot(root)) {
     console.log(JSON.stringify(inactive(root), null, 2));
     return;
   }
@@ -34,6 +34,6 @@ async function main() {
   const result = await operations[command](root, request);
   console.log(JSON.stringify(result, null, 2));
   if (result.status === 'mismatch') process.exitCode = 1;
-  else if (['unresolved', 'unavailable', 'recovery-required'].includes(result.status)) process.exitCode = 2;
+  else if (['unresolved', 'unavailable', 'recovery-required', 'blocked'].includes(result.status)) process.exitCode = 2;
 }
 main().catch(error => { console.error(`Conceptor: ${error.message}`); process.exitCode = 2; });

@@ -15,6 +15,8 @@ During discussion or planning, distinguish authorization to record a decision fr
 
 If host mode or write permissions block a required update, including Plan Mode, hand off the exact unsaved decision delta and its intended record destination. Do not claim it was saved.
 
+When accepted capability scope changes, update its metadata and exact section/source references in the same owner. Preserve stable obligation/scenario IDs when the obligation remains the same. Governing changes invalidate [design handoffs](../../references/design-handoff.md) bound to earlier meaning. Reprepare and review affected designs before dependent implementation; do not rewrite the old review to appear current. A passing implementation check does not accept candidate meaning.
+
 ## Reconcile changed implementation or evidence
 
 Use the comparison and repair steps in this section only when implementation or evidence changed, or an actual mismatch needs investigation.

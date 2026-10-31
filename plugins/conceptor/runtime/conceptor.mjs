@@ -6,6 +6,7 @@ import { randomUUID } from 'node:crypto';
 import { hash, projectPath, discover, captureScope } from './state.mjs';
 import { loadMeaning, conditionOf, selectLenses, requestedMeaningCoverage } from './meaning.mjs';
 import { observe } from './providers/index.mjs';
+export { prepareDesign, checkDesign, handoff } from './design.mjs';
 
 const evidenceFormat = 'conceptor-evidence/1';
 

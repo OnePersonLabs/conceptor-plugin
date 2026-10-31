@@ -2,7 +2,7 @@
 
 Conceptor preserves what a system must do, why it matters, and where implementation and evidence bear on that meaning. Use it to make the next decision without reconstructing the full history. The shared reasoning loop is: recover relevant meaning, predict consequences, implement when authorized, compare actual effects, reconcile, and retain useful learning. Code remains revisable; an implementation discovery can justify an explicit meaning decision.
 
-Use this reference from `$conceptor:plan-change` and `$conceptor:apply-change`. Planning does not change accepted meaning or implementation. During authorized implementation, the caller owns task identity, progress, and recovery; the [skills](../skills/apply-change/SKILL.md) define Conceptor's role. Discovery helpers are optional; their [request contracts](guide.md) define what they can establish. Conceptor does not inject guidance or enforce an assessment cadence.
+Use this reference from `$conceptor:plan-change` and `$conceptor:apply-change`. Planning alone does not authorize accepted meaning changes or implementation; an explicit request can separately authorize reconciliation. The caller owns task identity, progress, and recovery. The skills execute [the design handoff](design-handoff.md): prepare the project scope, validate a proposal, obtain native independent review, and consume the validated implementation context. Scoped discovery helpers remain optional; their [request contracts](guide.md) define what they can establish. Native tools are not intercepted. A configured Conductor adapter enforces the handoff for its builder turns and publication.
 
 ## Recover the governing meaning
 

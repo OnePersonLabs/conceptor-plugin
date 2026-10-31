@@ -16,6 +16,8 @@ Keep current source lineage and supersession rationale in the owning meaning rec
 
 Concept `conditions` contain `id`, `text`, `evidence` (`runtime` or `static`), and optional `allowsAbsence`. Typed `relations` contain `type`, `target`, and `status` (`observed` or `accepted`). Pattern Candidates contain `concepts`, `examples`, `counterexamples`, `alternatives`, and optional `lens`. Set a Pattern to `accepted` only through an explicit meaning decision.
 
+Concepts can also declare `capability` metadata for design preparation. An accepted root names cooperating Concepts through `includes`. Obligations and scenarios identify exact existing Markdown sections, with optional local source references. All declared capabilities remain visible, including those outside the root traversal. Candidate status remains distinct from accepted obligations. [The design handoff protocol](design-handoff.md) owns this schema, proposal/review objects, and the implementation consumer. Existing discovery and Lens checks do not require these declarations.
+
 ## Projection Lenses
 
 A Lens names conditions as `concept-id#condition-id`. A selector contains `id`, project-relative glob `patterns`, optional `role`. Select the relevant population independently of the property under test.
@@ -63,13 +65,15 @@ The installed package needs Node.js 24 and its declared npm runtime dependencies
 node PLUGIN_ROOT/runtime/cli.mjs focus --root PROJECT --request REQUEST.json
 ```
 
-The CLI accepts `focus`, `revisit`, `reconcile`, and `observe`. Request input can be a JSON file or stdin with `--request -`. Use absolute project and request paths when the current directory differs. `focus`, `revisit`, and `reconcile` accept selective `concepts`, `lenses`, `paths` and `query`. `reconcile` runs native checks only with `runChecks: true`; otherwise it uses only explicitly supplied and still-applicable prior receipts. The helper does not install providers or build an implicit semantic index.
+The CLI accepts `focus`, `revisit`, `reconcile`, `observe`, `prepare-design`, `check-design`, and `handoff`. Request input can be a JSON file or stdin with `--request -`. Use absolute project and request paths when the current directory differs. `focus`, `revisit`, and `reconcile` accept selective `concepts`, `lenses`, `paths` and `query`. `reconcile` runs native checks only with `runChecks: true`; otherwise it uses only explicitly supplied and still-applicable prior receipts. The helper does not install providers or build an implicit semantic index.
 
 ```json
 {"concepts":["clip"],"lenses":["clip-playback"],"runChecks":true}
 ```
 
 ESM callers import `focus`, `revisit`, and `reconcile` from `PLUGIN_ROOT/runtime/conceptor.mjs` and pass `(root, request)`. Provider observations are exported from `runtime/providers/index.mjs`. JSON stdin avoids a transport file when a caller does not already have a file. There is no general-purpose work journal or automatic source repair.
+
+The same module exports `prepareDesign`, `checkDesign`, and `handoff`. Their JSON path prepares a source-bound capability scope, validates a proposal and increment, and consumes an independent review before returning implementation context. `check-design` returns `review-required` with exit 0 when structural validation succeeds; this does not clear implementation. Only `handoff` returning `ready` with `conceptor-design-handoff/1` supplies that context. Missing or stale prerequisites return `unresolved` with exit 2. These operations run no models and persist no state. Follow [the complete handoff procedure](design-handoff.md) for native execution, reviewer authority, recovery, and the Conductor adapter.
 
 `focus` without selectors returns an index with identity, kind, title, status and file. Explicit `concepts` and `lenses` must name nonretired records of the correct kind; unknown, retired or wrong-kind identities are errors. A query searches authored frontmatter values and body text, not derived file paths or hashes. Matching is lexical discovery, not a ranking or proof of source coverage.
 

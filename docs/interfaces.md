@@ -12,11 +12,13 @@ Use Markdown with YAML frontmatter. Required fields: `id`, `kind` (`concept`, `l
 
 A Lens has conditions expressed as `concept-id#condition-id`. Its selectors contain `id`, project-relative glob `patterns`, and optional `role`. Selection describes the relevant population, not the property being checked. Checks contain `id`, `command`, `args`, selector IDs, condition references, and `evidence`; optional fields include `target`, additional project-relative `inputs`, and `env`. Native commands run without a shell. Lens observations are provider requests. A Pattern has `concepts`, `examples`, `counterexamples`, `alternatives`, and optional `lens`; promotion is an explicit meaning edit, not automatic inference.
 
+A Concept can declare optional `capability` metadata: `root`, explicit `includes`, and `obligations` or `scenarios` with unique IDs and exact body section headings. Items can cite project-relative local sources and optional exact source headings. This declaration serves design preparation; it does not change existing condition/Lens evidence semantics. The [design handoff protocol](../plugins/conceptor/references/design-handoff.md#prepare-the-governing-scope) owns the schema and acceptance rules.
+
 ## Helper functions and CLI
 
 Export `focus(root, request)`, `revisit(root, request)`, and `reconcile(root, request)` from `runtime/conceptor.mjs`. Requests may select concepts, lenses, paths, and query. Reconciliation runs native checks only when `runChecks: true`. A caller may pass one complete earlier revisit or reconcile result in `request.previous`. Results include `format: "conceptor-evidence/1"` and the canonical project root. A revisit can reuse `previous.selections` or `previous.discovery.selections`, and `previous.boundary.scope` or `previous.discovery.boundary.scope`. Reconciliation can reuse `previous.receipts`. The runtime revalidates format, project, source, and meaning bindings. Other-project or other-format results provide no reusable baseline or receipts. The caller packet is not modified. No evidence cache is persisted. Check stdout and stderr are returned inline with a 64 KiB bound per stream.
 
-The CLI commands are `focus`, `revisit`, `reconcile`, and `observe`; common options are `--root PATH` and `--request REQUEST.json`. Use `--request -` to read JSON from stdin. No request transport file is required. The helper does not install providers or build an implicit semantic index.
+The CLI commands are `focus`, `revisit`, `reconcile`, `observe`, `prepare-design`, `check-design`, and `handoff`; common options are `--root PATH` and `--request REQUEST.json`. Use `--request -` to read JSON from stdin. No request transport file is required. The helper does not install providers or build an implicit semantic index.
 
 Every verdict names condition, selector or participants, selection status, evidence, status (`supported`, `mismatch`, or `unresolved`), and reason. Original mismatches remain visible in the returned result even when a later observation makes them inapplicable. The caller retains evidence that matters to remaining work in its selected task record.
 
@@ -25,6 +27,22 @@ Every verdict names condition, selector or participants, selection status, evide
 `revisit` and `reconcile` validate explicit Concept requests as accepted Concepts. Their `meaningCoverage` contains `requestedConcepts: [{concept, file, meaningHash, conditions: [{condition, lenses}]}]`, `uncoveredRequests: [{concept, condition?, reason}]`, and a `scope` limitation. A declared condition without a selected Lens, or a requested Concept without declared conditions, produces an uncovered request. Reconcile aggregate status is unresolved when these gaps remain, unless a mismatch takes precedence; supported individual verdicts are preserved. This compares explicit Concept requests with selected Lens condition references only. It does not establish complete source capture, prose coverage, scenario compatibility or whole-design acceptance.
 
 Selection and boundary results report `baseline: available|missing`. Without a valid prior snapshot, added, removed, and changed lists are empty because change history is unknown. Current scope and participant selection remain available. Missing evidence is not support and does not authorize running checks.
+
+## Design preparation and implementation handoff
+
+`runtime/conceptor.mjs` also exports `prepareDesign(root, request)`, `checkDesign(root, request)`, and `handoff(root, request)`. Their CLI names are `prepare-design`, `check-design`, and `handoff`. Each request supplies nonempty opaque `sourceIdentity` and `requestRevision` strings. The caller retains the original request and accepted corrections; identity strings cannot replace them in review.
+
+| Operation | Input beyond request identity/revision | Result |
+| --- | --- | --- |
+| `prepareDesign` | None | `ready` with a `conceptor-design-scope/1` manifest and separate fresh `context`, or explicit `unresolved` issues. |
+| `checkDesign` | `plannerId`, `scope`, `proposal`, `increment` | `review-required` with `bindings`, `reviewInput`, and `reviewTemplate`, or `unresolved` issues. |
+| `handoff` | Checked input plus normalized independent `review` | `ready` with `conceptor-design-handoff/1` and `implementation` context, or `unresolved` issues. |
+
+The manifest binds the repository, request, governing record/source hashes, full declared capability catalog, and required references. The map retains disconnected capabilities and candidate status. Missing accepted roots, invalid includes, and missing or ambiguous sections remain unresolved. Candidate items do not become accepted obligations. Full source text is returned in fresh context and is not stored in the manifest.
+
+The proposal accounts for every required capability and accepted obligation/scenario through contracts and coverage dispositions. Deferred entries need an explicit compatibility argument. The increment selects the work to implement now. Structural validation returns reviewer input; independent review must assess actual source coverage, scenario fit, and safe deferrals. Only a current ready handoff supplies implementation context. These checks do not authenticate reviewer identities, establish semantic adequacy, or override implementation authority.
+
+CLI `ready` and `review-required` results exit 0; unresolved results exit 2. A successful `check-design` command does not clear implementation. The handoff adds canonical `bindings.targetRoot`; another worktree can consume the same reviewed input only within the same Git repository and with matching governing inputs. Changes to ordinary implementation bytes do not alone invalidate the design. No operation persists task state or runs models. See [the owning protocol](../plugins/conceptor/references/design-handoff.md) for complete objects, review, recovery, and the Conductor consumer.
 
 ## Shared filesystem functions
 

@@ -8,6 +8,8 @@ Use `$conceptor:plan-change` to investigate a change and develop a proposal thro
 
 Use `$conceptor:apply-change` to implement a direct request or a proposal. A prior plan, issue, or separate approval step is not required. The skill reconciles work on resumption against actual project files and Git state.
 
+In an active project, planning prepares the declared capability scope, checks a concrete design and bounded increment, and obtains independent source review. Implementation consumes a current `ready` handoff containing that design and fresh governing context. A direct implementation request performs this preparation inline. See [the design handoff](plugins/conceptor/references/design-handoff.md) for capability metadata, native review, and the optional Conductor adapter. The runtime invokes no models; the host owns reviewer execution and its authorization.
+
 For example, ask the agent to improve an export error while preserving the existing file when a write fails. Conceptor should trace the accepted meaning through the real export path, make the authorized change, and report the evidence and uncertainty. A stored requirement alone does not prove that the export preserves data.
 
 ## Where Conceptor is active
@@ -29,6 +31,8 @@ codex plugin add conceptor@conceptor
 Preparation installs runtime dependencies and creates `.plugin-build/conceptor`, the directory selected by the local marketplace. A raw remote checkout does not contain this generated bundle. See [first-use recovery](docs/getting-started.md#if-something-does-not-work).
 
 Start a fresh Codex session in the project you want to change. If `.conceptor/` is present at that repository root, the Conceptor skills can apply there. Ordinary skill discovery remains enabled; a caller that needs a specific workflow should explicitly invoke `$conceptor:plan-change` or `$conceptor:apply-change`.
+
+A source change, a prepared bundle, an installed plugin, and guidance loaded in a session are separate states. Updating this checkout does not refresh an installed bundle or an existing session.
 
 ## Try the helper
 
@@ -55,12 +59,14 @@ Use `focus` to retrieve selected meaning, `revisit` to refresh discovery, and `r
 
 ## Plugin skills
 
-- `$conceptor:plan-change` develops an interactive, self-contained proposal without changing the accepted model or implementation.
-- `$conceptor:apply-change` accepts and implements a direct request or existing proposal.
+- `$conceptor:plan-change` prepares capability scope and an independently reviewed proposal without authorizing meaning edits or implementation.
+- `$conceptor:apply-change` validates a current design handoff and implements its authorized increment, including preparation for a direct request.
 - `$conceptor:recover-meaning` recovers governing meaning, current participants, and relevant uncertainty.
 - `$conceptor:reconcile-and-learn` reconciles consequential decisions, implementation, and evidence.
 
 An external runner or issue-tracking skill owns issue access, branch and worktree assignment, commit policy, pushes, pull requests, reviews, and publication. It can pass the selected root, request, acceptance criteria, and an opaque source identity and revision to Conceptor. Conceptor does not interpret tracker IDs. These external workflow skills are separate from this plugin's implementation.
+
+Conductor can consume the handoff through its optional command adapter before builder execution and publication. The [handoff protocol](plugins/conceptor/references/design-handoff.md#recovery-and-the-conductor-adapter) describes the input and failure path. Configuration and installation do not start Conductor work or release existing gates.
 
 Create a portable package with `npm.cmd run pack:plugin` after `setup:plugin`. The plugin's own lockfile and dependency directory supply the bundled runtime. The root package supplies test tooling. Unpack the archive and use its `package` directory as the plugin root. The local marketplace uses the prepared bundle under `.plugin-build/conceptor`. `$onepersonlabs:refresh-local-plugins` prepares and installs `conceptor@conceptor` in reachable Windows and WSL user homes. Preparation requires Node.js 24+, npm, and `tar`.
 
